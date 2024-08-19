@@ -6,12 +6,14 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{{title}}</title>
-     
+    
     <link rel="stylesheet" href="{% static 'app-design/assets/css/bootstrap.css'%} ">
     <link rel="stylesheet" href="{% static 'app-design/assets/vendors/simple-datatables/style.css'%} ">
     <link rel="stylesheet" href="{% static 'app-design/assets/vendors/perfect-scrollbar/perfect-scrollbar.css'%} ">
     <link rel="stylesheet" href="{% static 'app-design/assets/css/app.css'%} ">
     <link rel="shortcut icon" href="{% static 'app-design/assets/images/favicon.svg" type="image/x-icon'%} ">
+    {% block css-extender %}
+    {% endblock css-extender %}
 </head>
 <body>
     <div id="app">
@@ -23,10 +25,37 @@
                 <div class="sidebar-menu">
                     <ul class="menu">
                             <li class='sidebar-title'>Main Menu</li>
-                            <li class="sidebar-item active ">
-                                <a href="table-datatable.html" class='sidebar-link'>
-                                    <i data-feather="file-plus" width="20"></i> 
-                                    <span>Datatable</span>
+                            <li class="sidebar-item">
+                                <a href="{% url 'app:dashboard' %}" class='sidebar-link'>
+                                    <i data-feather="home" width="20"></i> 
+                                    <span>Dashboard</span>
+                                </a>
+                            </li>
+                            <li class='sidebar-title'>Tabulasi dan Laporan</li>
+                            <li class="sidebar-item">
+                                <a href="{% url 'app:tab_families' %}" class='sidebar-link'>
+                                    <i data-feather="layout" width="20"></i> 
+                                    <span>Tabulasi Keluarga</span>
+                                </a>
+                            </li>
+
+                            <li class="sidebar-item">
+                                <a href="{% url 'app:tab_populations' %}" class='sidebar-link'>
+                                    <i data-feather="layout" width="20"></i> 
+                                    <span>Tabulasi Penduduk</span>
+                                </a>
+                            </li>
+                            <li class='sidebar-title'>Master Data</li>
+                            <li class="sidebar-item">
+                                <a href="{% url 'app:mnj_families' %}" class='sidebar-link'>
+                                    <i data-feather="user" width="20"></i> 
+                                    <span>Manajemen Keluarga</span>
+                                </a>
+                            </li>
+                            <li class="sidebar-item">
+                                <a href="{% url 'app:mnj_population' %}" class='sidebar-link'>
+                                    <i data-feather="user" width="20"></i> 
+                                    <span>Manajemen Penduduk</span>
                                 </a>
                             </li>
                     </ul>
@@ -100,40 +129,14 @@
             </nav>
             
             <div class="main-content container-fluid">
-                <div class="page-title">
-                    <div class="row">
-                        <div class="col-12 col-md-6 order-md-1 order-last">
-                            <h3>Datatable</h3>
-                            <p class="text-subtitle text-muted">We use 'simple-datatables' made by @fiduswriter. You can check the full documentation <a href="https://github.com/fiduswriter/Simple-DataTables/wiki">here</a>.</p>
-                        </div>
-                        <div class="col-12 col-md-6 order-md-2 order-first">
-                            <nav aria-label="breadcrumb" class='breadcrumb-header'>
-                                <ol class="breadcrumb">
-                                    <li class="breadcrumb-item"><a href="index.html">Dashboard</a></li>
-                                    <li class="breadcrumb-item active" aria-current="page">Datatable</li>
-                                </ol>
-                            </nav>
-                        </div>
-                    </div>
-                </div>
-                <section class="section">
-                    <div class="card">
-                        <div class="card-header">
-                            Simple Datatable
-                        </div>
-                        <div class="card-body">
-                        </div>
-                    </div>
-                </section>
+                {% block main-content %}
+                {% endblock main-content %}
             </div>
 
             <footer>
                 <div class="footer clearfix mb-0 text-muted">
                     <div class="float-start">
-                        <p>2022 &copy; Voler</p>
-                    </div>
-                    <div class="float-end">
-                        <p>Crafted with <span class='text-danger'><i data-feather="heart"></i></span> by <a href="https://saugi.me">Saugi</a></p>
+                        <p>2022 &copy; BPS Kab. Muna</p>
                     </div>
                 </div>
             </footer>
@@ -141,10 +144,23 @@
     </div>
 
     <script src="{% static 'app-design/assets/js/feather-icons/feather.min.js' %}"></script>
-    <script src="{% static 'app-design/assets/vendors/perfect-scrollbar/perfect-scrollbar.min.js' %}"></script>
+    <script src="{% static 'app-design/assets/js/perfect-scrollbar/perfect-scrollbar.min.js' %}"></script>
     <script src="{% static 'app-design/assets/js/app.js' %}"></script>
-    <script src="{% static 'app-design/assets/vendors/simple-datatables/simple-datatables.js' %}"></script>
+    <script src="{% static 'app-design/assets/js/simple-datatables/simple-datatables.js' %}"></script>
     <script src="{% static 'app-design/assets/js/vendors.js' %}"></script>
     <script src="{% static 'app-design/assets/js/main.js' %}"></script>
+    <script src="https://code.jquery.com/jquery-3.7.1.slim.js" integrity="sha256-UgvvN8vBkgO0luPSUl2s8TIlOSYRoGFAX4jlCIm9Adc=" crossorigin="anonymous"></script>
+    <script>
+        // Get current page and set current in nav
+    $(".sidebar-menu .menu >li").each(function() {
+        var navItem = $(this);
+        navItem.removeClass("active");
+        if (navItem.find("a").attr("href") == location.pathname) {
+          navItem.addClass("active");
+        }
+    });
+    </script>
+    {% block js-extender %}
+    {% endblock js-extender %}
 </body>
 </html>
