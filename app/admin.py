@@ -3,12 +3,12 @@ from . import models
 # Register your models here.
 
 
-class CharacteristicItemsStacked(admin.StackedInline):
-    model = models.BackendCharacteristicItemsModel
+class PopulationsStacked(admin.StackedInline):
+    model = models.PopulationsModels
 
-class CharacteristicItems(admin.ModelAdmin):
-    inlines = [CharacteristicItemsStacked]
+class FamiliesItems(admin.ModelAdmin):
+    inlines = [PopulationsStacked]
 
 admin.site.register(models.RegionAdministrativeModels)
 admin.site.register(models.RegionSLSModels)
-admin.site.register(models.FamiliesModels)
+admin.site.register(models.FamiliesModels, FamiliesItems)
