@@ -148,43 +148,9 @@
                         <div class="col-7">
                             <div class="form-group" style="width:400px!important">
                                 <select class="choices form-select" onchange="tabulationPush(this)">
-                                    <option value="">----</option>
-                                    <option value="1">Jumlah Keluarga Menurut Pendidikan Tertinggi KRT</option>
-                                    <option value="2">Jumlah Keluarga Menurut Status Kepemilikan Bangunan Tempat Tinggal</option>
-                                    <option value="3">Jumlah Keluarga Menurut Bukti kepemilikan Tanah Bangunan Tempat Tinggal</option>
-                                    <option value="4">Jumlah Keluarga Menurut Luas Lantai Bangunan Tempat Tinggal</option>
-                                    <option value="5">Jumlah Keluarga Menurut Jenis Lantai Terluas</option>
-                                    <option value="6">Jumlah Keluarga Menurut Jenis Dinding Terluas</option>
-                                    <option value="7">Jumlah Keluarga Menurut Jenis Atap Terluas</option>
-                                    <option value="8">Jumlah Keluarga Menurut Sumber Air Minum Utama</option>
-                                    <option value="9">Jumlah Keluarga Menurut Jarak Sumber Air Minum Utama ke Tempat Penampungan Limbah</option>
-                                    <option value="10">Jumlah Keluarga Menurut Sumber Penerangan Utama</option>
-                                    <option value="11">Jumlah Keluarga Menurut Daya yang Terpasang</option>
-                                    <option value="12">Jumlah Keluarga Menurut Bahan Bakar/Energi Utama untuk Memasak</option>
-                                    <option value="13">Jumlah Keluarga Menurut Kepemilikan dan Penggunaan Fasilitas Tempat Buang Air Besar</option>
-                                    <option value="14">Jumlah Keluarga Menurut Jenis Kloset</option>
-                                    <option value="15">Jumlah Keluarga Menurut Tempat Pembuangan Akhir Tinja</option>
-                                    <option value="16">Jumlah Keluarga Menurut Penerima Program Bantuan Sosial Sembako/ BPNT</option>
-                                    <option value="17">Jumlah Keluarga Menurut Penerima Program Keluarga Harapan (PKH)</option>
-                                    <option value="18">Jumlah Keluarga Menurut Penerima Program Bantuan Langsung Tunai (BLT) Desa</option>
-                                    <option value="19">Jumlah Keluarga Menurut Penerima Program Subsidi Listrik (Gratis/Pemotongan Biaya)</option>
-                                    <option value="20">Jumlah Keluarga Menurut Penerima Program Bantuan Pemerintah Daerah</option>
-                                    <option value="21">Jumlah Keluarga Menurut Penerima Program Bantuan Subsidi Pupuk</option>
-                                    <option value="22">Jumlah Keluarga Menurut Penerima Program Subsidi LPG</option>
-                                    <option value="23">Jumlah Keluarga Menurut Kepemilikan Tabung gas 5,5 kg atau lebih</option>
-                                    <option value="24">Jumlah Keluarga Menurut Kepemilikan Lemari Es/Kulkas</option>
-                                    <option value="25">Jumlah Keluarga Menurut Kepemilikan Air Conditioner (AC)</option>
-                                    <option value="26">Jumlah Keluarga Menurut Kepemilikan Pemanas Air (Water Heater)</option>
-                                    <option value="27">Jumlah Keluarga Menurut Kepemilikan Telepon Rumah (PSTN)</option>
-                                    <option value="28">Jumlah Keluarga Menurut Kepemilikan Televisi Layar Datar (Min. 30 Inci)</option>
-                                    <option value="29">Jumlah Keluarga Menurut Kepemilikan Emas/Perhiasan (Min. 10 gram)</option>
-                                    <option value="30">Jumlah Keluarga Menurut Kepemilikan Komputer/Laptop/Tablet</option>
-                                    <option value="31">Jumlah Keluarga Menurut Kepemilikan Sepeda Motor</option>
-                                    <option value="32">Jumlah Keluarga Menurut Kepemilikan Mobil</option>
-                                    <option value="33">Jumlah Keluarga Menurut Kepemilikan Aset Lahan (selain yang ditempati)</option>
-                                    <option value="34">Jumlah Keluarga Menurut Kepemilikan Aset Rumah/Bangunan di Tempat Lain</option>
-                                    <option value="35">Jumlah Keluarga Menurut Kepemilikan Hewan Ternak</option>
-                                    <option value="36">Jumlah Keluarga Menurut Kepemilikan Rekening Aktif</option>
+                                    {% for tabulation in tabulations %}
+                                        <option value="{{tabulation.val}}">{{tabulation.text}}</option>
+                                    {% endfor %}
                                 </select>
                             </div>
                         </div>
@@ -269,11 +235,8 @@
                             <thead>
                                 <tr>
                                     <th>No</th>
-                                    <th>Kepala Keluarga</th>
-                                    <th>Pendidikan KRT</th>
-                                    <th>Jumlah ART</th>
-                                    <th>Alamat</th>
-                                    <th>Status Penerima Bantuan</th>
+                                    <th>Bahan Bakar/Energi Utama untuk Memasak</th>
+                                    <th>Jumlah</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -291,36 +254,39 @@
 
 {% block js-extender %}
 <script src="{% static 'app-design/assets/vendors/choices.js/choices.min.js' %}"></script>
+
 <script>
     function tabulationPush(e){
         var title = $(e).text()
         var val = $(e).val()
+        if (val.length == 0){
+            return $('#tabulation-card').hide()
+        }
+
         $.ajax({
             url: '{% url "app:tab_families_fetch" %}',
             type: "POST",
             dataType: "json",
             data : {
-                'id' : val,
+                'tab_request' : val,
             },
             headers: {
                 "X-Requested-With": "XMLHttpRequest",
                 "X-CSRFToken": '{{csrf_token}}',
             },
             success: (data) => {
-                return alert('Hello World')
+                if (data.status == 'success'){
+                    $('#tabulations-table').html(data.content.content_table)
+                    $('#tabulation-title').html(data.content.title)
+                    $('#tabulation-card').show()
+                }
             },
             error: (error) => {
-                return alert(error)
+                
             }
         });
 
 
-        $('#tabulation-title').text('').text(title)
-        $('#tabulation-card').show()
-
-        if (val.length == 0){
-            $('#tabulation-card').hide()
-        }
         
     }
 </script>
