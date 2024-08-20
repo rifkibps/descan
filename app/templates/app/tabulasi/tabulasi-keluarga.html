@@ -148,7 +148,7 @@
                         <div class="col-7">
                             <div class="form-group" style="width:400px!important">
                                 <select class="choices form-select" onchange="tabulationPush(this)">
-                                    <option>----</option>
+                                    <option value="">----</option>
                                     <option value="1">Jumlah Keluarga Menurut Pendidikan Tertinggi KRT</option>
                                     <option value="2">Jumlah Keluarga Menurut Status Kepemilikan Bangunan Tempat Tinggal</option>
                                     <option value="3">Jumlah Keluarga Menurut Bukti kepemilikan Tanah Bangunan Tempat Tinggal</option>
@@ -254,22 +254,22 @@
         </div>
     </div>
 
-    <div class="row mb-4">
+    <div class="row mb-4" id="tabulation-card" style="display:none">
         <div class="col-md-12">
             <div class="card">
                 <div class="card-header d-flex justify-content-between align-items-center">
-                    <h4 class="card-title">Daftar Keluarga</h4>
+                    <h4 class="card-title" id="tabulation-title">Tabulasi</h4>
                     <div class="d-flex ">
                         <i data-feather="download"></i>
                     </div>
                 </div>
                 <div class="card-body px-3 pb-0">
                     <div class="table-responsive">
-                        <table class='table mb-0' id="table">
+                        <table class='table mb-0' id="tabulations-table">
                             <thead>
                                 <tr>
                                     <th>No</th>
-                                    <th >Kepala Keluarga</th>
+                                    <th>Kepala Keluarga</th>
                                     <th>Pendidikan KRT</th>
                                     <th>Jumlah ART</th>
                                     <th>Alamat</th>
@@ -281,7 +281,7 @@
                         </table>
                     </div>
                 </div>
-            </div>
+            </div>  
         </div>
     </div>
 </section>
@@ -293,7 +293,35 @@
 <script src="{% static 'app-design/assets/vendors/choices.js/choices.min.js' %}"></script>
 <script>
     function tabulationPush(e){
-        return alert($(e).val())
+        var title = $(e).text()
+        var val = $(e).val()
+        $.ajax({
+            url: '{% url "app:tab_families_fetch" %}',
+            type: "POST",
+            dataType: "json",
+            data : {
+                'id' : val,
+            },
+            headers: {
+                "X-Requested-With": "XMLHttpRequest",
+                "X-CSRFToken": '{{csrf_token}}',
+            },
+            success: (data) => {
+                return alert('Hello World')
+            },
+            error: (error) => {
+                return alert(error)
+            }
+        });
+
+
+        $('#tabulation-title').text('').text(title)
+        $('#tabulation-card').show()
+
+        if (val.length == 0){
+            $('#tabulation-card').hide()
+        }
+        
     }
 </script>
 {% endblock js-extender %}
