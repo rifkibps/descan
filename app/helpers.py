@@ -4,7 +4,6 @@ from datetime import date
 
 def generate_table(header, body):
     
-    print(body)
     thead = '<thead><tr>'
     for head in header:
         thead += f'<th class="{head["class"]}">{head["name"]}</th>'
@@ -48,6 +47,7 @@ def get_tab_families():
         {'val' : 20, 'text' : 'Jumlah Keluarga Menurut Penerima Program Bantuan Pemerintah Daerah'},
         {'val' : 21, 'text' : 'Jumlah Keluarga Menurut Penerima Program Bantuan Subsidi Pupuk'},
         {'val' : 22, 'text' : 'Jumlah Keluarga Menurut Penerima Program Subsidi LPG'},
+
         {'val' : 23, 'text' : 'Jumlah Keluarga Menurut Kepemilikan Tabung gas 5,5 kg atau lebih'},
         {'val' : 24, 'text' : 'Jumlah Keluarga Menurut Kepemilikan Lemari Es/Kulkas'},
         {'val' : 25, 'text' : 'Jumlah Keluarga Menurut Kepemilikan Air Conditioner (AC)'},
@@ -58,10 +58,28 @@ def get_tab_families():
         {'val' : 30, 'text' : 'Jumlah Keluarga Menurut Kepemilikan Komputer/Laptop/Tablet'},
         {'val' : 31, 'text' : 'Jumlah Keluarga Menurut Kepemilikan Sepeda Motor'},
         {'val' : 32, 'text' : 'Jumlah Keluarga Menurut Kepemilikan Mobil'},
+
         {'val' : 33, 'text' : 'Jumlah Keluarga Menurut Kepemilikan Aset Lahan (selain yang ditempati)'},
         {'val' : 34, 'text' : 'Jumlah Keluarga Menurut Kepemilikan Aset Rumah/Bangunan di Tempat Lain'},
         {'val' : 35, 'text' : 'Jumlah Keluarga Menurut Kepemilikan Hewan Ternak'},
         {'val' : 36, 'text' : 'Jumlah Keluarga Menurut Kepemilikan Rekening Aktif'}
+    ]
+
+    return opts
+def get_tab_populations():
+    opts = [
+        {'val' : None, 'text' : '----'},
+        {'val' : 1, 'text' : 'Jumlah Penduduk Menurut Jenis Kelamin dan Kelompok Umur' },
+        {'val' : 2, 'text' : 'Jumlah Penduduk Menurut Status Perkawinan' },
+        {'val' : 3, 'text' : 'Jumlah Penduduk Menurut Status Bekerja' },
+        {'val' : 4, 'text' : 'Rata-rata Jam Kerja Menurut Kelompok Umur' },
+        {'val' : 5, 'text' : 'Rata-rata Jam Kerja Menurut Jenis Kelamin' },
+        {'val' : 6, 'text' : 'Jumlah Penduduk >15 Tahun yang Bekerja Selama Seminggu yang lalu Menurut Status Pekerjaan Utama' },
+        {'val' : 7, 'text' : 'Jumlah penduduk menurut kepemilikan usaha sendiri/bersama' },
+        {'val' : 8, 'text' : 'Rata-rata Jumlah Pekerja yang Dibayar pada Usaha Utama' },
+        {'val' : 9, 'text' : 'Rata-rata Jumlah Pekerja yang Tidak Dibayar pada Usaha Utama' },
+        {'val' : 10, 'text' : 'Pengelompokan Omzet Usaha Utama Perbulan' },
+        {'val' : 11, 'text' : 'Jumlah Penduduk Menurut Keluhan Kesehatan Kronis/Menahun' },
     ]
 
     return opts

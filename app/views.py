@@ -4,7 +4,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from . import models, helpers
 from django.http import JsonResponse
 from pprint import pprint
-from django.db.models import Q, Count
+from django.db.models import Q, Count, Sum
 
 
 # Create your views here.
@@ -57,7 +57,6 @@ class TabulationsFamiliesFetchClassView(LoginRequiredMixin, View):
                 
                 data_tabs = {}
                 if tab_request == 12:
-                    
                     model = models.FamiliesModels.objects.aggregate(
                         section1 =Count('r308', filter=Q(r308='1')),
                         section2 =Count('r308', filter=Q(r308='2')),
@@ -84,7 +83,6 @@ class TabulationsFamiliesFetchClassView(LoginRequiredMixin, View):
                     )
 
                     return JsonResponse({"status": 'success', 'content' : data_tabs }, status=200)
-
                 elif tab_request == 3:
 
                     r301b = models.FamiliesModels.r301b.field.choices
@@ -106,7 +104,6 @@ class TabulationsFamiliesFetchClassView(LoginRequiredMixin, View):
                     )
 
                     return JsonResponse({"status": 'success', 'content' : data_tabs }, status=200)
-                    
                 elif tab_request == 11:
                     r307b = models.FamiliesModels.r307b.field.choices
                     model = models.FamiliesModels.objects.aggregate(
@@ -144,7 +141,6 @@ class TabulationsFamiliesFetchClassView(LoginRequiredMixin, View):
                     )
 
                     return JsonResponse({"status": 'success', 'content' : data_tabs }, status=200)
-                
                 elif tab_request == 7:
                     r305 = models.FamiliesModels.r305.field.choices
                     model = models.FamiliesModels.objects.aggregate(
@@ -167,7 +163,6 @@ class TabulationsFamiliesFetchClassView(LoginRequiredMixin, View):
                     )
 
                     return JsonResponse({"status": 'success', 'content' : data_tabs }, status=200)
-                
                 elif tab_request == 6:
                     r304 = models.FamiliesModels.r304.field.choices
                     model = models.FamiliesModels.objects.aggregate(
@@ -189,7 +184,6 @@ class TabulationsFamiliesFetchClassView(LoginRequiredMixin, View):
                     )
 
                     return JsonResponse({"status": 'success', 'content' : data_tabs }, status=200)
-                
                 elif tab_request == 1:
                     r415 = models.PopulationsModels.r415.field.choices
                     model = models.FamiliesModels.objects.filter(families_members__r409 = '1').aggregate(
@@ -228,8 +222,485 @@ class TabulationsFamiliesFetchClassView(LoginRequiredMixin, View):
                     )
 
                     return JsonResponse({"status": 'success', 'content' : data_tabs }, status=200)
-                # Kloset
+                elif tab_request == 2:
+                    r301a = models.FamiliesModels.r301a.field.choices
+                    model = models.FamiliesModels.objects.aggregate(
+                        section1 =Count('r301a', filter=Q(r301a='1')),
+                        section2 =Count('r301a', filter=Q(r301a='2')),
+                        section3 =Count('r301a', filter=Q(r301a='3')),
+                        section4 =Count('r301a', filter=Q(r301a='4')),
+                        section5 =Count('r301a', filter=Q(r301a='5')),
+                    )
+                    model = list(model.values())
+                    data = [[(idx+1, 'text-center'), (dt[1], 'text-left'), (model[idx], 'text-center')] for idx, dt in enumerate(r301a)]
 
+                    data_tabs['title'] = check_tab
+                    data_tabs['content_table'] = helpers.generate_table(
+                        [{'name':'No', 'class' : 'text-center'}, {'name':'Status Kepemilikan Bangunan Tempat Tinggal', 'class' : ''}, {'name':'Jumlah Keluarga', 'class' : 'text-center'}],
+                        data
+                    )
+
+                    return JsonResponse({"status": 'success', 'content' : data_tabs }, status=200)
+                elif tab_request == 5:
+                    r303 = models.FamiliesModels.r303.field.choices
+                    model = models.FamiliesModels.objects.aggregate(
+                        section1 =Count('r303', filter=Q(r303='1')),
+                        section2 =Count('r303', filter=Q(r303='2')),
+                        section3 =Count('r303', filter=Q(r303='3')),
+                        section4 =Count('r303', filter=Q(r303='4')),
+                        section5 =Count('r303', filter=Q(r303='5')),
+                        section6 =Count('r303', filter=Q(r303='6')),
+                        section7 =Count('r303', filter=Q(r303='7')),
+                        section8 =Count('r303', filter=Q(r303='8')),
+                        section9 =Count('r303', filter=Q(r303='9')),
+                    )
+                    model = list(model.values())
+                    data = [[(idx+1, 'text-center'), (dt[1], 'text-left'), (model[idx], 'text-center')] for idx, dt in enumerate(r303)]
+
+                    data_tabs['title'] = check_tab
+                    data_tabs['content_table'] = helpers.generate_table(
+                        [{'name':'No', 'class' : 'text-center'}, {'name':'Jenis Lantai Terluas', 'class' : ''}, {'name':'Jumlah Keluarga', 'class' : 'text-center'}],
+                        data
+                    )
+                    return JsonResponse({"status": 'success', 'content' : data_tabs }, status=200)
+                elif tab_request == 8:
+                    r306a = models.FamiliesModels.r306a.field.choices
+                    model = models.FamiliesModels.objects.aggregate(
+                        section1 =Count('r306a', filter=Q(r306a='1')),
+                        section2 =Count('r306a', filter=Q(r306a='2')),
+                        section3 =Count('r306a', filter=Q(r306a='3')),
+                        section4 =Count('r306a', filter=Q(r306a='4')),
+                        section5 =Count('r306a', filter=Q(r306a='5')),
+                        section6 =Count('r306a', filter=Q(r306a='6')),
+                        section7 =Count('r306a', filter=Q(r306a='7')),
+                        section8 =Count('r306a', filter=Q(r306a='8')),
+                        section9 =Count('r306a', filter=Q(r306a='9')),
+                        section10 =Count('r306a', filter=Q(r306a='10')),
+                        section11 =Count('r306a', filter=Q(r306a='11')),
+                    )
+                    model = list(model.values())
+                    data = [[(idx+1, 'text-center'), (dt[1], 'text-left'), (model[idx], 'text-center')] for idx, dt in enumerate(r306a)]
+
+                    data_tabs['title'] = check_tab
+                    data_tabs['content_table'] = helpers.generate_table(
+                        [{'name':'No', 'class' : 'text-center'}, {'name':'Sumber Air Minum Utama', 'class' : ''}, {'name':'Jumlah Keluarga', 'class' : 'text-center'}],
+                        data
+                    )
+                    return JsonResponse({"status": 'success', 'content' : data_tabs }, status=200)
+                elif tab_request == 10:
+                    r307a = models.FamiliesModels.r307a.field.choices
+                    model = models.FamiliesModels.objects.aggregate(
+                        section1 =Count('r307a', filter=Q(r307a='1')),
+                        section2 =Count('r307a', filter=Q(r307a='2')),
+                        section3 =Count('r307a', filter=Q(r307a='3')),
+                        section4 =Count('r307a', filter=Q(r307a='4')),
+                    )
+                    model = list(model.values())
+                    data = [[(idx+1, 'text-center'), (dt[1], 'text-left'), (model[idx], 'text-center')] for idx, dt in enumerate(r307a)]
+
+                    data_tabs['title'] = check_tab
+                    data_tabs['content_table'] = helpers.generate_table(
+                        [{'name':'No', 'class' : 'text-center'}, {'name':'Sumber Penerangan Utama', 'class' : ''}, {'name':'Jumlah Keluarga', 'class' : 'text-center'}],
+                        data
+                    )
+                    return JsonResponse({"status": 'success', 'content' : data_tabs }, status=200)
+                elif tab_request == 13:
+                    r309a = models.FamiliesModels.r309a.field.choices
+                    model = models.FamiliesModels.objects.aggregate(
+                        section1 =Count('r309a', filter=Q(r309a='1')),
+                        section2 =Count('r309a', filter=Q(r309a='2')),
+                        section3 =Count('r309a', filter=Q(r309a='3')),
+                        section4 =Count('r309a', filter=Q(r309a='4')),
+                        section5 =Count('r309a', filter=Q(r309a='5')),
+                        section6 =Count('r309a', filter=Q(r309a='6')),
+                    )
+                    model = list(model.values())
+                    data = [[(idx+1, 'text-center'), (dt[1], 'text-left'), (model[idx], 'text-center')] for idx, dt in enumerate(r309a)]
+
+                    data_tabs['title'] = check_tab
+                    data_tabs['content_table'] = helpers.generate_table(
+                        [{'name':'No', 'class' : 'text-center'}, {'name':'Kepemilikan Fasilitas Tempat Buang Air Besar', 'class' : ''}, {'name':'Jumlah Keluarga', 'class' : 'text-center'}],
+                        data
+                    )
+                    return JsonResponse({"status": 'success', 'content' : data_tabs }, status=200)
+                elif tab_request == 14:
+                    r309b = models.FamiliesModels.r309b.field.choices
+                    model = models.FamiliesModels.objects.aggregate(
+                        section1 =Count('r309b', filter=Q(r309b='1')),
+                        section2 =Count('r309b', filter=Q(r309b='2')),
+                        section3 =Count('r309b', filter=Q(r309b='3')),
+                        section4 =Count('r309b', filter=Q(r309b='4'))
+                    )
+                    model = list(model.values())
+                    data = [[(idx+1, 'text-center'), (dt[1], 'text-left'), (model[idx], 'text-center')] for idx, dt in enumerate(r309b)]
+
+                    data_tabs['title'] = check_tab
+                    data_tabs['content_table'] = helpers.generate_table(
+                        [{'name':'No', 'class' : 'text-center'}, {'name':'Jenis Kloset', 'class' : ''}, {'name':'Jumlah Keluarga', 'class' : 'text-center'}],
+                        data
+                    )
+                    return JsonResponse({"status": 'success', 'content' : data_tabs }, status=200)
+                elif tab_request == 15:
+                    r310 = models.FamiliesModels.r310.field.choices
+                    model = models.FamiliesModels.objects.aggregate(
+                        section1 =Count('r310', filter=Q(r310='1')),
+                        section2 =Count('r310', filter=Q(r310='2')),
+                        section3 =Count('r310', filter=Q(r310='3')),
+                        section4 =Count('r310', filter=Q(r310='4')),
+                        section5 =Count('r310', filter=Q(r310='5')),
+                        section6 =Count('r310', filter=Q(r310='6'))
+                    )
+                    model = list(model.values())
+                    data = [[(idx+1, 'text-center'), (dt[1], 'text-left'), (model[idx], 'text-center')] for idx, dt in enumerate(r310)]
+
+                    data_tabs['title'] = check_tab
+                    data_tabs['content_table'] = helpers.generate_table(
+                        [{'name':'No', 'class' : 'text-center'}, {'name':'Tempat Pembuangan Akhir Tinja', 'class' : ''}, {'name':'Jumlah Keluarga', 'class' : 'text-center'}],
+                        data
+                    )
+                    return JsonResponse({"status": 'success', 'content' : data_tabs }, status=200)
+                elif tab_request == 16:
+                    r501a = models.FamiliesModels.r501a.field.choices
+                    model = models.FamiliesModels.objects.aggregate(
+                        section1 =Count('r501a', filter=Q(r501a='1')),
+                        section2 =Count('r501a', filter=Q(r501a='2'))
+                    )
+                    model = list(model.values())
+                    data = [[(idx+1, 'text-center'), (dt[1], 'text-left'), (model[idx], 'text-center')] for idx, dt in enumerate(r501a)]
+
+                    data_tabs['title'] = check_tab
+                    data_tabs['content_table'] = helpers.generate_table(
+                        [{'name':'No', 'class' : 'text-center'}, {'name':'Status Penerimaan Bantuan Sosial Sembako/ BPNT', 'class' : ''}, {'name':'Jumlah Keluarga', 'class' : 'text-center'}],
+                        data
+                    )
+                    return JsonResponse({"status": 'success', 'content' : data_tabs }, status=200)
+                elif tab_request == 17:
+                    r501b = models.FamiliesModels.r501b.field.choices
+                    model = models.FamiliesModels.objects.aggregate(
+                        section1 =Count('r501b', filter=Q(r501b='1')),
+                        section2 =Count('r501b', filter=Q(r501b='2'))
+                    )
+                    model = list(model.values())
+                    data = [[(idx+1, 'text-center'), (dt[1], 'text-left'), (model[idx], 'text-center')] for idx, dt in enumerate(r501b)]
+
+                    data_tabs['title'] = check_tab
+                    data_tabs['content_table'] = helpers.generate_table(
+                        [{'name':'No', 'class' : 'text-center'}, {'name':'Status Penerimaan Keluarga Harapan (PKH)', 'class' : ''}, {'name':'Jumlah Keluarga', 'class' : 'text-center'}],
+                        data
+                    )
+                    return JsonResponse({"status": 'success', 'content' : data_tabs }, status=200)
+                elif tab_request == 18:
+                    r501c = models.FamiliesModels.r501c.field.choices
+                    model = models.FamiliesModels.objects.aggregate(
+                        section1 =Count('r501c', filter=Q(r501c='1')),
+                        section2 =Count('r501c', filter=Q(r501c='2'))
+                    )
+                    model = list(model.values())
+                    data = [[(idx+1, 'text-center'), (dt[1], 'text-left'), (model[idx], 'text-center')] for idx, dt in enumerate(r501c)]
+
+                    data_tabs['title'] = check_tab
+                    data_tabs['content_table'] = helpers.generate_table(
+                        [{'name':'No', 'class' : 'text-center'}, {'name':'Status Penerimaan Bantuan Langsung Tunai (BLT)', 'class' : ''}, {'name':'Jumlah Keluarga', 'class' : 'text-center'}],
+                        data
+                    )
+                    return JsonResponse({"status": 'success', 'content' : data_tabs }, status=200)
+                elif tab_request == 19:
+                    r501d = models.FamiliesModels.r501d.field.choices
+                    model = models.FamiliesModels.objects.aggregate(
+                        section1 =Count('r501d', filter=Q(r501d='1')),
+                        section2 =Count('r501d', filter=Q(r501d='2'))
+                    )
+                    model = list(model.values())
+                    data = [[(idx+1, 'text-center'), (dt[1], 'text-left'), (model[idx], 'text-center')] for idx, dt in enumerate(r501d)]
+
+                    data_tabs['title'] = check_tab
+                    data_tabs['content_table'] = helpers.generate_table(
+                        [{'name':'No', 'class' : 'text-center'}, {'name':'Status Penerimaan Subsidi Listrik', 'class' : ''}, {'name':'Jumlah Keluarga', 'class' : 'text-center'}],
+                        data
+                    )
+                    return JsonResponse({"status": 'success', 'content' : data_tabs }, status=200)
+                elif tab_request == 20:
+                    r501e = models.FamiliesModels.r501e.field.choices
+                    model = models.FamiliesModels.objects.aggregate(
+                        section1 =Count('r501e', filter=Q(r501e='1')),
+                        section2 =Count('r501e', filter=Q(r501e='2'))
+                    )
+                    model = list(model.values())
+                    data = [[(idx+1, 'text-center'), (dt[1], 'text-left'), (model[idx], 'text-center')] for idx, dt in enumerate(r501e)]
+
+                    data_tabs['title'] = check_tab
+                    data_tabs['content_table'] = helpers.generate_table(
+                        [{'name':'No', 'class' : 'text-center'}, {'name':'Status Penerimaan Bantuan Pemerintah Daerah', 'class' : ''}, {'name':'Jumlah Keluarga', 'class' : 'text-center'}],
+                        data
+                    )
+                    return JsonResponse({"status": 'success', 'content' : data_tabs }, status=200)
+                elif tab_request == 21:
+                    r501f = models.FamiliesModels.r501f.field.choices
+                    model = models.FamiliesModels.objects.aggregate(
+                        section1 =Count('r501f', filter=Q(r501f='1')),
+                        section2 =Count('r501f', filter=Q(r501f='2'))
+                    )
+                    model = list(model.values())
+                    data = [[(idx+1, 'text-center'), (dt[1], 'text-left'), (model[idx], 'text-center')] for idx, dt in enumerate(r501f)]
+
+                    data_tabs['title'] = check_tab
+                    data_tabs['content_table'] = helpers.generate_table(
+                        [{'name':'No', 'class' : 'text-center'}, {'name':'Status Penerimaan Subsidi Pupuk', 'class' : ''}, {'name':'Jumlah Keluarga', 'class' : 'text-center'}],
+                        data
+                    )
+                    return JsonResponse({"status": 'success', 'content' : data_tabs }, status=200)
+                elif tab_request == 22:
+                    r501g = models.FamiliesModels.r501g.field.choices
+                    model = models.FamiliesModels.objects.aggregate(
+                        section1 =Count('r501g', filter=Q(r501g='1')),
+                        section2 =Count('r501g', filter=Q(r501g='2'))
+                    )
+                    model = list(model.values())
+                    data = [[(idx+1, 'text-center'), (dt[1], 'text-left'), (model[idx], 'text-center')] for idx, dt in enumerate(r501g)]
+
+                    data_tabs['title'] = check_tab
+                    data_tabs['content_table'] = helpers.generate_table(
+                        [{'name':'No', 'class' : 'text-center'}, {'name':'Status Penerimaan Subsidi LPG', 'class' : ''}, {'name':'Jumlah Keluarga', 'class' : 'text-center'}],
+                        data
+                    )
+                    return JsonResponse({"status": 'success', 'content' : data_tabs }, status=200)
+                elif tab_request == 23:
+                    r502a = models.FamiliesModels.r502a.field.choices
+                    model = models.FamiliesModels.objects.aggregate(
+                        section1 =Count('r502a', filter=Q(r502a='1')),
+                        section2 =Count('r502a', filter=Q(r502a='2'))
+                    )
+                    model = list(model.values())
+                    data = [[(idx+1, 'text-center'), (dt[1], 'text-left'), (model[idx], 'text-center')] for idx, dt in enumerate(r502a)]
+
+                    data_tabs['title'] = check_tab
+                    data_tabs['content_table'] = helpers.generate_table(
+                        [{'name':'No', 'class' : 'text-center'}, {'name':'Status Kepemilikan Tabung gas >= 5,5 kg', 'class' : ''}, {'name':'Jumlah Keluarga', 'class' : 'text-center'}],
+                        data
+                    )
+                    return JsonResponse({"status": 'success', 'content' : data_tabs }, status=200)
+                elif tab_request == 24:
+                    r502b = models.FamiliesModels.r502b.field.choices
+                    model = models.FamiliesModels.objects.aggregate(
+                        section1 =Count('r502b', filter=Q(r502b='1')),
+                        section2 =Count('r502b', filter=Q(r502b='2'))
+                    )
+                    model = list(model.values())
+                    data = [[(idx+1, 'text-center'), (dt[1], 'text-left'), (model[idx], 'text-center')] for idx, dt in enumerate(r502b)]
+
+                    data_tabs['title'] = check_tab
+                    data_tabs['content_table'] = helpers.generate_table(
+                        [{'name':'No', 'class' : 'text-center'}, {'name':'Status Kepemilikan Lemari Es/Kulkas', 'class' : ''}, {'name':'Jumlah Keluarga', 'class' : 'text-center'}],
+                        data
+                    )
+                    return JsonResponse({"status": 'success', 'content' : data_tabs }, status=200)
+                elif tab_request == 25:
+                    r502c = models.FamiliesModels.r502c.field.choices
+                    model = models.FamiliesModels.objects.aggregate(
+                        section1 =Count('r502c', filter=Q(r502c='1')),
+                        section2 =Count('r502c', filter=Q(r502c='2'))
+                    )
+                    model = list(model.values())
+                    data = [[(idx+1, 'text-center'), (dt[1], 'text-left'), (model[idx], 'text-center')] for idx, dt in enumerate(r502c)]
+
+                    data_tabs['title'] = check_tab
+                    data_tabs['content_table'] = helpers.generate_table(
+                        [{'name':'No', 'class' : 'text-center'}, {'name':'Status Kepemilikan Air Conditioner (AC)', 'class' : ''}, {'name':'Jumlah Keluarga', 'class' : 'text-center'}],
+                        data
+                    )
+                    return JsonResponse({"status": 'success', 'content' : data_tabs }, status=200)
+                elif tab_request == 26:
+                    r502d = models.FamiliesModels.r502d.field.choices
+                    model = models.FamiliesModels.objects.aggregate(
+                        section1 =Count('r502d', filter=Q(r502d='1')),
+                        section2 =Count('r502d', filter=Q(r502d='2'))
+                    )
+                    model = list(model.values())
+                    data = [[(idx+1, 'text-center'), (dt[1], 'text-left'), (model[idx], 'text-center')] for idx, dt in enumerate(r502d)]
+
+                    data_tabs['title'] = check_tab
+                    data_tabs['content_table'] = helpers.generate_table(
+                        [{'name':'No', 'class' : 'text-center'}, {'name':'Status Kepemilikan Pemanas Air (Water Heater)', 'class' : ''}, {'name':'Jumlah Keluarga', 'class' : 'text-center'}],
+                        data
+                    )
+                    return JsonResponse({"status": 'success', 'content' : data_tabs }, status=200)
+                elif tab_request == 27:
+                    r502e = models.FamiliesModels.r502e.field.choices
+                    model = models.FamiliesModels.objects.aggregate(
+                        section1 =Count('r502e', filter=Q(r502e='1')),
+                        section2 =Count('r502e', filter=Q(r502e='2'))
+                    )
+                    model = list(model.values())
+                    data = [[(idx+1, 'text-center'), (dt[1], 'text-left'), (model[idx], 'text-center')] for idx, dt in enumerate(r502e)]
+
+                    data_tabs['title'] = check_tab
+                    data_tabs['content_table'] = helpers.generate_table(
+                        [{'name':'No', 'class' : 'text-center'}, {'name':'Status Kepemilikan Telepon Rumah', 'class' : ''}, {'name':'Jumlah Keluarga', 'class' : 'text-center'}],
+                        data
+                    )
+                    return JsonResponse({"status": 'success', 'content' : data_tabs }, status=200)
+                elif tab_request == 28:
+                    r502f = models.FamiliesModels.r502f.field.choices
+                    model = models.FamiliesModels.objects.aggregate(
+                        section1 =Count('r502f', filter=Q(r502f='1')),
+                        section2 =Count('r502f', filter=Q(r502f='2'))
+                    )
+                    model = list(model.values())
+                    data = [[(idx+1, 'text-center'), (dt[1], 'text-left'), (model[idx], 'text-center')] for idx, dt in enumerate(r502f)]
+
+                    data_tabs['title'] = check_tab
+                    data_tabs['content_table'] = helpers.generate_table(
+                        [{'name':'No', 'class' : 'text-center'}, {'name':'Status Kepemilikan Televisi Layar Datar (Min. 30 Inchi)', 'class' : ''}, {'name':'Jumlah Keluarga', 'class' : 'text-center'}],
+                        data
+                    )
+                    return JsonResponse({"status": 'success', 'content' : data_tabs }, status=200)
+                elif tab_request == 29:
+                    r502g = models.FamiliesModels.r502g.field.choices
+                    model = models.FamiliesModels.objects.aggregate(
+                        section1 =Count('r502g', filter=Q(r502g='1')),
+                        section2 =Count('r502g', filter=Q(r502g='2'))
+                    )
+                    model = list(model.values())
+                    data = [[(idx+1, 'text-center'), (dt[1], 'text-left'), (model[idx], 'text-center')] for idx, dt in enumerate(r502g)]
+
+                    data_tabs['title'] = check_tab
+                    data_tabs['content_table'] = helpers.generate_table(
+                        [{'name':'No', 'class' : 'text-center'}, {'name':'Status Kepemilikan Emas/Perhiasan (Min. 10 gram)', 'class' : ''}, {'name':'Jumlah Keluarga', 'class' : 'text-center'}],
+                        data
+                    )
+                    return JsonResponse({"status": 'success', 'content' : data_tabs }, status=200)
+                elif tab_request == 30:
+                    r502h = models.FamiliesModels.r502h.field.choices
+                    model = models.FamiliesModels.objects.aggregate(
+                        section1 =Count('r502h', filter=Q(r502h='1')),
+                        section2 =Count('r502h', filter=Q(r502h='2'))
+                    )
+                    model = list(model.values())
+                    data = [[(idx+1, 'text-center'), (dt[1], 'text-left'), (model[idx], 'text-center')] for idx, dt in enumerate(r502h)]
+
+                    data_tabs['title'] = check_tab
+                    data_tabs['content_table'] = helpers.generate_table(
+                        [{'name':'No', 'class' : 'text-center'}, {'name':'Status Kepemilikan Komputer/Laptop/Tablet', 'class' : ''}, {'name':'Jumlah Keluarga', 'class' : 'text-center'}],
+                        data
+                    )
+                    return JsonResponse({"status": 'success', 'content' : data_tabs }, status=200)
+                elif tab_request == 31:
+                    r502i = models.FamiliesModels.r502i.field.choices
+                    model = models.FamiliesModels.objects.aggregate(
+                        section1 =Count('r502i', filter=Q(r502i='1')),
+                        section2 =Count('r502i', filter=Q(r502i='2'))
+                    )
+                    model = list(model.values())
+                    data = [[(idx+1, 'text-center'), (dt[1], 'text-left'), (model[idx], 'text-center')] for idx, dt in enumerate(r502i)]
+
+                    data_tabs['title'] = check_tab
+                    data_tabs['content_table'] = helpers.generate_table(
+                        [{'name':'No', 'class' : 'text-center'}, {'name':'Status Kepemilikan Sepeda Motor', 'class' : ''}, {'name':'Jumlah Keluarga', 'class' : 'text-center'}],
+                        data
+                    )
+                    return JsonResponse({"status": 'success', 'content' : data_tabs }, status=200)
+                elif tab_request == 32:
+                    r502k = models.FamiliesModels.r502k.field.choices
+                    model = models.FamiliesModels.objects.aggregate(
+                        section1 =Count('r502k', filter=Q(r502k='1')),
+                        section2 =Count('r502k', filter=Q(r502k='2'))
+                    )
+                    model = list(model.values())
+                    data = [[(idx+1, 'text-center'), (dt[1], 'text-left'), (model[idx], 'text-center')] for idx, dt in enumerate(r502k)]
+
+                    data_tabs['title'] = check_tab
+                    data_tabs['content_table'] = helpers.generate_table(
+                        [{'name':'No', 'class' : 'text-center'}, {'name':'Status Kepemilikan Mobil', 'class' : ''}, {'name':'Jumlah Keluarga', 'class' : 'text-center'}],
+                        data
+                    )
+                    return JsonResponse({"status": 'success', 'content' : data_tabs }, status=200)
+                elif tab_request == 33:
+                    r503a = models.FamiliesModels.r503a.field.choices
+                    model = models.FamiliesModels.objects.aggregate(
+                        section1 =Count('r503a', filter=Q(r503a='1')),
+                        section2 =Count('r503a', filter=Q(r503a='2'))
+                    )
+                    model = list(model.values())
+                    data = [[(idx+1, 'text-center'), (dt[1], 'text-left'), (model[idx], 'text-center')] for idx, dt in enumerate(r503a)]
+
+                    data_tabs['title'] = check_tab
+                    data_tabs['content_table'] = helpers.generate_table(
+                        [{'name':'No', 'class' : 'text-center'}, {'name':'Status Kepemilikan Aset Lahan', 'class' : ''}, {'name':'Jumlah Keluarga', 'class' : 'text-center'}],
+                        data
+                    )
+                    return JsonResponse({"status": 'success', 'content' : data_tabs }, status=200)
+                elif tab_request == 34:
+                    r503b = models.FamiliesModels.r503b.field.choices
+                    model = models.FamiliesModels.objects.aggregate(
+                        section1 =Count('r503b', filter=Q(r503b='1')),
+                        section2 =Count('r503b', filter=Q(r503b='2'))
+                    )
+                    model = list(model.values())
+                    data = [[(idx+1, 'text-center'), (dt[1], 'text-left'), (model[idx], 'text-center')] for idx, dt in enumerate(r503b)]
+
+                    data_tabs['title'] = check_tab
+                    data_tabs['content_table'] = helpers.generate_table(
+                        [{'name':'No', 'class' : 'text-center'}, {'name':'Status Kepemilikan Aset Lahan', 'class' : ''}, {'name':'Jumlah Keluarga', 'class' : 'text-center'}],
+                        data
+                    )
+                    return JsonResponse({"status": 'success', 'content' : data_tabs }, status=200)
+                elif tab_request == 35:
+                    model_count = models.FamiliesModels.objects.aggregate(
+                        section1 = Count('r504a', filter=Q(r504a__gt =0)),
+                        section2 = Count('r504b', filter=Q(r504b__gt =0)),
+                        section3 = Count('r504c', filter=Q(r504c__gt =0)),
+                        section4 = Count('r504d', filter=Q(r504d__gt =0)),
+                        section5 = Count('r504e', filter=Q(r504e__gt =0))
+                    )
+                    model_count = list(model_count.values())
+
+                    model_sum = models.FamiliesModels.objects.aggregate(
+                        section1 = Sum('r504a', filter=Q(r504a__gt =0)),
+                        section2 = Sum('r504b', filter=Q(r504b__gt =0)),
+                        section3 = Sum('r504c', filter=Q(r504c__gt =0)),
+                        section4 = Sum('r504d', filter=Q(r504d__gt =0)),
+                        section5 = Sum('r504e', filter=Q(r504e__gt =0))
+                    )
+                    model_sum = list(model_sum.values())
+
+                    data_header = [
+                        {'name':'No', 'class' : 'text-center'}, 
+                        {'name':'Kepemilikan Hewan Ternak', 'class' : 'text-left'}, 
+                        {'name':'Banyaknya Keluarga', 'class' : 'text-center'},
+                        {'name':'Jumlah Hewan (Ekor)', 'class' : 'text-center'}
+                    ]
+
+                    data_body = [
+                        [(1, 'text-center'), ('Sapi', 'text-left'), (model_count[0], 'text-center'),  (model_sum[0] if model_sum[0] is not None else 0, 'text-center')],
+                        [(2, 'text-center'), ('Kerbau', 'text-left'), (model_count[1], 'text-center'),  (model_sum[1] if model_sum[1] is not None else 0, 'text-center')],
+                        [(3, 'text-center'), ('Kuda', 'text-left'), (model_count[2], 'text-center'),  (model_sum[2] if model_sum[2] is not None else 0, 'text-center')],
+                        [(4, 'text-center'), ('Babi', 'text-left'), (model_count[3], 'text-center'),  (model_sum[3] if model_sum[3] is not None else 0, 'text-center')],
+                        [(5, 'text-center'), ('Kambing/Domba', 'text-left'), (model_count[4], 'text-center'),  (model_sum[4] if model_sum[4] is not None else 0, 'text-center')],
+                    ]
+
+                    data_tabs['title'] = check_tab
+                    data_tabs['content_table'] = helpers.generate_table(
+                        data_header,
+                        data_body
+                    )
+                    return JsonResponse({"status": 'success', 'content' : data_tabs }, status=200)
+                elif tab_request == 36:
+                    r506 = models.FamiliesModels.r506.field.choices
+                    model = models.FamiliesModels.objects.aggregate(
+                        section1 =Count('r506', filter=Q(r506='1')),
+                        section2 =Count('r506', filter=Q(r506='2')),
+                        section3 =Count('r506', filter=Q(r506='3')),
+                        section4 =Count('r506', filter=Q(r506='4'))
+                    )
+                    model = list(model.values())
+                    data = [[(idx+1, 'text-center'), (dt[1], 'text-left'), (model[idx], 'text-center')] for idx, dt in enumerate(r506)]
+
+                    data_tabs['title'] = check_tab
+                    data_tabs['content_table'] = helpers.generate_table(
+                        [{'name':'No', 'class' : 'text-center'}, {'name':'Status Kepemilikan Rekening Aktif', 'class' : ''}, {'name':'Jumlah Keluarga', 'class' : 'text-center'}],
+                        data
+                    )
+                    return JsonResponse({"status": 'success', 'content' : data_tabs }, status=200)
         return JsonResponse({'status': 'Invalid request'}, status=400)
 
 
@@ -238,9 +709,238 @@ class TabulationsPopulationsClassView(LoginRequiredMixin, View):
     
     def get(self, request):
 
-        families = models.FamiliesModels.objects.all()
+        families = models.FamiliesModels.objects.count()
+        populations = len(models.PopulationsModels.objects.all())
+        welfare_recips = helpers.count_of_welfare_recips().count()
+        labor_force = helpers.labor_participation()
+
+        education_levels = models.PopulationsModels.r415.field.choices
+        home_ownership_state = models.FamiliesModels.r301a.field.choices
+
+        tabulations = helpers.get_tab_populations()
         context = {
             'title' : 'Tabulasi Data Penduduk',
-            'families' : families
+            'families' : families,
+            'populations' : populations,
+            'welfare_recips' : welfare_recips,
+            'labor_force' : labor_force,
+            'education_levels' : education_levels,
+            'home_ownership_state' : home_ownership_state,
+            'tabulations' : tabulations
         }
         return render(request, 'app/tabulasi/tabulasi-penduduk.html', context)
+
+
+class TabulationsPopulationsFetchClassView(LoginRequiredMixin, View):
+
+    def post(self, request):
+        is_ajax = request.headers.get('X-Requested-With') == 'XMLHttpRequest'
+        if is_ajax:
+            if request.method == 'POST':
+                tabs = helpers.get_tab_populations()
+                tab_request = int(request.POST.get('tab_request'))
+                check_tab = next((d['text'] for (index, d) in enumerate(tabs) if d['val'] == tab_request), None)
+                if check_tab is None:
+                    return JsonResponse({"status": 'failed'}, status=400)
+                
+                data_tabs = {}
+                if tab_request == 1:
+                    pass
+                elif tab_request == 2:
+                    r408 = models.PopulationsModels.r408.field.choices
+                    model = models.PopulationsModels.objects.aggregate(
+                        section1 =Count('r408', filter=Q(r408='1')),
+                        section2 =Count('r408', filter=Q(r408='2')),
+                        section3 =Count('r408', filter=Q(r408='3')),
+                        section4 =Count('r408', filter=Q(r408='4')),
+                    )
+                    model = list(model.values())
+                    data = [[(idx+1, 'text-center'), (dt[1], 'text-left'), (model[idx], 'text-center')] for idx, dt in enumerate(r408)]
+                    
+                    data_tabs['title'] = check_tab
+                    data_tabs['content_table'] = helpers.generate_table(
+                        [{'name':'No', 'class' : 'text-center'}, {'name':'Status Perkawinan', 'class' : ''}, {'name':'Jumlah Keluarga', 'class' : 'text-center'}],
+                        data
+                    )
+
+                    return JsonResponse({"status": 'success', 'content' : data_tabs }, status=200)
+                elif tab_request == 3:
+                    r416a = models.PopulationsModels.r416a.field.choices
+                    model = models.PopulationsModels.objects.aggregate(
+                        section1 =Count('r416a', filter=Q(r416a='1')),
+                        section2 =Count('r416a', filter=Q(r416a='2'))
+                    )
+                    model = list(model.values())
+                    data = [[(idx+1, 'text-center'), (dt[1], 'text-left'), (model[idx], 'text-center')] for idx, dt in enumerate(r416a)]
+                    
+                    data_tabs['title'] = check_tab
+                    data_tabs['content_table'] = helpers.generate_table(
+                        [{'name':'No', 'class' : 'text-center'}, {'name':'Status Bekerja', 'class' : ''}, {'name':'Jumlah Keluarga', 'class' : 'text-center'}],
+                        data
+                    )
+
+                    return JsonResponse({"status": 'success', 'content' : data_tabs }, status=200)
+                elif tab_request == 7:
+                    r420a = models.PopulationsModels.r420a.field.choices
+                    model = models.PopulationsModels.objects.aggregate(
+                        section1 =Count('r420a', filter=Q(r420a='1')),
+                        section2 =Count('r420a', filter=Q(r420a='2'))
+                    )
+                    model = list(model.values())
+                    data = [[(idx+1, 'text-center'), (dt[1], 'text-left'), (model[idx], 'text-center')] for idx, dt in enumerate(r420a)]
+                    
+                    data_tabs['title'] = check_tab
+                    data_tabs['content_table'] = helpers.generate_table(
+                        [{'name':'No', 'class' : 'text-center'}, {'name':'Status Berusaha', 'class' : ''}, {'name':'Jumlah Keluarga', 'class' : 'text-center'}],
+                        data
+                    )
+                    return JsonResponse({"status": 'success', 'content' : data_tabs }, status=200)
+                elif tab_request == 4:
+                    pass
+                elif tab_request == 5:
+                    pass
+                elif tab_request == 6:
+                   pass
+                elif tab_request == 8:
+                    pass
+                elif tab_request == 9:
+                    pass
+                elif tab_request == 10:
+                   pass
+                elif tab_request == 11:
+                    r430 = models.PopulationsModels.r430.field.choices
+                    model = models.PopulationsModels.objects.aggregate(
+                        section1 =Count('r430', filter=Q(r430='1')),
+                        section2 =Count('r430', filter=Q(r430='2')),
+                        section3 =Count('r430', filter=Q(r430='3')),
+                        section4 =Count('r430', filter=Q(r430='4')),
+                        section5 =Count('r430', filter=Q(r430='5')),
+                        section6 =Count('r430', filter=Q(r430='6')),
+                        section7 =Count('r430', filter=Q(r430='7')),
+                        section8 =Count('r430', filter=Q(r430='8')),
+                        section9 =Count('r430', filter=Q(r430='9')),
+                        section10 =Count('r430', filter=Q(r430='10')),
+                        section11 =Count('r430', filter=Q(r430='11')),
+                        section12 =Count('r430', filter=Q(r430='12')),
+                        section13 =Count('r430', filter=Q(r430='13')),
+                        section14 =Count('r430', filter=Q(r430='14')),
+                        section15 =Count('r430', filter=Q(r430='15')),
+                        section16 =Count('r430', filter=Q(r430='16')),
+                        section17 =Count('r430', filter=Q(r430='17')),
+                        section18 =Count('r430', filter=Q(r430='18')),
+                    )
+                    model = list(model.values())
+                    data = [[(idx+1, 'text-center'), (dt[1], 'text-left'), (model[idx], 'text-center')] for idx, dt in enumerate(r430)]
+
+                    data_tabs['title'] = check_tab
+                    data_tabs['content_table'] = helpers.generate_table(
+                        [{'name':'No', 'class' : 'text-center'}, {'name':'Keluhan Kesehatan Kronis/Menahun', 'class' : ''}, {'name':'Jumlah Keluarga', 'class' : 'text-center'}],
+                        data
+                    )
+                    return JsonResponse({"status": 'success', 'content' : data_tabs }, status=200)
+
+        return JsonResponse({'status': 'Invalid request'}, status=400)
+
+
+class ManajemenFamiliesClassView(LoginRequiredMixin, View):
+    
+    def get(self, request):
+
+        families = models.FamiliesModels.objects.all()
+        education_levels = models.PopulationsModels.r415.field.choices
+        home_ownership_state = models.FamiliesModels.r301a.field.choices
+        
+        data_families = []
+        for family in families:
+            dt = {}
+            dt['r108'] = family.r108
+            dt['r112'] = family.r112
+            dt['r104'] = f"{family.r104.reg_name}, {family.r105.reg_sls_name}"
+
+            members = models.PopulationsModels.objects.filter(family_id = family.pk, r409 = '2' )
+            if members.exists():
+                dt['r108'] = f"{dt['r108']} / { members.first().r402}"
+
+            welf = '<select class="form-select" style="width:70%">'
+            if family.r501a == '1':
+                welf += '<option>BPNT</option>'
+            if family.r501b == '1':
+                welf += '<option>PKH</option>'
+            if family.r501c == '1':
+                welf += '<option>BLT</option>'
+            if family.r501d == '1':
+                welf += '<option>Subsidi Listrik</option>'
+            if family.r501e == '1':
+                welf += '<option>Bantuan Pemda</option>'
+            if family.r501f == '1':
+                welf += '<option>Subsidi Pupuk</option>'
+            if family.r501g == '1':
+                welf += '<option>Subsidi LPG</option>'
+            welf += '</select>'
+
+            if welf.find('<option>') != -1:
+                dt['welf'] = welf
+            else:
+                dt['welf'] = 'Bukan penerima bantuan'
+
+
+            assets = '<select class="form-select" style="width:100%">'
+            if family.r502a == '1':
+                assets += '<option>Tabung Gas >= 5,5 kg</option>'
+            if family.r502n == '1':
+                assets += '<option>Smartphone</option>'
+            if family.r502b == '1':
+                assets += '<option>Lemari Es/Kulkas</option>'
+            if family.r502c == '1':
+                assets += '<option>AC</option>'
+            if family.r502d == '1':
+                assets += '<option>Water Heater</option>'
+            if family.r502e == '1':
+                assets += '<option>Telepon Rumah</option>'
+            if family.r502f == '1':
+                assets += '<option>Televisi Layar Datar</option>'
+            if family.r502g == '1':
+                assets += '<option>Emas/Perhiasan</option>'
+            if family.r502h == '1':
+                assets += '<option>Komputer/Laptop/Tablet</option>'
+            if family.r502i == '1':
+                assets += '<option>Sepeda Motor</option>'
+            if family.r502j == '1':
+                assets += '<option>Sepeda</option>'
+            if family.r502k == '1':
+                assets += '<option>Mobil</option>'
+            if family.r502l == '1':
+                assets += '<option>Perahu</option>'
+            if family.r502m == '1':
+                assets += '<option>Perahu Motor</option>'
+
+            assets += '</select>'
+            if assets.find('<option>') != -1:
+                dt['assets'] = assets
+            else:
+                dt['assets'] = 'Tidak memiliki aset'
+
+            data_families.append(dt)
+
+        context = {
+            'title' : 'Manajemen Keluarga',
+            'families' : data_families,
+            'education_levels' : education_levels,
+            'home_ownership_state' : home_ownership_state,
+        }
+        return render(request, 'app/master/master-keluarga.html', context)
+
+class ManajemenPopulationsClassView(LoginRequiredMixin, View): 
+        
+    def get(self, request):
+        families = models.FamiliesModels.objects.all()
+        education_levels = models.PopulationsModels.r415.field.choices
+        home_ownership_state = models.FamiliesModels.r301a.field.choices
+        
+        context = {
+            'title' : 'Manajemen Penduduk',
+            # 'families' : data_families,
+            'education_levels' : education_levels,
+            'home_ownership_state' : home_ownership_state,
+        }
+        return render(request, 'app/master/master-penduduk.html', context)
