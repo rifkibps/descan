@@ -2,22 +2,26 @@
 
 {% block main-content %}
 
-<div class="page-title">
-    <div class="row">
-        <div class="col-12 col-md-6 order-md-1 order-last">
-            <h3>Dashboard</h3>
-            <p class="text-subtitle text-muted">Ringkasan Data Kependudukan dan Sosial Demografi Desa.</p>
-        </div>
-        <div class="col-12 col-md-6 order-md-2 order-first">
-            <nav aria-label="breadcrumb" class='breadcrumb-header'>
-                <ol class="breadcrumb">
-                    <li class="breadcrumb-item"><a href="index.html">Dashboard</a></li>
-                    <li class="breadcrumb-item active" aria-current="page">Datatable</li>
-                </ol>
-            </nav>
+<section class="section mb-3">
+    <div class="page-title">
+        <div class="row">
+            <div class="col-12 col-md-6 order-md-1 order-last">
+                <h3>Dashboard</h3>
+                <p class="text-subtitle text-muted">Ringkasan Data Kependudukan dan Sosial Demografi Desa.</p>
+            </div>
+            <div class="col-12 col-md-6 order-md-2 order-first">
+                <nav aria-label="breadcrumb" class='breadcrumb-header'>
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item"><a href="index.html">Dashboard</a></li>
+                        <li class="breadcrumb-item active" aria-current="page">Dashboard</li>
+                    </ol>
+                </nav>
+            </div>
         </div>
     </div>
-</div>
+</section>
+
+
 <section class="section">
     <div class="row mb-2">
         <div class="col-12 col-md-3">
@@ -26,8 +30,8 @@
                     <div class="d-flex flex-column">
                         <div class='px-3 py-3' style="height:170px !important">
                             <h3 class='card-title'>Jumlah Keluarga</h3>
-                            <div class="card-body px-0 d-flex justify-content-start">
-                                <h2 class="text-white">114 Keluarga</h2>
+                            <div class="card-body px-0 d-flex justify-content-start align-items-center">
+                                <h2 class="text-white">{{families}} Keluarga</h2>
                             </div>
                         </div>
                     </div>
@@ -40,8 +44,8 @@
                     <div class="d-flex flex-column">
                         <div class='px-3 py-3' style="height:170px !important">
                             <h3 class='card-title'>Jumlah Penduduk</h3>
-                            <div class="card-body px-0 d-flex justify-content-start">
-                                <h2 class="text-white">2.204 Penduduk</h2>
+                            <div class="card-body px-0 d-flex justify-content-start align-items-center">
+                                <h2 class="text-white">{{populations}} Penduduk</h2>
                             </div>
                         </div>
                     </div>
@@ -54,8 +58,8 @@
                     <div class="d-flex flex-column">
                         <div class='px-3 py-3' style="height:170px !important">
                             <h3 class='card-title'>Jumlah Penerima Bantuan</h3>
-                            <div class="card-body px-0 d-flex justify-content-start">
-                                <h2 class="text-white">80 Keluarga</h2>
+                            <div class="card-body px-0 d-flex justify-content-start align-items-center">
+                                <h2 class="text-white">{{welfare_recips}} Keluarga</h2>
                             </div>
                         </div>
                     </div>
@@ -67,9 +71,9 @@
                 <div class="card-body p-0">
                     <div class="d-flex flex-column">
                         <div class='px-3 py-3' style="height:170px !important">
-                            <h3 class='card-title'>Jumlah Keluarga Miskin</h3>
-                            <div class="card-body px-0 d-flex justify-content-start">
-                                <h2 class="text-white">80 Keluarga</h2>
+                            <h3 class='card-title'>% Partisipasi Angkatan Kerja</h3>
+                            <div class="card-body px-0 d-flex justify-content-start align-items-center">
+                                <h2 class="text-white">{{labor_percentage}} Persen</h2>
                             </div>
                         </div>
                     </div>
@@ -82,33 +86,29 @@
         <div class="col-md-8">
             <div class="card">
                 <div class="card-header d-flex justify-content-between align-items-center">
-                    <h4 class="card-title">Keluarga Miskin-Rentan Miskin</h4>
+                    <h4 class="card-title">Ringkasan Tabulasi Karakterisik Penduduk</h4>
                     <div class="d-flex ">
                         <i data-feather="download"></i>
                     </div>
                 </div>
                 <div class="card-body px-0 pb-0">
                     <div class="table-responsive">
-                        <table class='table mb-0' id="table1">
+                        <table class='table mb-0' id="table12">
                             <thead>
                                 <tr>
-                                    <th>Kepala Keluarga</th>
-                                    <th>Jumlah Keluarga</th>
-                                    <th>Pendidikan Kepala Keluarga</th>
-                                    <th>Alamat</th>
-                                    <th>Status</th>
+                                    <th class="text-center">No</th>
+                                    <th>Indikator</th>
+                                    <th>Karakteristik</th>
+                                    <th class="text-center">Jumlah Keluarga</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                {% for i in '123456789' %}
+                                {% for dt in dashboard_table %}
                                     <tr>
-                                        <td>Farziah</td>
-                                        <td>8</td>
-                                        <td>SMA</td>
-                                        <td>Banggai, RT 001 RW 002</td>
-                                        <td>
-                                            <span class="badge bg-danger">Miskin</span>
-                                        </td>
+                                        <td class="text-center">{{forloop.counter}}</td>
+                                        <td>{{dt.indicator}}</td>
+                                        <td>{{dt.value}}</td>
+                                        <td class="text-center">{{dt.count}}</td>
                                     </tr>
                                 {% endfor %}
                             </tbody>
@@ -131,71 +131,71 @@
                             <td class='col-3'>Bantuan Sosial Sembako /BPNT</td>
                             <td class='col-6'>
                                 <div class="progress progress-info">
-                                    <div class="progress-bar" role="progressbar" style="width: 60%" aria-valuenow="0"
+                                    <div class="progress-bar" role="progressbar" style="width: {{dashboard.r501a}}%" aria-valuenow="0"
                                         aria-valuemin="0" aria-valuemax="100"></div>
                                 </div>
                             </td>
-                            <td class='col-3 text-center'>60%</td>
+                            <td class='col-3 text-center'>{{dashboard.r501a}}%</td>
                         </tr>
                         <tr>
                             <td class='col-3'>Bantuan Keluarga Harapan</td>
                             <td class='col-6'>
                                 <div class="progress progress-success">
-                                    <div class="progress-bar" role="progressbar" style="width: 35%" aria-valuenow="0"
+                                    <div class="progress-bar" role="progressbar" style="width: {{dashboard.r501b}}%" aria-valuenow="0"
                                         aria-valuemin="0" aria-valuemax="100"></div>
                                 </div>
                             </td>
-                            <td class='col-3 text-center'>30%</td>
+                            <td class='col-3 text-center'>{{dashboard.r501b}}%</td>
                         </tr>
                         <tr>
                             <td class='col-3'>Bantuan Langsung Tunai (BLT) Desa</td>
                             <td class='col-6'>
                                 <div class="progress progress-danger">
-                                    <div class="progress-bar" role="progressbar" style="width: 50%" aria-valuenow="0"
+                                    <div class="progress-bar" role="progressbar" style="width: {{dashboard.r501c}}%" aria-valuenow="0"
                                         aria-valuemin="0" aria-valuemax="100"></div>
                                 </div>
                             </td>
-                            <td class='col-3 text-center'>50%</td>
+                            <td class='col-3 text-center'>{{dashboard.r501c}}%</td>
                         </tr>
                         <tr>
                             <td class='col-3'>Bantuan Subsidi Listrik (Gratis/Pemotongan Biaya)</td>
                             <td class='col-6'>
                                 <div class="progress progress-primary">
-                                    <div class="progress-bar" role="progressbar" style="width: 80%" aria-valuenow="0"
+                                    <div class="progress-bar" role="progressbar" style="width: {{dashboard.r501d}}%" aria-valuenow="0"
                                         aria-valuemin="0" aria-valuemax="100"></div>
                                 </div>
                             </td>
-                            <td class='col-3 text-center'>80%</td>
+                            <td class='col-3 text-center'>{{dashboard.r501d}}%</td>
                         </tr>
                         <tr>
                             <td class='col-3'>Bantuan Pemerintah Daerah</td>
                             <td class='col-6'>
                                 <div class="progress progress-secondary">
-                                    <div class="progress-bar" role="progressbar" style="width: 65%" aria-valuenow="0"
+                                    <div class="progress-bar" role="progressbar" style="width: {{dashboard.r501e}}%" aria-valuenow="0"
                                         aria-valuemin="0" aria-valuemax="100"></div>
                                 </div>
                             </td>
-                            <td class='col-3 text-center'>65%</td>
+                            <td class='col-3 text-center'>{{dashboard.r501e}}%</td>
                         </tr>
                         <tr>
                             <td class='col-3'>Bantuan Subsidi Pupuk</td>
                             <td class='col-6'>
                                 <div class="progress progress-secondary">
-                                    <div class="progress-bar" role="progressbar" style="width: 65%" aria-valuenow="0"
+                                    <div class="progress-bar" role="progressbar" style="width: {{dashboard.r501f}}%" aria-valuenow="0"
                                         aria-valuemin="0" aria-valuemax="100"></div>
                                 </div>
                             </td>
-                            <td class='col-3 text-center'>65%</td>
+                            <td class='col-3 text-center'>{{dashboard.r501f}}%</td>
                         </tr>
                         <tr>
                             <td class='col-3'>Bantuan Subsidi LPG</td>
                             <td class='col-6'>
                                 <div class="progress progress-secondary">
-                                    <div class="progress-bar" role="progressbar" style="width: 65%" aria-valuenow="0"
+                                    <div class="progress-bar" role="progressbar" style="width: {{dashboard.r501g}}%" aria-valuenow="0"
                                         aria-valuemin="0" aria-valuemax="100"></div>
                                 </div>
                             </td>
-                            <td class='col-3 text-center'>65%</td>
+                            <td class='col-3 text-center'>{{dashboard.r501g}}%</td>
                         </tr>
                     </table>
                 </div>

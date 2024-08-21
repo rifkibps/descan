@@ -7,22 +7,27 @@
 
 {% block main-content %}
 
-<div class="page-title">
-    <div class="row">
-        <div class="col-12 col-md-6 order-md-1 order-last">
-            <h3>Tabulasi Keluarga</h3>
-            <p class="text-subtitle text-muted">We use 'simple-datatables' made by @fiduswriter. You can check the full documentation <a href="https://github.com/fiduswriter/Simple-DataTables/wiki">here</a>.</p>
-        </div>
-        <div class="col-12 col-md-6 order-md-2 order-first">
-            <nav aria-label="breadcrumb" class='breadcrumb-header'>
-                <ol class="breadcrumb">
-                    <li class="breadcrumb-item"><a href="index.html">Dashboard</a></li>
-                    <li class="breadcrumb-item active" aria-current="page">Datatable</li>
-                </ol>
-            </nav>
+<section class="section mb-3">
+    <div class="page-title">
+        <div class="row">
+            <div class="col-12 col-md-6 order-md-1 order-last">
+                <h3>Tabulasi Penduduk</h3>
+                <p class="text-subtitle text-muted">
+                    Tabulasi agregat karakteristik sosial dan demografi penduduk di suatu wilayah.
+                </p>
+            </div>
+            <div class="col-12 col-md-6 order-md-2 order-first">
+                <nav aria-label="breadcrumb" class='breadcrumb-header'>
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item"><a href="javascript:void(0)">Tabulasi</a></li>
+                        <li class="breadcrumb-item active" aria-current="page">Penduduk</li>
+                    </ol>
+                </nav>
+            </div>
         </div>
     </div>
-</div>
+</section>
+
 <section class="section">
 
     <div class="row mb-5">
@@ -166,10 +171,40 @@
             <div class="card bg-primary">
                 <div class="card-body p-0">
                     <div class="d-flex flex-column">
+                        <div class='px-3 py-3' style="height:170px !important">
+                            <h4 class='text-white'>Jumlah Penduduk</h4>
+                            <br>
+                            <div class="card-body px-0 d-flex justify-content-start">
+                                <h2 class="text-white">{{populations}} <span style="font-size:25px">Penduduk</span></h2>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-12 col-md-3">
+            <div class="card bg-primary">
+                <div class="card-body p-0">
+                    <div class="d-flex flex-column">
                         <div class="px-3 py-3" style="height:170px !important">
-                            <h3 class="text-white">Jumlah Keluarga</h3>
+                            <h4 class="text-white">Jumlah Penduduk Bekerja/Berusaha</h4>
                             <div class="card-body px-0 d-flex justify-content-start">
-                                <h2 class="text-white">{{families}} Keluarga</h2>
+                                <h2 class="text-white">{{labor_force}} <span style="font-size:25px">Penduduk</span></h2>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-12 col-md-3">
+            <div class="card bg-primary">
+                <div class="card-body p-0">
+                    <div class="d-flex flex-column">
+                        <div class='px-3 py-3' style="height:170px !important">
+                            <h4 class='text-white'>Jumlah Penduduk dengan Kepemilikan Jaminan Kesehatan</h4>
+                            <div class="card-body px-0 d-flex justify-content-start">
+                                <h2 class="text-white">{{jamkes}} <span style="font-size:25px">Penduduk</span></h2> 
                             </div>
                         </div>
                     </div>
@@ -181,37 +216,9 @@
                 <div class="card-body p-0">
                     <div class="d-flex flex-column">
                         <div class='px-3 py-3' style="height:170px !important">
-                            <h3 class='text-white'>Jumlah Penduduk</h3>
+                            <h4 class='text-white'>Jumlah Penduduk dengan Keluhan Kesehatan Kronis</h4>
                             <div class="card-body px-0 d-flex justify-content-start">
-                                <h2 class="text-white">{{populations}} Penduduk</h2>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="col-12 col-md-3">
-            <div class="card bg-primary">
-                <div class="card-body p-0">
-                    <div class="d-flex flex-column">
-                        <div class='px-3 py-3' style="height:170px !important">
-                            <h3 class='text-white'>Jumlah Penerima Bantuan</h3>
-                            <div class="card-body px-0 d-flex justify-content-start">
-                                <h2 class="text-white">{{welfare_recips}} Keluarga</h2>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="col-12 col-md-3">
-            <div class="card bg-primary">
-                <div class="card-body p-0">
-                    <div class="d-flex flex-column">
-                        <div class='px-3 py-3' style="height:170px !important">
-                            <h3 class='text-white'>Persentase Penduduk Bekerja</h3>
-                            <div class="card-body px-0 d-flex justify-content-start">
-                                <h2 class="text-white">{{labor_force}} Persen</h2>
+                                <h2 class="text-white">{{penyakit_kronis}} <span style="font-size:25px">Penduduk</span></h2> 
                             </div>
                         </div>
                     </div>
@@ -232,15 +239,7 @@
                 <div class="card-body px-3 pb-0">
                     <div class="table-responsive">
                         <table class='table mb-0' id="tabulations-table">
-                            <thead>
-                                <tr>
-                                    <th>No</th>
-                                    <th>Bahan Bakar/Energi Utama untuk Memasak</th>
-                                    <th>Jumlah</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                            </tbody>
+                           
                         </table>
                     </div>
                 </div>

@@ -1,6 +1,13 @@
 from . import models
 from django.db.models import Q
 from datetime import date
+from django.db.models import Q, Count, Sum
+
+def get_modus_family_chars():
+    model = models.FamiliesModels.objects.values('r415').annotate(
+            count=Count('r415')).order_by('-count').first()
+    return model
+
 
 def generate_table(header, body):
     

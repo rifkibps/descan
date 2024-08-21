@@ -4,16 +4,146 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from . import models, helpers
 from django.http import JsonResponse
 from pprint import pprint
-from django.db.models import Q, Count, Sum
+from django.db.models import Q, Count, Sum, Avg
 
 
 # Create your views here.
 class DashboardClassView(LoginRequiredMixin, View):
     
     def get(self, request):
+
+        families = models.FamiliesModels.objects.all().count()
+        populations = models.PopulationsModels.objects.all().count()
+        welfare_recips = helpers.count_of_welfare_recips().count()
+        labor_percentage = helpers.labor_participation()
+        
+        dashboard = models.FamiliesModels.objects.aggregate(
+                    r501a =Count('r501a', filter=Q(r501a='1')),
+                    r501b =Count('r501b', filter=Q(r501b='1')),
+                    r501c =Count('r501c', filter=Q(r501c='1')),
+                    r501d =Count('r501d', filter=Q(r501d='1')),
+                    r501e =Count('r501e', filter=Q(r501e='1')),
+                    r501f =Count('r501f', filter=Q(r501f='1')),
+                    r501g =Count('r501g', filter=Q(r501g='1')),
+                )
+        
+        for key, val in dashboard.items():
+            dashboard[key] = round(val/families*100)
+
+
+        #r415
+        r415 = models.PopulationsModels.r415.field.choices
+        model_r415 = models.PopulationsModels.objects.filter(r409 = '1').values('r415').annotate(count=Count('r415')).order_by('-count').first()
+        model_r415['name'] = next((d[1] for d in r415 if d[0] == model_r415['r415']))
+
+        #r301a
+        r301a = models.FamiliesModels.r301a.field.choices
+        model_r301a = models.FamiliesModels.objects.values('r301a').annotate(count=Count('r301a')).order_by('-count').first()
+        model_r301a['name'] = next((d[1] for d in r301a if d[0] == model_r301a['r301a']))
+
+        #r302
+        model_r302 = models.FamiliesModels.objects.aggregate(avg=Avg('r302'))
+
+        #r303
+        r303 = models.FamiliesModels.r303.field.choices
+        model_r303 = models.FamiliesModels.objects.values('r303').annotate(count=Count('r303')).order_by('-count').first()
+        model_r303['name'] = next((d[1] for d in r303 if d[0] == model_r303['r303']))
+
+        #r304
+        r304 = models.FamiliesModels.r304.field.choices
+        model_r304 = models.FamiliesModels.objects.values('r304').annotate(count=Count('r304')).order_by('-count').first()
+        model_r304['name'] = next((d[1] for d in r304 if d[0] == model_r304['r304']))
+
+        #r305
+        r305 = models.FamiliesModels.r305.field.choices
+        model_r305 = models.FamiliesModels.objects.values('r305').annotate(count=Count('r305')).order_by('-count').first()
+        model_r305['name'] = next((d[1] for d in r305 if d[0] == model_r305['r305']))
+
+        
+        #r306a
+        r306a = models.FamiliesModels.r306a.field.choices
+        model_r306a = models.FamiliesModels.objects.values('r306a').annotate(count=Count('r306a')).order_by('-count').first()
+        model_r306a['name'] = next((d[1] for d in r306a if d[0] == model_r306a['r306a']))
+
+        #r307a
+        r307a = models.FamiliesModels.r307a.field.choices
+        model_r307a = models.FamiliesModels.objects.values('r307a').annotate(count=Count('r307a')).order_by('-count').first()
+        model_r307a['name'] = next((d[1] for d in r307a if d[0] == model_r307a['r307a']))
+
+        #r307b
+        r307b = models.FamiliesModels.r307b.field.choices
+        model_r307b = models.FamiliesModels.objects.values('r307b').annotate(count=Count('r307b')).order_by('-count').first()
+        model_r307b['name'] = next((d[1] for d in r307b if d[0] == model_r307b['r307b']))
+
+        #r308
+        r308 = models.FamiliesModels.r308.field.choices
+        model_r308 = models.FamiliesModels.objects.values('r308').annotate(count=Count('r308')).order_by('-count').first()
+        model_r308['name'] = next((d[1] for d in r308 if d[0] == model_r308['r308']))
+
+        dashboard_table = [
+            {
+                'indicator' : 'Sebagian besar Pendidikan Tertinggi KRT di Desa Banggai',
+                'value' : f'{model_r301a["name"]}',
+                'count' : f'{model_r301a["count"]}'
+            },
+            {
+                'indicator' : 'Sebagian besar Status Kepemilikan Bangunan Tempat Tinggal di Desa Banggai',
+                'value' : f'{model_r415["name"]}',
+                'count' : f'{model_r415["count"]}'
+            },
+            {
+                'indicator' : 'Rata-rata Luas Lantai Bangunan Tempat Tinggal di Desa Banggai',
+                'value' : f'{model_r302['avg']} M2',
+                'count' : '-'
+            },
+            {
+                'indicator' : 'Sebagian besar Jenis Lantai Bangunan Tempat Tinggal Terluas di Desa Banggai',
+                'value' : f'{model_r303["name"]}',
+                'count' : f'{model_r303["count"]}'
+            },
+            {
+                'indicator' : 'Sebagian besar Jenis Dinding Tempat Tinggal Terluas Keluarga di Desa Banggai',
+                'value' : f'{model_r304["name"]}',
+                'count' : f'{model_r304["count"]}'
+            },
+            {
+                'indicator' : 'Sebagian besar Jenis Atap Tempat Tinggal Terluas Keluarga di Desa Banggai',
+                'value' : f'{model_r305["name"]}',
+                'count' : f'{model_r305["count"]}'
+            },
+            {
+                'indicator' : 'Sebagian besar Sumber Air Minum Utama Keluarga di Desa Banggai',
+                'value' : f'{model_r306a["name"]}',
+                'count' : f'{model_r306a["count"]}'
+            },
+            {
+                'indicator' : 'Sebagian besar Sumber Penerangan Utama di Desa Banggai',
+                'value' : f'{model_r307a["name"]}',
+                'count' : f'{model_r307a["count"]}'
+            },
+            {
+                'indicator' : 'Sebagian besar Daya Listrik yang Terpasang di Desa Banggai',
+                'value' : f'{model_r307b["name"]}',
+                'count' : f'{model_r307b["count"]}'
+            },
+            {
+                'indicator' : 'Sebagian besar Bahan Bakar untuk Memasak di Desa Banggai',
+                'value' : f'{model_r308["name"]}',
+                'count' : f'{model_r308["count"]}'
+            },
+        ]
+  
+
         context = {
-            'title' : 'Halaman Dashboard'
+            'title' : 'Halaman Dashboard',
+            'families' : families,
+            'populations' : populations,
+            'welfare_recips' : welfare_recips,
+            'labor_percentage' : labor_percentage,
+            'dashboard' : dashboard,
+            'dashboard_table' : dashboard_table
         }
+
         return render(request, 'app/dashboard/dashboard.html', context)
 
 
@@ -22,9 +152,9 @@ class TabulationsFamiliesClassView(LoginRequiredMixin, View):
     def get(self, request):
 
         families = models.FamiliesModels.objects.count()
-        populations = len(models.PopulationsModels.objects.all())
+        families_electricity = models.FamiliesModels.objects.filter(r307a__in =['1', '2']).count()
         welfare_recips = helpers.count_of_welfare_recips().count()
-        labor_force = helpers.labor_participation()
+        sanition_family = models.FamiliesModels.objects.filter(r309a = '1').count()
 
         education_levels = models.PopulationsModels.r415.field.choices
         home_ownership_state = models.FamiliesModels.r301a.field.choices
@@ -33,9 +163,9 @@ class TabulationsFamiliesClassView(LoginRequiredMixin, View):
         context = {
             'title' : 'Tabulasi Data Keluarga',
             'families' : families,
-            'populations' : populations,
+            'families_electricity' : families_electricity,
+            'sanition_family' : sanition_family,
             'welfare_recips' : welfare_recips,
-            'labor_force' : labor_force,
             'education_levels' : education_levels,
             'home_ownership_state' : home_ownership_state,
             'tabulations' : tabulations
@@ -709,10 +839,16 @@ class TabulationsPopulationsClassView(LoginRequiredMixin, View):
     
     def get(self, request):
 
-        families = models.FamiliesModels.objects.count()
-        populations = len(models.PopulationsModels.objects.all())
-        welfare_recips = helpers.count_of_welfare_recips().count()
-        labor_force = helpers.labor_participation()
+        populations = models.PopulationsModels.objects.all().count()
+        labor_force = models.PopulationsModels.objects.filter(
+            Q(r407__gte = 15) & Q(r407__lte = 64) 
+        ).filter(
+            (Q(r416a = 1) & ~Q(r416b = 0)) |
+            (Q(r420a = 1) & ~Q(r422_23 = 0))
+        ).count()
+
+        jamkes = models.PopulationsModels.objects.filter(r431a__in = ['1', '2', '4', '8']).count()
+        penyakit_kronis = models.PopulationsModels.objects.filter(~Q(r430 = '01')).count()
 
         education_levels = models.PopulationsModels.r415.field.choices
         home_ownership_state = models.FamiliesModels.r301a.field.choices
@@ -720,10 +856,10 @@ class TabulationsPopulationsClassView(LoginRequiredMixin, View):
         tabulations = helpers.get_tab_populations()
         context = {
             'title' : 'Tabulasi Data Penduduk',
-            'families' : families,
             'populations' : populations,
-            'welfare_recips' : welfare_recips,
             'labor_force' : labor_force,
+            'jamkes' : jamkes,
+            'penyakit_kronis': penyakit_kronis,
             'education_levels' : education_levels,
             'home_ownership_state' : home_ownership_state,
             'tabulations' : tabulations
@@ -933,13 +1069,24 @@ class ManajemenFamiliesClassView(LoginRequiredMixin, View):
 class ManajemenPopulationsClassView(LoginRequiredMixin, View): 
         
     def get(self, request):
-        families = models.FamiliesModels.objects.all()
         education_levels = models.PopulationsModels.r415.field.choices
         home_ownership_state = models.FamiliesModels.r301a.field.choices
         
+        data_populations = []
+        populations = models.PopulationsModels.objects.all()
+        for population in populations:
+            dt = {}
+            dt['nama'] = population.r402
+            dt['hubungan'] = f'{population.get_r409_display()} (Keluarga {population.family_id.r108})'
+            dt['keberadaan'] = population.get_r404_display()
+            dt['tgl_lahir'] = population.r406
+            dt['umur'] = population.r407
+            dt['pendidikan'] = population.get_r415_display() if population.r415 is not None else '-'
+            data_populations.append(dt)
+
         context = {
             'title' : 'Manajemen Penduduk',
-            # 'families' : data_families,
+            'populations' : data_populations,
             'education_levels' : education_levels,
             'home_ownership_state' : home_ownership_state,
         }
