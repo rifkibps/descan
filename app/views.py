@@ -1,7 +1,7 @@
 from django.shortcuts import render
 from django.views import View
 from django.contrib.auth.mixins import LoginRequiredMixin
-from . import models, helpers
+from . import models, helpers, forms
 from django.http import JsonResponse
 from pprint import pprint
 from django.db.models import Q, Count, Sum, Avg
@@ -1065,6 +1065,14 @@ class ManajemenFamiliesClassView(LoginRequiredMixin, View):
             'home_ownership_state' : home_ownership_state,
         }
         return render(request, 'app/master/master-keluarga.html', context)
+
+class FamiliesAddClassView(LoginRequiredMixin, View):
+    def get(self, request):
+        context = {
+            'title' : 'Tambah Data Keluarga',
+            'form' : forms.FamiliesForm()
+        }
+        return render(request, 'app/master/master-keluarga-add.html', context)
 
 class ManajemenPopulationsClassView(LoginRequiredMixin, View): 
         

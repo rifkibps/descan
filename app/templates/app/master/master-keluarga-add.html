@@ -1,0 +1,50 @@
+{% extends "base/index.html" %}
+{% load static %}
+
+{% block css-extender %}
+<link rel="stylesheet" href="{% static 'app-design/assets/vendors/choices.js/choices.min.css' %}" />
+{% endblock css-extender %}
+
+{% block main-content %}
+
+<section class="section mb-3">
+    <div class="page-title">
+        <div class="row">
+            <div class="col-12 col-md-6 order-md-1 order-last">
+                <h3>Tambah Keluarga Baru</h3>
+                <p class="text-subtitle text-muted">
+                    Manajemen data keluarga untuk memutakhirkan kondisi dan karakteristik keluarga di setiap desa.
+                </p>
+            </div>
+            <div class="col-12 col-md-6 order-md-2 order-first">
+                <nav aria-label="breadcrumb" class='breadcrumb-header'>
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item"><a href="javascript:void(0)">Manajemen</a></li>
+                        <li class="breadcrumb-item" aria-current="page">Keluarga</li>
+                        <li class="breadcrumb-item active" aria-current="page">Keluarga Baru</li>
+                    </ol>
+                </nav>
+            </div>
+        </div>
+    </div>
+</section>
+
+
+<section class="section">
+
+<div class="row">
+    <div class="col-12">
+        {% for field in form.visible_fields %}
+            {{ field.label }}
+            {{ field }}
+        {% endfor %}
+    </div>
+</div>
+</section>
+
+{% endblock main-content %}
+
+
+{% block js-extender %}
+<script src="{% static 'app-design/assets/vendors/choices.js/choices.min.js' %}"></script>
+{% endblock js-extender %}
