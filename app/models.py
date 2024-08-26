@@ -40,6 +40,7 @@ class FamiliesModels(models.Model):
     r107 = models.TextField(max_length=256, blank=False, null=False, verbose_name="Alamat lengkap")
     r108 = models.CharField(max_length=128, blank=False, null=False, verbose_name="Nama Kepala Keluarga (KK)")
     r112 = models.IntegerField(blank=False, null=False, verbose_name="Jumlah Anggota Keluarga?")
+    r115 = models.CharField(max_length=16, blank=False, null=False, verbose_name="Nomor Kartu Keluarga (KK)")
 
     r301a_choices = (
         ('1', 'Milik Sendiri'),
@@ -189,8 +190,6 @@ class FamiliesModels(models.Model):
         ('1', 'Ya'),
         ('2', 'Tidak')
     )
-    r310 = models.CharField(max_length=1, blank=False, null=False, choices=r310_choices, verbose_name="Tempat pembuangan akhir tinja")
-
     r501a = models.CharField(max_length=1, blank=False, null=False, choices=state, verbose_name="Penerima Program Bantuan Sosial Sembako/ BPNT?")
     r501a_date = models.DateField(blank=True, null=True, verbose_name="Periode Terakhir Mendapatkan Program")
     r501b = models.CharField(max_length=1, blank=False, null=False, choices=state, verbose_name="Penerima Program Keluarga Harapan (PKH)?")

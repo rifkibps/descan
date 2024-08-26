@@ -1070,7 +1070,8 @@ class FamiliesAddClassView(LoginRequiredMixin, View):
     def get(self, request):
         context = {
             'title' : 'Tambah Data Keluarga',
-            'form' : forms.FamiliesForm()
+            'form' : forms.FamiliesForm(),
+            'form_penduduk' : forms.PopulationsForm()
         }
         return render(request, 'app/master/master-keluarga-add.html', context)
 

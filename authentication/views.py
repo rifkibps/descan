@@ -7,7 +7,7 @@ from django.conf import settings
 # password: hbz934115
 
 class LoginView(LoginView):
-    template_name = 'authentication/login copy.html'
+    template_name = 'authentication/login.html'
     redirect_authenticated_user = True
     extra_context = {
         'title' : 'Login Page'
