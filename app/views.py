@@ -1074,6 +1074,10 @@ class FamiliesAddClassView(LoginRequiredMixin, View):
             'form_penduduk' : forms.PopulationsForm()
         }
         return render(request, 'app/master/master-keluarga-add.html', context)
+    
+    def post(self, request):
+
+        pprint(request.POST)
 
 class ManajemenPopulationsClassView(LoginRequiredMixin, View): 
         
