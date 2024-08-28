@@ -93,7 +93,7 @@ class DashboardClassView(LoginRequiredMixin, View):
             },
             {
                 'indicator' : 'Rata-rata Luas Lantai Bangunan Tempat Tinggal di Desa Banggai',
-                'value' : f'{model_r302['avg']} M2',
+                'value' : f'{model_r302["avg"]} M2',
                 'count' : '-'
             },
             {
