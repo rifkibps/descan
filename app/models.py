@@ -464,7 +464,7 @@ class PopulationsModels(models.Model):
     )
 
     r427 = models.CharField(max_length=1, blank=True, null=True, choices=r427_choices, verbose_name="Kondisi gizi anak dari pemeriksaan 3 bulan terakhir di posyandu/puskesmas/rumah sakit dengan mengacu pada buku kontrol (Umur 0-4)")
-    r430 = models.CharField(max_length=2, blank=False, null=False, choices=r430_choices, verbose_name="Memiliki keluhan kesehatan kronis/menahun?")
-    r431a = models.CharField(max_length=2, blank=False, null=False, choices=r431a_choices, verbose_name="Dalam satu tahun terakhir, apakah memiliki jaminan kesehatan?")
-    r431f = models.CharField(max_length=2, blank=False, null=False, choices=r431f_choices, verbose_name="Dalam satu tahun terakhir, apakah (Nama) memiliki jaminan ketenagakerjaan?")
+    r430 = models.CharField(max_length=2, blank=True, null=True, choices=r430_choices, verbose_name="Memiliki keluhan kesehatan kronis/menahun?")
+    r431a = models.CharField(max_length=2, blank=True, null=True, choices=r431a_choices, verbose_name="Dalam satu tahun terakhir, apakah memiliki jaminan kesehatan?")
+    r431f = models.CharField(max_length=2, blank=True, null=True, choices=r431f_choices, verbose_name="Dalam satu tahun terakhir, apakah (Nama) memiliki jaminan ketenagakerjaan?")
     

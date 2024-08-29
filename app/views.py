@@ -5,6 +5,7 @@ from . import models, helpers, forms
 from django.http import JsonResponse
 from pprint import pprint
 from django.db.models import Q, Count, Sum, Avg
+from django.db.models.functions import Length
 
 
 # Create your views here.
@@ -1068,16 +1069,52 @@ class ManajemenFamiliesClassView(LoginRequiredMixin, View):
 
 class FamiliesAddClassView(LoginRequiredMixin, View):
     def get(self, request):
+
         context = {
             'title' : 'Tambah Data Keluarga',
             'form' : forms.FamiliesForm(),
-            'form_penduduk' : forms.PopulationsForm()
+            'form_penduduk' : forms.PopulationsForm(),
+            'province_regions' : models.RegionAdministrativeModels.objects.annotate(text_len=Length('reg_code')).filter(text_len=2).order_by('reg_code')
         }
         return render(request, 'app/master/master-keluarga-add.html', context)
     
     def post(self, request):
+        is_ajax = request.headers.get('X-Requested-With') == 'XMLHttpRequest'
+        if is_ajax:
+            if request.method == 'POST':
+                import json 
 
-        pprint(request.POST)
+                form_families = json.loads(request.POST.get('form_families'))
+                for fl in ['province', 'kabkot', 'kecamatan']:
+                    del form_families[fl]
+
+                form_art = json.loads(request.POST.get('form_art'))
+
+                print(form_families)
+                # for key, val in form_families.items():
+                #     print(key, val)
+
+                # return Json5Response({"data": list(regency_regs)}, status=200)
+        return JsonResponse({'status': 'Invalid request'}, status=400)
+
+class RegionFetchDataClassView(LoginRequiredMixin, View):
+        
+        def post(self, request):
+            is_ajax = request.headers.get('X-Requested-With') == 'XMLHttpRequest'
+            if is_ajax:
+                if request.method == 'POST':
+                    regency_regs = models.RegionAdministrativeModels.objects.annotate(text_len=Length('reg_code'))
+                    if request.POST.get('province_id'):
+                        regency_regs = regency_regs.filter(text_len=4).filter(reg_code__icontains=request.POST.get('province_id')).order_by('reg_code').values()
+                    elif request.POST.get('regency_id'):
+                        regency_regs = regency_regs.filter(text_len=7).filter(reg_code__icontains=request.POST.get('regency_id')).order_by('reg_code').values()
+                    elif request.POST.get('district_id'):
+                        regency_regs = regency_regs.filter(text_len=10).filter(reg_code__icontains=request.POST.get('district_id')).order_by('reg_code').values()
+                    elif request.POST.get('subdistrict_id'):
+                        regency_regs = models.RegionSLSModels.objects.filter(reg_code__reg_code = request.POST.get('subdistrict_id')).values()
+                    
+                    return JsonResponse({"data": list(regency_regs)}, status=200)
+            return JsonResponse({'status': 'Invalid request'}, status=400)
 
 class ManajemenPopulationsClassView(LoginRequiredMixin, View): 
         
