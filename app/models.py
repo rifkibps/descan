@@ -224,11 +224,11 @@ class FamiliesModels(models.Model):
     r503a = models.CharField(max_length=1, blank=False, null=False, choices=state, verbose_name="Keluarga Memiliki Aset Lahan (selain yang ditempati)?")
     r503b = models.CharField(max_length=1, blank=False, null=False, choices=state, verbose_name="Keluarga Memiliki Aset Rumah/Bangunan di Tempat Lain?")
 
-    r504a = models.IntegerField(blank=False, null=False, default=0, verbose_name="Jumlah ternak Sapi (ekor)?")
-    r504b = models.IntegerField(blank=False, null=False, default=0, verbose_name="Jumlah ternak Kerbau (ekor)?")
-    r504c = models.IntegerField(blank=False, null=False, default=0, verbose_name="Jumlah ternak Kuda (ekor)?")
-    r504d = models.IntegerField(blank=False, null=False, default=0, verbose_name="Jumlah ternak Babi (ekor)?")
-    r504e = models.IntegerField(blank=False, null=False, default=0, verbose_name="Jumlah ternak Kambing/Domba (ekor)?")
+    r504a = models.IntegerField(blank=True, null=True, default=0, verbose_name="Jumlah ternak Sapi (ekor)?")
+    r504b = models.IntegerField(blank=True, null=True, default=0, verbose_name="Jumlah ternak Kerbau (ekor)?")
+    r504c = models.IntegerField(blank=True, null=True, default=0, verbose_name="Jumlah ternak Kuda (ekor)?")
+    r504d = models.IntegerField(blank=True, null=True, default=0, verbose_name="Jumlah ternak Babi (ekor)?")
+    r504e = models.IntegerField(blank=True, null=True, default=0, verbose_name="Jumlah ternak Kambing/Domba (ekor)?")
 
     r505_choices = (
         ('0', 'Tidak Menggunakan Internet'),

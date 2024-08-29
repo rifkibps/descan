@@ -6,7 +6,7 @@ from django.http import JsonResponse
 from pprint import pprint
 from django.db.models import Q, Count, Sum, Avg
 from django.db.models.functions import Length
-
+import json
 
 # Create your views here.
 class DashboardClassView(LoginRequiredMixin, View):
@@ -1082,15 +1082,33 @@ class FamiliesAddClassView(LoginRequiredMixin, View):
         is_ajax = request.headers.get('X-Requested-With') == 'XMLHttpRequest'
         if is_ajax:
             if request.method == 'POST':
-                import json 
 
-                form_families = json.loads(request.POST.get('form_families'))
+                data_families = json.loads(request.POST.get('form_families'))
+                data_art = json.loads(request.POST.get('form_art'))
+                
                 for fl in ['province', 'kabkot', 'kecamatan']:
-                    del form_families[fl]
+                    del data_families[fl]
+                
+                form_family = forms.FamiliesForm(data_families)
 
-                form_art = json.loads(request.POST.get('form_art'))
+                if form_family.is_valid():
+                    form_family.save()
+                    last_id = models.FamiliesModels.objects.latest('id').id
+                    data_art.append({'family_id' :last_id})
+                    form_art = forms.PopulationsForm(data_art)
 
-                print(form_families)
+                    if form_art.is_valid():
+                        form_art.save()
+                        pprint('valid')
+                    else:
+                        return JsonResponse({"status": 'failed', "error": form_art.errors}, status=400)
+
+                    return JsonResponse({"status": 'success'}, status=200)
+                else:
+                    return JsonResponse({"status": 'failed', "error": form_family.errors}, status=400)
+
+                # form_art = json.loads(request.POST.get('form_art'))
+
                 # for key, val in form_families.items():
                 #     print(key, val)
 
