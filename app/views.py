@@ -1076,43 +1076,53 @@ class FamiliesAddClassView(LoginRequiredMixin, View):
             'form_penduduk' : forms.PopulationsForm(),
             'province_regions' : models.RegionAdministrativeModels.objects.annotate(text_len=Length('reg_code')).filter(text_len=2).order_by('reg_code')
         }
+        
         return render(request, 'app/master/master-keluarga-add.html', context)
     
     def post(self, request):
         is_ajax = request.headers.get('X-Requested-With') == 'XMLHttpRequest'
         if is_ajax:
             if request.method == 'POST':
-
+                
                 data_families = json.loads(request.POST.get('form_families'))
                 data_art = json.loads(request.POST.get('form_art'))
-                
+                data_art = helpers.transform_data(data_art)
+
                 for fl in ['province', 'kabkot', 'kecamatan']:
                     del data_families[fl]
                 
+                forms_errors = dict()
                 form_family = forms.FamiliesForm(data_families)
+                if form_family.is_valid() is False:
+                    for key, val in form_family.errors.items():
+                        forms_errors[key] = val
+                
+                for idx, dt in enumerate(data_art):
+                    form_art = forms.PopulationsForm(dt)
+                    if form_art.is_valid() is False:
+                        for key, val in form_art.errors.items():
+                            if key != 'family_id':
+                                forms_errors[f'form_art_{key}_{idx+1}'] = val
+                        
+                if len(forms_errors) > 0:
+                    return JsonResponse({"status": 'failed', "error": forms_errors}, status=400)
 
-                if form_family.is_valid():
-                    form_family.save()
-                    last_id = models.FamiliesModels.objects.latest('id').id
-                    data_art.append({'family_id' :last_id})
-                    form_art = forms.PopulationsForm(data_art)
+                form_family.save()
+                last_id = models.FamiliesModels.objects.latest('id').id
 
-                    if form_art.is_valid():
-                        form_art.save()
-                        pprint('valid')
-                    else:
-                        return JsonResponse({"status": 'failed', "error": form_art.errors}, status=400)
-
-                    return JsonResponse({"status": 'success'}, status=200)
-                else:
-                    return JsonResponse({"status": 'failed', "error": form_family.errors}, status=400)
-
-                # form_art = json.loads(request.POST.get('form_art'))
-
-                # for key, val in form_families.items():
-                #     print(key, val)
-
-                # return Json5Response({"data": list(regency_regs)}, status=200)
+                art_names = ''
+                for idx, dt in enumerate(data_art):
+                    data_art[idx]['family_id'] = last_id
+                    form_art = forms.PopulationsForm(dt)
+                    form_art.save()
+                    art_names += f'<li class="px-2">{idx+1}. {dt["r402"]}</li>'
+                
+                msg = f'<ul class="px-0" style="list-style:none">\
+                            Data keluarga dengan ART berhasil ditambahkan: <br>\
+                           {art_names}\
+                        </ul>'
+                return JsonResponse({"status": msg}, status=200)
+            
         return JsonResponse({'status': 'Invalid request'}, status=400)
 
 class RegionFetchDataClassView(LoginRequiredMixin, View):

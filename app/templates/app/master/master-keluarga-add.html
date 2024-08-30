@@ -34,6 +34,9 @@
 
 <section class="section mt-4">
 
+<div id="message-respons">
+</div>
+
 <form action="" method="post" class="needs-validation" novalidate>
     {% csrf_token %}
     <div class="row mb-2">
@@ -584,7 +587,24 @@
 
 <script>
 
+    function push_notif(msg, state, target){
+        var html = `
+        <div class="row my-3">
+            <div class="col-12">
+                <div class="alert `+state+` alert-dismissible px-3" role="alert">
+                    `+msg+`
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            </div>
+        </div>
+        `
+        return $(target).html(html)
+    }
+</script>
+<script>
+
     var last_row_num = 1
+
     function generate_art(num){
             var form_art = `
             <div class="row-art mt-5">
@@ -605,7 +625,7 @@
                         <label for="form_art_r401_`+ num +`">{{ form_penduduk.r401.label }}</label>
                         <div class="position-relative">
                             {% render_field form_penduduk.r401 class="form-control px-3" id="form_art_r401_`+ num +`" %}
-                            <div class="invalid-feedback" id="msg-{{ form_penduduk.r401.id_for_label }}-`+ num +`">
+                            <div class="invalid-feedback" id="msg-form_art_r401_`+ num +`">
                             </div>
                         </div>
                     </div>
@@ -614,7 +634,7 @@
                         <label for="form_art_r402_`+ num +`">{{ form_penduduk.r402.label }}</label>
                         <div class="position-relative">
                             {% render_field form_penduduk.r402 class="form-control px-3" id="form_art_r402_`+ num +`" %}
-                            <div class="invalid-feedback" id="msg-{{ form_penduduk.r402.id_for_label }}-`+ num +`">
+                            <div class="invalid-feedback" id="msg-form_art_r402_`+ num +`">
                             </div>
                         </div>
                     </div>
@@ -623,7 +643,7 @@
                         <label for="form_art_r403_`+ num +`">{{ form_penduduk.r403.label }}</label>
                         <div class="position-relative">
                             {% render_field form_penduduk.r403 class="form-control px-3" id="form_art_r403_`+ num +`" %}
-                            <div class="invalid-feedback" id="msg-{{ form_penduduk.r403.id_for_label }}-`+ num +`">
+                            <div class="invalid-feedback" id="msg-form_art_r403_`+ num +`">
                             </div>
                         </div>
                     </div>
@@ -631,7 +651,7 @@
                         <label for="form_art_r404_`+ num +`">{{ form_penduduk.r404.label }}</label>
                         <div class="position-relative">
                             {% render_field form_penduduk.r404 class="form-control px-3 form_art_r404" id="form_art_r404_`+ num +`" data-num="`+ num +`" onchange="showField404(this)" %}
-                            <div class="invalid-feedback" id="msg-{{ form_penduduk.r404.id_for_label }}-`+ num +`">
+                            <div class="invalid-feedback" id="msg-form_art_r404_`+ num +`">
                             </div>
                         </div>
                     </div>
@@ -640,7 +660,7 @@
                         <label for="form_art_r405_`+ num +`">{{ form_penduduk.r405.label }}</label>
                         <div class="position-relative">
                             {% render_field form_penduduk.r405 class="form-control field-art-`+ num +` px-3" id="form_art_r405_`+ num +`" %}
-                            <div class="invalid-feedback" id="msg-{{ form_penduduk.r405.id_for_label }}-`+ num +`">
+                            <div class="invalid-feedback" id="msg-form_art_r405_`+ num +`">
                             </div>
                         </div>
                     </div>
@@ -648,8 +668,8 @@
                     <div class="form-group d-none">
                         <label for="form_art_r406_`+ num +`">{{ form_penduduk.r406.label }}</label>
                         <div class="position-relative">
-                            {% render_field form_penduduk.r406 class="form-control field-art-`+ num +` px-3" id="form_art_r406_`+ num +`" %}
-                            <div class="invalid-feedback" id="msg-{{ form_penduduk.r406.id_for_label }}-`+ num +`">
+                            {% render_field form_penduduk.r406 class="form-control field-art-`+ num +` px-3" id="form_art_r406_`+ num +`" type="date" %}
+                            <div class="invalid-feedback" id="msg-form_art_r406_`+ num +`">
                             </div>
                         </div>
                     </div>
@@ -658,7 +678,7 @@
                         <label for="form_art_r407_`+ num +`">{{ form_penduduk.r407.label }}</label>
                         <div class="position-relative">
                             {% render_field form_penduduk.r407 class="form-control field-art-`+ num +` px-3" id="form_art_r407_`+ num +`" data-num="`+ num +`" onchange="showField407(this)" %}
-                            <div class="invalid-feedback" id="msg-{{ form_penduduk.r407.id_for_label }}-`+ num +`">
+                            <div class="invalid-feedback" id="msg-form_art_r407_`+ num +`">
                             </div>
                         </div>
                     </div>
@@ -667,7 +687,7 @@
                         <label for="form_art_r408_`+ num +`">{{ form_penduduk.r408.label }}</label>
                         <div class="position-relative">
                             {% render_field form_penduduk.r408 class="form-control field-art-`+ num +` px-3" id="form_art_r408_`+ num +`" %}
-                            <div class="invalid-feedback" id="msg-{{ form_penduduk.r408.id_for_label }}-`+ num +`">
+                            <div class="invalid-feedback" id="msg-form_art_r408_`+ num +`">
                             </div>
                         </div>
                     </div>
@@ -676,7 +696,7 @@
                         <label for="form_art_r409_`+ num +`">{{ form_penduduk.r409.label }}</label>
                         <div class="position-relative">
                             {% render_field form_penduduk.r409 class="form-control field-art-`+ num +` px-3" id="form_art_r409_`+ num +`" %}
-                            <div class="invalid-feedback" id="msg-{{ form_penduduk.r409.id_for_label }}-`+ num +`">
+                            <div class="invalid-feedback" id="msg-form_art_r409_`+ num +`">
                             </div>
                         </div>
                     </div>
@@ -685,7 +705,7 @@
                         <label for="form_art_r411_`+ num +`">{{ form_penduduk.r411.label }}</label>
                         <div class="position-relative">
                             {% render_field form_penduduk.r411 class="form-control field-art-`+ num +` px-3" id="form_art_r411_`+ num +`" %}
-                            <div class="invalid-feedback" id="msg-{{ form_penduduk.r411.id_for_label }}-`+ num +`">
+                            <div class="invalid-feedback" id="msg-form_art_r411_`+ num +`">
                             </div>
                         </div>
                     </div>
@@ -695,7 +715,7 @@
                         <label for="form_art_r412_`+ num +`">{{ form_penduduk.r412.label }}</label>
                         <div class="position-relative">
                             {% render_field form_penduduk.r412 class="form-control field-art-`+ num +` px-3" id="form_art_r412_`+ num +`" data-num="`+ num +`" onchange="showField412(this)"%}
-                            <div class="invalid-feedback" id="msg-{{ form_penduduk.r412.id_for_label }}-`+ num +`">
+                            <div class="invalid-feedback" id="msg-form_art_r412_`+ num +`">
                             </div>
                         </div>
                     </div>
@@ -704,7 +724,7 @@
                         <label for="form_art_r415_`+ num +`">{{ form_penduduk.r415.label }}</label>
                         <div class="position-relative">
                             {% render_field form_penduduk.r415 class="form-control field-art-`+ num +` px-3" id="form_art_r415_`+ num +`" %}
-                            <div class="invalid-feedback" id="msg-{{ form_penduduk.r415.id_for_label }}-`+ num +`">
+                            <div class="invalid-feedback" id="msg-form_art_r415_`+ num +`">
                             </div>
                         </div>
                     </div>
@@ -716,7 +736,7 @@
                         <label for="form_art_r416a_`+ num +`">{{ form_penduduk.r416a.label }}</label>
                         <div class="position-relative">
                             {% render_field form_penduduk.r416a class="form-control field-art-`+ num +` px-3" id="form_art_r416a_`+ num +`" data-num="`+ num +`" onchange="showField416(this)"%}
-                            <div class="invalid-feedback" id="msg-{{ form_penduduk.r416a.id_for_label }}-`+ num +`">
+                            <div class="invalid-feedback" id="msg-form_art_r416a_`+ num +`">
                             </div>
                         </div>
                     </div>
@@ -725,7 +745,7 @@
                         <label for="form_art_r416b_`+ num +`">{{ form_penduduk.r416b.label }}</label>
                         <div class="position-relative">
                             {% render_field form_penduduk.r416b class="form-control field-art-`+ num +` px-3" id="form_art_r416b_`+ num +`" %}
-                            <div class="invalid-feedback" id="msg-{{ form_penduduk.r416b.id_for_label }}-`+ num +`">
+                            <div class="invalid-feedback" id="msg-form_art_r416b_`+ num +`">
                             </div>
                         </div>
                     </div>
@@ -734,7 +754,7 @@
                         <label for="form_art_r417_`+ num +`">{{ form_penduduk.r417.label }}</label>
                         <div class="position-relative">
                             {% render_field form_penduduk.r417 class="form-control field-art-`+ num +` px-3" id="form_art_r417_`+ num +`" %}
-                            <div class="invalid-feedback" id="msg-{{ form_penduduk.r417.id_for_label }}-`+ num +`">
+                            <div class="invalid-feedback" id="msg-form_art_r417_`+ num +`">
                             </div>
                         </div>
                     </div>
@@ -743,7 +763,7 @@
                         <label for="form_art_r418_`+ num +`">{{ form_penduduk.r418.label }}</label>
                         <div class="position-relative">
                             {% render_field form_penduduk.r418 class="form-control field-art-`+ num +` px-3" id="form_art_r418_`+ num +`" %}
-                            <div class="invalid-feedback" id="msg-{{ form_penduduk.r418.id_for_label }}-`+ num +`">
+                            <div class="invalid-feedback" id="msg-form_art_r418_`+ num +`">
                             </div>
                         </div>
                     </div>
@@ -752,7 +772,7 @@
                         <label for="form_art_r420a_`+ num +`">{{ form_penduduk.r420a.label }}</label>
                         <div class="position-relative">
                             {% render_field form_penduduk.r420a class="form-control field-art-`+ num +` px-3" id="form_art_r420a_`+ num +`" data-num="`+ num +`" onchange="showField420(this)" %}
-                            <div class="invalid-feedback" id="msg-{{ form_penduduk.r420a.id_for_label }}-`+ num +`">
+                            <div class="invalid-feedback" id="msg-form_art_r420a_`+ num +`">
                             </div>
                         </div>
                     </div>
@@ -761,7 +781,7 @@
                         <label for="form_art_r421_`+ num +`">{{ form_penduduk.r421.label }}</label>
                         <div class="position-relative">
                             {% render_field form_penduduk.r421 class="form-control field-art-`+ num +` px-3" id="form_art_r421_`+ num +`" %}
-                            <div class="invalid-feedback" id="msg-{{ form_penduduk.r421.id_for_label }}-`+ num +`">
+                            <div class="invalid-feedback" id="msg-form_art_r421_`+ num +`">
                             </div>
                         </div>
                     </div>
@@ -770,7 +790,7 @@
                         <label for="form_art_r422_23_`+ num +`">{{ form_penduduk.r422_23.label }}</label>
                         <div class="position-relative">
                             {% render_field form_penduduk.r422_23 class="form-control field-art-`+ num +` px-3" id="form_art_r422_23_`+ num +`" %}
-                            <div class="invalid-feedback" id="msg-{{ form_penduduk.r422_23.id_for_label }}-`+ num +`">
+                            <div class="invalid-feedback" id="msg-form_art_r422_23_-`+ num +`">
                             </div>
                         </div>
                     </div>
@@ -779,7 +799,7 @@
                         <label for="form_art_r425_`+ num +`">{{ form_penduduk.r425.label }}</label>
                         <div class="position-relative">
                             {% render_field form_penduduk.r425 class="form-control field-art-`+ num +` px-3" id="form_art_r425_`+ num +`" %}
-                            <div class="invalid-feedback" id="msg-{{ form_penduduk.r425.id_for_label }}-`+ num +`">
+                            <div class="invalid-feedback" id="msg-form_art_r425_`+ num +`">
                             </div>
                         </div>
                     </div>
@@ -788,7 +808,7 @@
                         <label for="form_art_r427_`+ num +`">{{ form_penduduk.r427.label }}</label>
                         <div class="position-relative">
                             {% render_field form_penduduk.r427 class="form-control field-art-`+ num +` px-3" id="form_art_r427_`+ num +`" %}
-                            <div class="invalid-feedback" id="msg-{{ form_penduduk.r427.id_for_label }}-`+ num +`">
+                            <div class="invalid-feedback" id="msg-form_art_r427_`+ num +`">
                             </div>
                         </div>
                     </div>
@@ -798,7 +818,7 @@
                         <label for="form_art_r430_`+ num +`">{{ form_penduduk.r430.label }}</label>
                         <div class="position-relative">
                             {% render_field form_penduduk.r430 class="form-control field-art-`+ num +` px-3" id="form_art_r430_`+ num +`" %}
-                            <div class="invalid-feedback" id="msg-{{ form_penduduk.r430.id_for_label }}-`+ num +`">
+                            <div class="invalid-feedback" id="msg-form_art_r430_`+ num +`">
                             </div>
                         </div>
                     </div>
@@ -808,7 +828,7 @@
                         <label for="form_art_r431a_`+ num +`">{{ form_penduduk.r431a.label }}</label>
                         <div class="position-relative">
                             {% render_field form_penduduk.r431a class="form-control field-art-`+ num +` px-3" id="form_art_r431a_`+ num +`" %}
-                            <div class="invalid-feedback" id="msg-{{ form_penduduk.r431a.id_for_label }}-`+ num +`">
+                            <div class="invalid-feedback" id="msg-form_art_r431a_`+ num +`">
                             </div>
                         </div>
                     </div>
@@ -817,7 +837,7 @@
                         <label for="form_art_r431f_`+ num +`">{{ form_penduduk.r431f.label }}</label>
                         <div class="position-relative">
                             {% render_field form_penduduk.r431f class="form-control field-art-`+ num +` px-3" id="form_art_r431f_`+ num +`" %}
-                            <div class="invalid-feedback" id="msg-{{ form_penduduk.r431f.id_for_label }}-`+ num +`">
+                            <div class="invalid-feedback" id="msg-form_art_r431f_`+ num +`">
                             </div>
                         </div>
                     </div>
@@ -827,6 +847,7 @@
             `
         return form_art
     }
+
     $('.art-section').append(generate_art(1))
     function addRow(e){
         var last_row = $(e).data('num_art')
@@ -943,6 +964,12 @@
         }
     })
 
+    $('.form-control').on('change', function(){
+        if ($(this).hasClass('is-invalid')){
+            $(this).removeClass('is-invalid')
+        }
+    })
+
     $('#{{form.r306a.id_for_label}}').on('change', function(){
         var target = $('#{{ form.r306b.id_for_label }}')
         var val = parseInt($(this).val())
@@ -984,7 +1011,6 @@
         
         var target1 = $('#form_art_r427_'+attr_num)
         var target2 = $('#form_art_r431f_'+attr_num)
-
 
         var target_year_mt_5 = [
             '#form_art_r412_'+ attr_num,
@@ -1111,14 +1137,40 @@
         }
     }
 
+    function clean_form(){
+        $('.invalid-feedback').each(function(i, obj) {
+           $(this).html('')
+        });
+
+        $('.is_invalid').each(function(i, obj) {
+            $(this).removeClass('is_invalid')
+         });
+    }
+
     function clean_inline_form(list){
         var datalists = []
         list.forEach(function (item, index) {
             var data = []
             var key = {}
-            $('input[name="'+item+'"]').each(function(i, obj) {
-                data.push($(this).val())
-            });
+
+            if (item.includes('input')) {
+                var item = item.replace('input_', "");
+                $('input[name="'+item+'"]').each(function(i, obj) {
+                    if($(this).val().length == 0){
+                        data.push('')
+                    }else{
+                        data.push($(this).val())
+                    }
+                });
+            }else{
+                $('select[name="'+item+'"]').each(function(i, obj) {
+                    if($(this).val().length == 0){
+                        data.push('')
+                    }else{
+                        data.push($(this).val())
+                    }
+                });
+            }
 
             key[item] =  data
             datalists.push(key)
@@ -1128,13 +1180,13 @@
     
     function checkSubmit(){
 
-        $('.invalid-feedback').html('')
-        $('.is_invalid').removeClass('is_invalid')
-
+        clean_form()
+        $('#message-respons').html('')
+    
         var art_form_data = clean_inline_form(
-            ['r401','r402','r403','r404','r405','r406','r407','r408','r409','r411','r412','r415','r416a','r416b','r417','r418','r420a','r421','r422_23','r425','r427','r430','r431a','r431f']
+            ['input_r401','input_r402','input_r403','r404','r405','input_r406','input_r407','r408','r409','r411','r412','r415','r416a','input_r416b','r417','r418','r420a','r421','input_r422_23','r425','r427','r430','r431a','r431f']
         )
-        
+
         var form_data = {}
         $('.form-family').each(function(i, obj) {
             form_data[$(this).attr('name')] = $(this).val()
@@ -1156,7 +1208,10 @@
                 "X-CSRFToken": '{{csrf_token}}',
             },
             success: (response) => {
-                console.log(response)
+                push_notif(response.status, 'alert-success', "#message-respons") 
+                $('html, body').animate({
+                    scrollTop: $("body").offset().top
+                }, 10);
             },
             error: (response) => {
                 var errors = response["responseJSON"]["error"]
@@ -1165,13 +1220,20 @@
                     value.forEach(function (item, index) {
                         msgs += '<li>'+item+'</li>'
                     });
-                    
+                        
                     msgs += '</ul>'
-                    $('#id_'+ key).addClass('is-invalid');
-                    $('#msg-id_'+key).html(msgs)
+
+                    if (key.includes('form_art_')) {
+                        $('#'+ key).addClass('is-invalid');
+                        $('#msg-'+key).html(msgs)
+                    }else{
+                        $('#id_'+ key).addClass('is-invalid');
+                        $('#msg-id_'+key).html(msgs)
+                    }
                 }
             }
         });
+
         return
     }
 

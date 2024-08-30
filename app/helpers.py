@@ -3,6 +3,20 @@ from django.db.models import Q
 from datetime import date
 from django.db.models import Q, Count, Sum
 
+
+def transform_data(data):
+
+    all_keys = list(set(key for d in data for key in d))
+    results = []
+    for i in range(len(list(data[0].values())[0])):
+        new_dict = {}
+        for key in all_keys:
+            new_dict[key] = next((list(dt.values())[0][i] for dt in data if key in dt.keys()), None)
+    
+        results.append(new_dict)
+
+    return results
+
 def get_modus_family_chars():
     model = models.FamiliesModels.objects.values('r415').annotate(
             count=Count('r415')).order_by('-count').first()
