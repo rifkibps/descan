@@ -39,7 +39,7 @@ class FamiliesModels(models.Model):
     r107 = models.TextField(max_length=256, blank=False, null=False, verbose_name="Alamat lengkap")
     r108 = models.CharField(max_length=128, blank=False, null=False, verbose_name="Nama Kepala Keluarga (KK)")
     r112 = models.IntegerField(blank=False, null=False, verbose_name="Jumlah Anggota Keluarga?")
-    r115 = models.CharField(max_length=16, blank=False, null=False,unique=True, verbose_name="Nomor Kartu Keluarga (KK)")
+    r115 = models.CharField(max_length=16, blank=False, null=False, unique=True, verbose_name="Nomor Kartu Keluarga (KK)")
 
 
 

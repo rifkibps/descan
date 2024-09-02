@@ -31,6 +31,9 @@
 
 <section class="section">
 
+    <div id="message-respons">
+    </div>
+
     <div class="row mb-5">
         <div class="col-md-6">
             <div class="card">
@@ -182,6 +185,7 @@
                             <tbody>
                                 {% for family in families %}
                                     <tr>
+                                        
                                         <td class="text-center">{{forloop.counter}}</td>
                                         <td>{{family.r108}}</td>
                                         <td class="text-center">{{family.r112}}</td>
@@ -193,8 +197,8 @@
                                             {{family.assets|safe}}
                                         </td>
                                         <td class="text-center">
-                                            <button class="btn btn-primary icon"><i data-feather="edit"></i></button>
-                                            <button class="btn btn-danger icon"><i data-feather="trash"></i></button>
+                                            <button class="btn btn-primary icon btn-edit" data-id="{{family.id}}"><i data-feather="edit"></i></button>
+                                            <button class="btn btn-danger icon btn-delete" data-id="{{family.id}}"><i data-feather="trash"></i></button>
                                         </td>
                                     </tr>
                                 {% endfor %}
@@ -212,4 +216,32 @@
 
 {% block js-extender %}
 <script src="{% static 'app-design/assets/vendors/choices.js/choices.min.js' %}"></script>
+
+<script>
+
+    $('.btn-delete').on('click', function(e){
+        var val = $(this).attr('data-id')
+
+        $.ajax({
+            url: '{% url "app:mnj_families_del" %}',
+            type: "POST",
+            dataType: "json",
+            data : {'pk' : val},
+            headers: {
+                "X-Requested-With": "XMLHttpRequest",
+                "X-CSRFToken": '{{csrf_token}}',
+            },
+            success: (response) => {
+                push_notif(response.message, 'alert-success', "#message-respons")
+                $('html, body').animate({
+                    scrollTop: $("body").offset().top
+                }, 10);
+            },
+            error: (error) => {
+                console.log(error);
+            }
+        });
+    })
+
+</script>
 {% endblock js-extender %}

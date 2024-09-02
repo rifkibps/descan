@@ -131,6 +131,21 @@
         });
         
     </script>
+    <script>
+        function push_notif(msg, state, target){
+            var html = `
+            <div class="row my-3">
+                <div class="col-12">
+                    <div class="alert `+state+` alert-dismissible px-3" role="alert">
+                        `+msg+`
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                </div>
+            </div>
+            `
+            return $(target).html(html)
+        }
+    </script>
     {% block js-extender %}
     {% endblock js-extender %}
 </body>

@@ -585,22 +585,7 @@
 {% block js-extender %}
 <script src="{% static 'app-design/assets/vendors/choices.js/choices.min.js' %}"></script>
 
-<script>
 
-    function push_notif(msg, state, target){
-        var html = `
-        <div class="row my-3">
-            <div class="col-12">
-                <div class="alert `+state+` alert-dismissible px-3" role="alert">
-                    `+msg+`
-                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                </div>
-            </div>
-        </div>
-        `
-        return $(target).html(html)
-    }
-</script>
 <script>
 
     var last_row_num = 1

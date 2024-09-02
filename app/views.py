@@ -7,6 +7,7 @@ from pprint import pprint
 from django.db.models import Q, Count, Sum, Avg
 from django.db.models.functions import Length
 import json
+from django.shortcuts import get_object_or_404
 
 # Create your views here.
 class DashboardClassView(LoginRequiredMixin, View):
@@ -990,6 +991,7 @@ class ManajemenFamiliesClassView(LoginRequiredMixin, View):
         data_families = []
         for family in families:
             dt = {}
+            dt['id'] = family.pk
             dt['r108'] = family.r108
             dt['r112'] = family.r112
             dt['r104'] = f"{family.r104.reg_name}, {family.r105.reg_sls_name}"
@@ -1065,6 +1067,7 @@ class ManajemenFamiliesClassView(LoginRequiredMixin, View):
             'education_levels' : education_levels,
             'home_ownership_state' : home_ownership_state,
         }
+
         return render(request, 'app/master/master-keluarga.html', context)
 
 class FamiliesAddClassView(LoginRequiredMixin, View):
@@ -1094,6 +1097,7 @@ class FamiliesAddClassView(LoginRequiredMixin, View):
                 forms_errors = dict()
                 form_family = forms.FamiliesForm(data_families)
                 if form_family.is_valid() is False:
+                    print(form_family.errors.items())
                     for key, val in form_family.errors.items():
                         forms_errors[key] = val
                 
@@ -1107,15 +1111,15 @@ class FamiliesAddClassView(LoginRequiredMixin, View):
                 if len(forms_errors) > 0:
                     return JsonResponse({"status": 'failed', "error": forms_errors}, status=400)
 
-                form_family.save()
-                last_id = models.FamiliesModels.objects.latest('id').id
+                # form_family.save()
+                # last_id = models.FamiliesModels.objects.latest('id').id
 
                 art_names = ''
-                for idx, dt in enumerate(data_art):
-                    data_art[idx]['family_id'] = last_id
-                    form_art = forms.PopulationsForm(dt)
-                    form_art.save()
-                    art_names += f'<li class="px-2">{idx+1}. {dt["r402"]}</li>'
+                # for idx, dt in enumerate(data_art):
+                #     data_art[idx]['family_id'] = last_id
+                #     form_art = forms.PopulationsForm(dt)
+                #     form_art.save()
+                #     art_names += f'<li class="px-2">{idx+1}. {dt["r402"]}</li>'
                 
                 msg = f'<ul class="px-0" style="list-style:none">\
                             Data keluarga dengan ART berhasil ditambahkan: <br>\
@@ -1125,6 +1129,23 @@ class FamiliesAddClassView(LoginRequiredMixin, View):
             
         return JsonResponse({'status': 'Invalid request'}, status=400)
 
+class ManajemenFamiliesDeleteClassView(LoginRequiredMixin, View):
+
+    def post(self, request):
+        is_ajax = request.headers.get('X-Requested-With') == 'XMLHttpRequest'
+
+        if is_ajax:
+            if request.method == 'POST':
+                try:
+                    data = get_object_or_404(models.FamiliesModels, pk=request.POST.get('pk'))
+                    old_dt = data.r108 
+                    data.delete()
+                    return JsonResponse({'status' : 'success', 'message': f'Keluarga atas nama "{old_dt}" berhasil dihapus.'})
+                except:
+                    return JsonResponse({'status': 'failed', 'message': 'Data tidak tersedia'})
+                
+        return JsonResponse({'status': 'Invalid request'}, status=400)
+        
 class RegionFetchDataClassView(LoginRequiredMixin, View):
         
         def post(self, request):
