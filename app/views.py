@@ -840,7 +840,6 @@ class TabulationsFamiliesFetchClassView(LoginRequiredMixin, View):
         return JsonResponse({'status': 'Invalid request'}, status=400)
 
 
-
 class TabulationsPopulationsClassView(LoginRequiredMixin, View):
     
     def get(self, request):
@@ -1113,9 +1112,13 @@ class FamiliesAddClassView(LoginRequiredMixin, View):
                         for key, val in form_art.errors.items():
                             if key != 'family_id':
                                 forms_errors[f'form_art_{key}_{idx+1}'] = val
-                    
-                if helpers.combine_validations(data_families, data_art):
-                    pass
+                
+                last_validations = helpers.combine_validations(data_families, data_art)
+                
+                if len(last_validations) > 0:
+                    for err in last_validations:
+                        print(err)
+
 
                 if len(forms_errors) > 0:
                     return JsonResponse({"status": 'failed', "error": forms_errors}, status=400)

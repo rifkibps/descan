@@ -20,6 +20,7 @@ def year_calculator(date):
 
 
 def combine_validations(data_families, data_art):
+    
     form_errors = {}
 
     if len(data_art) > 0:
