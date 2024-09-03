@@ -1007,7 +1007,6 @@
             '#form_art_r421_'+ attr_num,
             '#form_art_r422_23_'+ attr_num,
             '#form_art_r425_'+ attr_num,
-            '#form_art_r408_'+ attr_num
         ]
 
         if (val >= 5 ){
@@ -1105,7 +1104,7 @@
         var val = parseInt($(e).val())
         var attr_num = parseInt($(e).attr('data-num'))
 
-        var not_showen_fields = ['form_art_r427_' + attr_num, 'form_art_r431f_'+attr_num, 'form_art_r412_'+attr_num, 'form_art_r415_' + attr_num, 'form_art_r416a_' + attr_num, 'form_art_r416b_' + attr_num, 'form_art_r417_' + attr_num, 'form_art_r418_' + attr_num, 'form_art_r420a_'+attr_num,'form_art_r421_'+attr_num, 'form_art_r422_23_'+attr_num, 'form_art_r425_'+attr_num, 'form_art_r408_'+attr_num ]
+        var not_showen_fields = ['form_art_r427_' + attr_num, 'form_art_r431f_'+attr_num, 'form_art_r412_'+attr_num, 'form_art_r415_' + attr_num, 'form_art_r416a_' + attr_num, 'form_art_r416b_' + attr_num, 'form_art_r417_' + attr_num, 'form_art_r418_' + attr_num, 'form_art_r420a_'+attr_num,'form_art_r421_'+attr_num, 'form_art_r422_23_'+attr_num, 'form_art_r425_'+attr_num]
 
         if ([1, 5].includes(val)){
             $('.field-art-'+ attr_num).each(function(i, obj) {
