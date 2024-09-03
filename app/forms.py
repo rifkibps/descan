@@ -28,6 +28,9 @@ class FamiliesForm(forms.ModelForm):
         else:
             form_data['r301b'] = None
         
+        if form_data['r302'] <= 0 :
+            self._errors['r302'] = self.error_class(['Luas lantai bangunan harus lebih dari 0'])
+
         # Validasi r306a
         if form_data['r306a'] in ['4', '5', '6', '7', '8']:
             if(form_data.get('r306b') is None):
@@ -54,7 +57,7 @@ class FamiliesForm(forms.ModelForm):
 
         if form_data.get('r307b') == '1':
             if form_data.get('r501d') != '1':
-                self._errors['r309b'] = self.error_class(['Jika daya listrik sebesar 450 Watt, maka status penerimaan Program Subsidi Listrik harus terisi "Ya"'])
+                self._errors['r501d'] = self.error_class(['Jika daya listrik sebesar 450 Watt, maka status penerimaan Program Subsidi Listrik harus terisi "Ya"'])
 
         # Validasi Hewan Ternak
 
@@ -126,7 +129,7 @@ class PopulationsForm(forms.ModelForm):
                     age = helpers.year_calculator(form_data.get('r406'))
                     
                     if form_data != age:
-                        self._errors['r407'] = self.error_class(['Umur dan tanggal lahir tidak sesuai'])
+                        self._errors['r407'] = self.error_class(['Umur tidak sesuai dengan tanggal lahir'])
 
             if form_data.get('r408') is None:
                 self._errors['r408'] = self.error_class(['Jika ART berstatus ditemukan/keluarga baru, maka status perkawinan harus terisi'])
@@ -135,7 +138,7 @@ class PopulationsForm(forms.ModelForm):
                 self._errors['r409'] = self.error_class(['Jika ART berstatus ditemukan/keluarga baru, maka status hubungan dengan kepala keluarga harus terisi'])
             else:
                 if form_data.get('r408') == '1':
-                    if form_data.get('r409') in ['2', '4' ,'6']:
+                    if form_data.get('r409') in ['1', '2', '4' ,'6']:
                         self._errors['r409'] = self.error_class(['Jika status hubungan dengan kepala keluarga adalah istri/suami/menantu/orangtua/mertua, maka status perkawinan tidak boleh "Belum Kawin"'])
 
             if form_data.get('r411') is None:
@@ -177,7 +180,8 @@ class PopulationsForm(forms.ModelForm):
                     if form_data.get('r422_23') is None:
                         self._errors['r422_23'] = self.error_class(['Jika ART memiliki usaha, maka jumlah pekerja harus terisi'])
                     else:
-                        if int(form_data.get('r422_23')) < 1:
+                        if form_data.get('r422_23') < 1:
+                            print('Jumalah tenaga kerja error')
                             self._errors['r422_23'] = self.error_class(['Jika ART memiliki usaha, maka jumlah pekerja harus lebih dari 0 jam'])
 
                     if form_data.get('r425') is None:

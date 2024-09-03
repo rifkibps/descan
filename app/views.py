@@ -1094,8 +1094,6 @@ class FamiliesAddClassView(LoginRequiredMixin, View):
                 data_art = json.loads(request.POST.get('form_art'))
                 data_art = helpers.transform_data(data_art)
                 
-                pprint(data_art)
-                
                 for fl in ['province', 'kabkot', 'kecamatan']:
                     del data_families[fl]
                 
@@ -1116,13 +1114,13 @@ class FamiliesAddClassView(LoginRequiredMixin, View):
                 last_validations = helpers.combine_validations(data_families, data_art)
                 
                 if len(last_validations) > 0:
-                    for err in last_validations:
-                        print(err)
-
+                    for key, val in last_validations.items():
+                        forms_errors[key] = val
 
                 if len(forms_errors) > 0:
                     return JsonResponse({"status": 'failed', "error": forms_errors}, status=400)
 
+                pprint(forms_errors)
                 # form_family.save()
                 # last_id = models.FamiliesModels.objects.latest('id').id
 
