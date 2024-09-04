@@ -13,7 +13,6 @@ from django.shortcuts import get_object_or_404
 class DashboardClassView(LoginRequiredMixin, View):
     
     def get(self, request):
-
         families = models.FamiliesModels.objects.all().count()
         populations = models.PopulationsModels.objects.all().count()
         welfare_recips = helpers.count_of_welfare_recips().count()
@@ -845,29 +844,29 @@ class TabulationsPopulationsClassView(LoginRequiredMixin, View):
     def get(self, request):
 
         populations = models.PopulationsModels.objects.all().count()
-        labor_force = models.PopulationsModels.objects.filter(
-            Q(r407__gte = 15) & Q(r407__lte = 64) 
-        ).filter(
-            (Q(r416a = 1) & ~Q(r416b = 0)) |
-            (Q(r420a = 1) & ~Q(r422_23 = 0))
-        ).count()
+        # labor_force = models.PopulationsModels.objects.filter(
+        #     Q(r407__gte = 15) & Q(r407__lte = 64) 
+        # ).filter(
+        #     (Q(r416a = 1) & ~Q(r416b = 0)) |
+        #     (Q(r420a = 1) & ~Q(r422_23 = 0))
+        # ).count()
 
-        jamkes = models.PopulationsModels.objects.filter(r431a__in = ['1', '2', '4', '8']).count()
-        penyakit_kronis = models.PopulationsModels.objects.filter(~Q(r430 = '01')).count()
+        # jamkes = models.PopulationsModels.objects.filter(r431a__in = ['1', '2', '4', '8']).count()
+        # penyakit_kronis = models.PopulationsModels.objects.filter(~Q(r430 = '01')).count()
 
-        education_levels = models.PopulationsModels.r415.field.choices
-        home_ownership_state = models.FamiliesModels.r301a.field.choices
+        education_levels = models.PopulationsModels.r518.field.choices
+        home_ownership_state = models.FamiliesModels.r301.field.choices
 
-        tabulations = helpers.get_tab_populations()
+        # tabulations = helpers.get_tab_populations()
         context = {
             'title' : 'Tabulasi Data Penduduk',
             'populations' : populations,
-            'labor_force' : labor_force,
-            'jamkes' : jamkes,
-            'penyakit_kronis': penyakit_kronis,
+            # 'labor_force' : labor_force,
+            # 'jamkes' : jamkes,
+            # 'penyakit_kronis': penyakit_kronis,
             'education_levels' : education_levels,
             'home_ownership_state' : home_ownership_state,
-            'tabulations' : tabulations
+            # 'tabulations' : tabulations
         }
         return render(request, 'app/tabulasi/tabulasi-penduduk.html', context)
 
@@ -988,8 +987,8 @@ class ManajemenFamiliesClassView(LoginRequiredMixin, View):
     def get(self, request):
 
         families = models.FamiliesModels.objects.all()
-        education_levels = models.PopulationsModels.r415.field.choices
-        home_ownership_state = models.FamiliesModels.r301a.field.choices
+        education_levels = models.PopulationsModels.r518.field.choices
+        home_ownership_state = models.FamiliesModels.r301.field.choices
         
         data_families = []
         for family in families:
