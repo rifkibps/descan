@@ -1,0 +1,78 @@
+{% load static %}
+{% load widget_tweaks %}
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{title}}</title>
+    <link rel="stylesheet" href="{% static 'app-design/assets/css/bootstrap.css'%}">
+    <link rel="shortcut icon" href="assets/images/favicon.svg" type="image/x-icon">
+    <link rel="stylesheet" href="{% static 'app-design/assets/css/app.css'%} ">
+</head>
+
+<body>
+    <div id="auth">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-5 col-sm-12 mx-auto">
+                    <div class="card pt-4">
+                        <div class="card-body">
+                            <div class="text-center mb-5">
+                                <img src="{% static 'customs/assets/images/descan.png' %}" height="50" class='mb-4'>
+                                <h3>Login</h3>
+                                <p>Silahkan login untuk masuk ke Aplikasi Desa Cantik</p>
+                            </div>
+
+                            <!-- form -->
+                            <form method="POST" action="{% url 'auth:login' %}">
+                                {% csrf_token %}
+                                {% if form.errors %}
+                                    {% for field, errors in form.errors.items %}
+                                        {% for error in errors  %}
+                                            <div class="alert alert-danger">
+                                                <p>{{ error|escape }}</p>
+                                            </div>
+                                        {% endfor %}
+                                    {% endfor %}
+                                {% endif %}
+
+                                <div class="form-group position-relative has-icon-left">
+                                    <label for="{{ form.username.id_for_label }}">Username</label>
+                                    <div class="position-relative">
+                                        {% render_field form.username class="form-control px-3" type="text" id="{{ form.username.id_for_label }}" required="required" placeholder="Enter username" %}
+                                        <div class="form-control-icon">
+                                            <i data-feather="user"></i>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="form-group position-relative has-icon-left">
+                                    <div class="clearfix">
+                                        <label for="{{ form.username.id_for_password }}">Password</label>
+                                    </div>
+                                    <div class="position-relative">
+                                        {% render_field form.password class="form-control px-3" id="password" placeholder="Enter your password" %}
+                                        <div class="form-control-icon">
+                                            <i data-feather="lock"></i>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="clearfix mt-4">
+                                    <button type="submit" class="btn btn-primary float-end">Submit</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="{% static 'app-design/assets/js/main.js' %}"></script>
+    <script src="{% static 'app-design/assets/js/app.js' %}"></script>
+    <script src="{% static 'app-design/assets/js/feather-icons/feather.min.js' %}"></script>
+</body>
+
+</html>

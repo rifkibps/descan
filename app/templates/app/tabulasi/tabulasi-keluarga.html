@@ -1,0 +1,300 @@
+{% extends "base/index.html" %}
+{% load static %}
+
+{% block css-extender %}
+<link rel="stylesheet" href="{% static 'app-design/assets/vendors/choices.js/choices.min.css' %}" />
+{% endblock css-extender %}
+
+{% block main-content %}
+
+<section class="section mb-3">
+    <div class="page-title">
+        <div class="row">
+            <div class="col-12 col-md-6 order-md-1 order-last">
+                <h3>Tabulasi Keluarga</h3>
+                <p class="text-subtitle text-muted">
+                    Tabulasi agregat karakteristik sosial dan demografi keluarga di suatu wilayah.
+                </p>
+            </div>
+            <div class="col-12 col-md-6 order-md-2 order-first">
+                <nav aria-label="breadcrumb" class='breadcrumb-header'>
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item"><a href="javascript:void(0)">Tabulasi</a></li>
+                        <li class="breadcrumb-item active" aria-current="page">Keluarga</li>
+                    </ol>
+                </nav>
+            </div>
+        </div>
+    </div>
+</section>
+
+
+<section class="section">
+
+    <div class="row mb-5">
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <h4 class="card-title">Filter Wilayah</h4>
+                    <div class="d-flex ">
+                        <i data-feather="download"></i>
+                    </div>
+                </div>
+                <div class="card-body px-4 pb-4">
+                    <div class="row">
+                        <div class="col-3">Filter Provinsi</div>
+                        <div class="col-9">
+                            <div class="form-group" style="width:400px!important">
+                                <select class="choices form-select" >
+                                    <option value="romboid">Sulawesi Tenggara</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-3">Filter Kabupaten/Kota</div>
+                        <div class="col-9">
+                            <div class="form-group" style="width:400px!important">
+                                <select class="choices form-select" >
+                                    <option value="romboid">Kabupaten Muna</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-3">Filter Kecamatan</div>
+                        <div class="col-9">
+                            <div class="form-group" style="width:400px!important">
+                                <select class="choices form-select" >
+                                    <option value="romboid">Duruka</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-3">Filter Desa/Kelurahan</div>
+                        <div class="col-9">
+                            <div class="form-group" style="width:400px!important">
+                                <select class="choices form-select">
+                                    <option value="romboid">Banggai</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-3">Filter SLS/Non SLS</div>
+                        <div class="col-9">
+                            <div class="form-group" style="width:400px!important">
+                                <select class="choices form-select">
+                                    <option value="romboid">RT 001 RW 001</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <h4 class="card-title">Filter Karakteristik Keluarga</h4>
+                    <div class="d-flex ">
+                        <i data-feather="download"></i>
+                    </div>
+                </div>
+                <div class="card-body px-4 pb-4">
+                    <div class="row">
+                        <div class="col-5">Pendidikan KRT</div>
+                        <div class="col-7">
+                            <div class="form-group" style="width:400px!important">
+                                <select class="choices form-select">
+                                    <option>----</option>
+                                    {% for edu_level in education_levels %}
+                                        <option value="{{edu_level.0}}">{{edu_level.1}}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-5">Status Kepemilikan Bangunan</div>
+                        <div class="col-7">
+                            <div class="form-group" style="width:400px!important">
+                                <select class="choices form-select" >
+                                    <option>----</option>
+                                    {% for state in home_ownership_state %}
+                                        <option value="{{state.0}}">{{state.1}}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-5">Kepemilikan Aset</div>
+                        <div class="col-7">
+                            <div class="form-group" style="width:400px!important">
+                                <select class="choices form-select" >
+                                    <option value="romboid">Rumah</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-5">Penerima Program Bantuan</div>
+                        <div class="col-7">
+                            <div class="form-group" style="width:400px!important">
+                                <select class="choices form-select" >
+                                    <option value="romboid">BLT</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-5">Pilih Tabulasi</div>
+                        <div class="col-7">
+                            <div class="form-group" style="width:400px!important">
+                                <select class="choices form-select" onchange="tabulationPush(this)">
+                                    {% for tabulation in tabulations %}
+                                        <option value="{{tabulation.val}}">{{tabulation.text}}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                   
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row mb-5">
+        <div class="col-12 col-md-3">
+            <div class="card bg-primary">
+                <div class="card-body p-0">
+                    <div class="d-flex flex-column">
+                        <div class="px-3 py-3" style="height:170px !important">
+                            <h4 class="text-white">Jumlah Keluarga</h4>
+                            <br>
+                            <div class="card-body px-0 d-flex justify-content-start align-items-center">
+                                <h1 class="text-white">{{families}} <span style="font-size:30px">Keluarga</span></h1> 
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-12 col-md-3">
+            <div class="card bg-primary">
+                <div class="card-body p-0">
+                    <div class="d-flex flex-column">
+                        <div class='px-3 py-3' style="height:170px !important">
+                            <h4 class='text-white'>Jumlah Keluarga Penerima Bantuan</h4>
+                            <div class="card-body px-0 d-flex justify-content-start">
+                                <h1 class="text-white">{{welfare_recips}} <span style="font-size:30px">Keluarga</span></h1> 
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-12 col-md-3">
+            <div class="card bg-primary">
+                <div class="card-body p-0">
+                    <div class="d-flex flex-column">
+                        <div class='px-3 py-3' style="height:170px !important">
+                            <h4 class='text-white'>Jumlah Keluarga dengan Sumber Penerangan Listrik PLN</h4>
+                            <div class="card-body px-0 d-flex justify-content-start">
+                                <h1 class="text-white">{{families_electricity}} <span style="font-size:30px">Keluarga</span></h1> 
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-12 col-md-3">
+            <div class="card bg-primary">
+                <div class="card-body p-0">
+                    <div class="d-flex flex-column">
+                        <div class='px-3 py-3' style="height:170px !important">
+                            <h4 class='text-white'>Jumlah Keluarga dengan Fasilitas Sanitasi sendiri</h4>
+                            <div class="card-body px-0 d-flex justify-content-start">
+                                <h1 class="text-white">{{sanition_family}} <span style="font-size:30px">Keluarga</span></h1> 
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row mb-4" id="tabulation-card" style="display:none">
+        <div class="col-md-12">
+            <div class="card">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <h4 class="card-title" id="tabulation-title">Tabulasi</h4>
+                    <div class="d-flex ">
+                        <i data-feather="download"></i>
+                    </div>
+                </div>
+                <div class="card-body px-3 pb-0">
+                    <div class="table-responsive">
+                        <table class='table mb-0' id="tabulations-table">
+                            <thead>
+                                <tr>
+                                    <th>No</th>
+                                    <th>Bahan Bakar/Energi Utama untuk Memasak</th>
+                                    <th>Jumlah</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>  
+        </div>
+    </div>
+</section>
+
+{% endblock main-content %}
+
+
+{% block js-extender %}
+<script src="{% static 'app-design/assets/vendors/choices.js/choices.min.js' %}"></script>
+
+<script>
+    function tabulationPush(e){
+        var title = $(e).text()
+        var val = $(e).val()
+        if (val.length == 0){
+            return $('#tabulation-card').hide()
+        }
+
+        $.ajax({
+            url: '{% url "app:tab_families_fetch" %}',
+            type: "POST",
+            dataType: "json",
+            data : {
+                'tab_request' : val,
+            },
+            headers: {
+                "X-Requested-With": "XMLHttpRequest",
+                "X-CSRFToken": '{{csrf_token}}',
+            },
+            success: (data) => {
+                if (data.status == 'success'){
+                    $('#tabulations-table').html(data.content.content_table)
+                    $('#tabulation-title').html(data.content.title)
+                    $('#tabulation-card').show()
+                }
+            },
+            error: (error) => {
+                
+            }
+        });
+
+
+        
+    }
+</script>
+{% endblock js-extender %}
