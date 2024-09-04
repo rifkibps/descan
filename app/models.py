@@ -1,5 +1,5 @@
 from django.db import models
-from django.core.validators import MinValueValidator, MaxValueValidator
+from django.core.validators import MinValueValidator, MaxValueValidator, MinLengthValidator
 
 # Create your models here.
 
@@ -33,23 +33,37 @@ class FamiliesModels(models.Model):
     class Meta:
         verbose_name = 'Master Data Keluarga'
         verbose_name_plural = 'Master Data Keluarga'
-   
+    
     r104 = models.ForeignKey(RegionAdministrativeModels, on_delete=models.RESTRICT, null=False, related_name='families_location_by_region', verbose_name='Kode Desa/Kelurahan')
     r105 = models.ForeignKey(RegionSLSModels, on_delete=models.RESTRICT, null=False, related_name='families_location_by_sls', verbose_name='Kode SLS/Non SLS')
-    r107 = models.TextField(max_length=256, blank=False, null=False, verbose_name="Alamat lengkap")
-    r108 = models.CharField(max_length=128, blank=False, null=False, verbose_name="Nama Kepala Keluarga (KK)")
-    r112 = models.IntegerField(blank=False, null=False, verbose_name="Jumlah Anggota Keluarga?")
-    r115 = models.CharField(max_length=16, blank=False, null=False, unique=True, verbose_name="Nomor Kartu Keluarga (KK)")
+    r106 = models.TextField(max_length=256, blank=False, null=False, verbose_name="Alamat lengkap")
+    r107 = models.CharField(max_length=128, blank=False, null=False, verbose_name="Nama Kepala Keluarga (KK)")
+    r108 = models.CharField(max_length=16, blank=False, null=False, unique=True, validators=[MinLengthValidator(16)], verbose_name="Nomor Kartu Keluarga (KK)")
+    r109 = models.IntegerField(blank=False, null=False, verbose_name="Jumlah Anggota Keluarga?")
+    r110 = models.CharField(max_length=128, blank=False, null=False, verbose_name="Nama Pemberi Informasi")
 
+    r206_choices = (
+        ('1', 'Terisi Lengkap'),
+        ('2', 'Tidak Terisi Lengkap'),
+    )
+
+    r201 = models.CharField(max_length=128, blank=False, null=False, verbose_name="Nama Pencacah")
+    r202 = models.DateField(blank=False, null=False, verbose_name="Tgl Kunjungan Pertama")
+    r203 = models.DateField(blank=False, null=False, verbose_name="Tgl Kunjungan Terakhir")
+    r204 = models.CharField(max_length=128, blank=False, null=False, verbose_name="Nama Pemeriksa")
+    r205 = models.DateField(blank=False, null=False, verbose_name="Tanggal Pemeriksaan")
+    r206 = models.CharField(max_length=1, blank=False, null=False, choices=r206_choices, verbose_name="Hasil Pencacahan")
 
 
     r301a_choices = (
         ('1', 'Milik Sendiri'),
         ('2', 'Kontrak/Sewa'),
         ('3', 'Bebas Sewa'),
-        ('4', 'Dinas'),
-        ('5', 'Lainnya'),
+        ('4', 'Dipinjami'),
+        ('5', 'Dinas'),
+        ('6', 'Lainnya'),
     )
+    r301a = models.CharField(max_length=1, blank=False, null=False, choices=r301a_choices, verbose_name="Status kepemilikan bangunan tempat tinggal yang ditempati?")
 
     r301b_choices = (
         ('1', 'SHM atas Nama Anggota Keluarga'),
@@ -60,7 +74,6 @@ class FamiliesModels(models.Model):
         ('6', 'Tidak punya'),
     )
 
-    r301a = models.CharField(max_length=1, blank=False, null=False, choices=r301a_choices, verbose_name="Status kepemilikan bangunan tempat tinggal yang ditempati?")
     r301b = models.CharField(max_length=1, blank=True, null=True, choices=r301b_choices, verbose_name="Apa bukti kepemilikan tanah bangunan tempat tinggal saat ini?")
 
     r303_choices = (
@@ -96,7 +109,7 @@ class FamiliesModels(models.Model):
         ('8', 'Lainnya'),
     )
 
-    r302 = models.IntegerField(blank=False, null=False, verbose_name="Luas lantai bangunan tempat tinggal? ... m2")
+    r302 = models.IntegerField(blank=False, null=False, validators=[MinValueValidator(1)], verbose_name="Luas lantai bangunan tempat tinggal? ... m2")
     r303 = models.CharField(max_length=1, blank=False, null=False, choices=r303_choices, verbose_name="Apa jenis lantai terluas?")
     r304 = models.CharField(max_length=1, blank=False, null=False, choices=r304_choices, verbose_name="Apa jenis dinding terluas?")
     r305 = models.CharField(max_length=1, blank=False, null=False, choices=r305_choices, verbose_name="Apa jenis atap terluas?")
@@ -263,7 +276,7 @@ class PopulationsModels(models.Model):
     family_id = models.ForeignKey(FamiliesModels, on_delete=models.CASCADE, blank=False, null=False, related_name='families_members', verbose_name='ID Keluarga')
     r401 = models.IntegerField(blank=False, null=False, verbose_name="Nomor Urut ART")
     r402 = models.CharField(max_length=128, blank=False, null=False, verbose_name="Nama ART")
-    r403 = models.CharField(max_length=16, blank=False, null=False, unique=True, verbose_name="Nomor Induk Kependudukan (NIK)")
+    r403 = models.CharField(max_length=16, blank=False, null=False, unique=True, validators=[MinLengthValidator(16)], verbose_name="Nomor Induk Kependudukan (NIK)")
 
     r404_choices = (
         ('1', 'Tinggal Bersama Keluarga'),
@@ -339,7 +352,7 @@ class PopulationsModels(models.Model):
         ('17', 'SPM/PDF Ulya'),
         ('18', 'D1/D2/D3'),
 
-        ('19', 'DV/S1'),
+        ('19', 'DIV/S1'),
         ('20', 'Profesi'),
         ('21', 'S2'),
         ('22', 'S3'),

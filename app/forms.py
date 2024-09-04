@@ -14,12 +14,38 @@ class FamiliesForm(forms.ModelForm):
 
     def clean(self):
 
-        form_data = self.cleaned_data
+        form_data = self.cleaned_data 
+        list_fields_val = [
+            'r112',
+            'r115',
+            'r301a',
+            'r301b',
+            'r302',
+            'r306a',
+            'r306b',
+            'r307a',
+            'r307b',        
+            'r309a',
+            'r309b',
+            'r310',
+            'r501d',
+            'r504a',
+            'r504b',
+            'r504c',
+            'r504d',
+            'r504e',
+            'r502n',
+            'r505'
+        ]
+        for field in list_fields_val:
+            if field not in form_data.keys():
+                return form_data
+            
         form_data['r112'] = int(form_data['r112'])
-
+        
         # Validasi NIK
         if form_data['r115'].isnumeric() == False or len(form_data['r115']) != 16:
-            self._errors['r115'] = self.error_class(['Format NIK harus berupa angka 16 digit.'])
+            self._errors['r115'] = self.error_class(['Format Nomor kartu Keluarga harus berupa angka 16 digit.'])
 
         # Validasi r301a
         if form_data['r301a'] == '1':
@@ -54,7 +80,6 @@ class FamiliesForm(forms.ModelForm):
             form_data['r310'] = None
 
         #Validasi Status Penerimaan Bantuan
-
         if form_data.get('r307b') == '1':
             if form_data.get('r501d') != '1':
                 self._errors['r501d'] = self.error_class(['Jika daya listrik sebesar 450 Watt, maka status penerimaan Program Subsidi Listrik harus terisi "Ya"'])
@@ -76,6 +101,12 @@ class FamiliesForm(forms.ModelForm):
         if form_data['r504e'] < 0 :
             self._errors['r504e'] = self.error_class(['Jumlah ternak kambing harus bernilai > 0'])
 
+        if form_data['r502n'] == '1' and form_data['r505'] == '0':
+            self._errors['r505'] = self.error_class(['Keluarga memiliki Smartphone, tetapi tidak menggunakan akses internet.'])
+
+        if form_data['r505'] == '3' and form_data['r502n'] == '2' :
+            self._errors['r505'] = self.error_class(['Keluarga tidak memiliki Smartphone, tetapi menggunakan akses internet handphone.'])
+
         self.cleaned_data = form_data
         return self.cleaned_data
 
@@ -86,8 +117,18 @@ class PopulationsForm(forms.ModelForm):
 
     def clean(self):
         form_data = self.cleaned_data
-        print('FORM MASUK')
-        form_data ['r401'] = int(form_data ['r401'])
+   
+        list_fields_val = [
+            'r401',
+            'r403',
+            'r404',
+        ]
+        
+        for field in list_fields_val:
+            if field not in form_data.keys():
+                return form_data
+            
+        form_data['r401'] = int(form_data['r401'])
         # Validasi NIK
 
         if form_data['r403'].isnumeric() == False or len(form_data['r403']) != 16:
@@ -121,14 +162,14 @@ class PopulationsForm(forms.ModelForm):
             
             if form_data.get('r406') is None:
                 self._errors['r406'] = self.error_class(['Jika ART berstatus ditemukan/keluarga baru, maka tanggal lahir harus terisi'])
+
+            if form_data.get('r407') is None :
+                self._errors['r407'] = self.error_class(['Jika ART berstatus ditemukan/keluarga baru, maka umur harus terisi'])
             else:
-                if form_data.get('r407') is None :
-                    self._errors['r407'] = self.error_class(['Jika ART berstatus ditemukan/keluarga baru, maka umur harus terisi'])
-                else:
-                    form_data['r407'] = int(form_data['r407'])
+                form_data['r407'] = int(form_data['r407'])
+                if form_data.get('r406') is not None:
                     age = helpers.year_calculator(form_data.get('r406'))
-                    
-                    if form_data != age:
+                    if form_data['r407'] != age:
                         self._errors['r407'] = self.error_class(['Umur tidak sesuai dengan tanggal lahir'])
 
             if form_data.get('r408') is None:
@@ -138,7 +179,7 @@ class PopulationsForm(forms.ModelForm):
                 self._errors['r409'] = self.error_class(['Jika ART berstatus ditemukan/keluarga baru, maka status hubungan dengan kepala keluarga harus terisi'])
             else:
                 if form_data.get('r408') == '1':
-                    if form_data.get('r409') in ['1', '2', '4' ,'6']:
+                    if form_data.get('r409') in ['2', '4' ,'6']:
                         self._errors['r409'] = self.error_class(['Jika status hubungan dengan kepala keluarga adalah istri/suami/menantu/orangtua/mertua, maka status perkawinan tidak boleh "Belum Kawin"'])
 
             if form_data.get('r411') is None:
@@ -149,6 +190,16 @@ class PopulationsForm(forms.ModelForm):
             else:
                 if form_data.get('r415') is None:
                     self._errors['r415'] = self.error_class(['Jika ART masih bersekolah/pernah bersekolah, maka ijazah/STTB tertinggi harus terisi'])
+                else:
+                    pendidikan = form_data.get('r415')
+                    age = form_data.get('r407')
+                    if age is not None:
+                        if pendidikan in ['1', '2', '3', '4', '5'] and int(age) < 11:
+                            self._errors['r415'] = self.error_class(['Jika ART berpendidikan SD/Setara, maka umur ART harus berusia minimal 11 tahun'])
+                        elif pendidikan in ['6', '7', '8', '9', '10'] and int(age) < 13 :
+                            self._errors['r415'] = self.error_class(['Jika ART berpendidikan SMP/Setara, maka umur ART harus berusia minimal 13 tahun'])
+                        elif pendidikan in ['11', '12', '13', '14', '15', '16', '17', '18', '19', '20', '21', '22'] and int(age) < 17:
+                            self._errors['r415'] = self.error_class(['Jika ART berpendidikan SMA - S3, maka umur ART harus berusia minimal 17 tahun'])
 
             if form_data.get('r416a') is None:
                 self._errors['r416a'] = self.error_class(['Jika ART berstatus ditemukan/keluarga baru, maka status bekerja harus terisi'])
@@ -197,6 +248,9 @@ class PopulationsForm(forms.ModelForm):
 
             if form_data.get('r431a') is None:
                 self._errors['r431a'] = self.error_class(['Jika ART berstatus ditemukan/keluarga baru, maka kepemilikan jaminan kesehatan harus terisi'])
+            else:
+                if form_data.get('r418') is not None and form_data.get('r418') == '5' and form_data.get('r431a') in ['0', '1', '4', '8', '99']:
+                    self._errors['r431a'] = self.error_class(['Jika ART adalah PNS/TNI/Polri/ BUMN/BUMD/pejabat negara, maka kepemilikan jaminan kesehatan harus terisi JKN Mandiri'])
 
             if form_data.get('r431f') is None:
                 self._errors['r431f'] = self.error_class(['Jika ART berstatus ditemukan/keluarga baru, maka kepemilikan jaminan ketenagakerjaan harus terisi'])
