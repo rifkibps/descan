@@ -1,5 +1,5 @@
 from django.db import models
-from django.core.validators import MinValueValidator, MaxValueValidator
+from django.core.validators import MinValueValidator, MaxValueValidator, MinLengthValidator
 
 # Create your models here.
 
@@ -39,7 +39,7 @@ class FamiliesModels(models.Model):
     r107 = models.TextField(max_length=256, blank=False, null=False, verbose_name="Alamat lengkap")
     r108 = models.CharField(max_length=128, blank=False, null=False, verbose_name="Nama Kepala Keluarga (KK)")
     r112 = models.IntegerField(blank=False, null=False, verbose_name="Jumlah Anggota Keluarga?")
-    r115 = models.CharField(max_length=16, blank=False, null=False, unique=True, verbose_name="Nomor Kartu Keluarga (KK)")
+    r115 = models.CharField(max_length=16, blank=False, null=False, unique=True, validators=[MinLengthValidator(16)], verbose_name="Nomor Kartu Keluarga (KK)")
 
 
 
@@ -96,7 +96,7 @@ class FamiliesModels(models.Model):
         ('8', 'Lainnya'),
     )
 
-    r302 = models.IntegerField(blank=False, null=False, verbose_name="Luas lantai bangunan tempat tinggal? ... m2")
+    r302 = models.IntegerField(blank=False, null=False, validators=[MinValueValidator(1)], verbose_name="Luas lantai bangunan tempat tinggal? ... m2")
     r303 = models.CharField(max_length=1, blank=False, null=False, choices=r303_choices, verbose_name="Apa jenis lantai terluas?")
     r304 = models.CharField(max_length=1, blank=False, null=False, choices=r304_choices, verbose_name="Apa jenis dinding terluas?")
     r305 = models.CharField(max_length=1, blank=False, null=False, choices=r305_choices, verbose_name="Apa jenis atap terluas?")
@@ -263,7 +263,7 @@ class PopulationsModels(models.Model):
     family_id = models.ForeignKey(FamiliesModels, on_delete=models.CASCADE, blank=False, null=False, related_name='families_members', verbose_name='ID Keluarga')
     r401 = models.IntegerField(blank=False, null=False, verbose_name="Nomor Urut ART")
     r402 = models.CharField(max_length=128, blank=False, null=False, verbose_name="Nama ART")
-    r403 = models.CharField(max_length=16, blank=False, null=False, unique=True, verbose_name="Nomor Induk Kependudukan (NIK)")
+    r403 = models.CharField(max_length=16, blank=False, null=False, unique=True, validators=[MinLengthValidator(16)], verbose_name="Nomor Induk Kependudukan (NIK)")
 
     r404_choices = (
         ('1', 'Tinggal Bersama Keluarga'),
@@ -339,7 +339,7 @@ class PopulationsModels(models.Model):
         ('17', 'SPM/PDF Ulya'),
         ('18', 'D1/D2/D3'),
 
-        ('19', 'DV/S1'),
+        ('19', 'DIV/S1'),
         ('20', 'Profesi'),
         ('21', 'S2'),
         ('22', 'S3'),

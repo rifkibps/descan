@@ -48,32 +48,36 @@
     <div class="row">
         <div class="col-6">
             <div class="form-group">
-                <label for="provinsi_id">Provinsi</label>
+                <label for="id_provinsi">Provinsi</label>
                 <div class="position-relative">
-                    <select name="province" id="provinsi_id" class="form-control px-3 form-family" required>
+                    <select name="provinsi" id="id_provinsi" class="form-control px-3 form-family" required>
                         <option value="" selected="selected">---------</option>
                         {% for prov_reg in province_regions %}
                             <option value="{{prov_reg.reg_code}}">{{prov_reg.reg_code}}&ensp;{{prov_reg.reg_name}}</option>
                         {% endfor %}
                     </select>
-                    <div class="invalid-feedback" id="msg-provinsi_id">
+                    <div class="invalid-feedback" id="msg-id_provinsi">
                     </div>
                 </div>
             </div>
             <div class="form-group">
-                <label for="kabkot_id">Kabupaten/Kota <strong>*)</strong></label>
+                <label for="id_kabkot">Kabupaten/Kota <strong>*)</strong></label>
                 <div class="position-relative">
-                    <select name="kabkot" id="kabkot_id" class="form-control px-3 form-family" required>
+                    <select name="kabkot" id="id_kabkot" class="form-control px-3 form-family" required>
                         <option value="" selected="selected">---------</option>
                     </select>
+                    <div class="invalid-feedback" id="msg-id_kabkot">
+                    </div>
                 </div>
             </div>
             <div class="form-group">
-                <label for="kecamatan_id">Kecamatan</label>
+                <label for="id_kecamatan">Kecamatan</label>
                 <div class="position-relative">
-                    <select name="kecamatan" id="kecamatan_id" class="form-control px-3 form-family" required>
+                    <select name="kecamatan" id="id_kecamatan" class="form-control px-3 form-family" required>
                         <option value="" selected="selected">---------</option>
                     </select>
+                    <div class="invalid-feedback" id="msg-id_kecamatan">
+                    </div>
                 </div>
             </div>
             <div class="form-group">
@@ -865,13 +869,13 @@
 
         if (level == 'prov'){
             data['province_id'] = val
-            $('#kabkot_id').html(opt)
-            $('#kecamatan_id').html(opt)
+            $('#id_kabkot').html(opt)
+            $('#id_kecamatan').html(opt)
             $('#id_r104').html(opt)
             $('#id_r105').html(opt)
         }else if (level == 'kabkot'){
             data['regency_id'] = val
-            $('#kecamatan_id').html(opt)
+            $('#id_kecamatan').html(opt)
             $('#id_r104').html(opt)
             $('#id_r105').html(opt)
         }else if (level == 'kec'){
@@ -920,16 +924,16 @@
         return
     }
 
-    $('#provinsi_id').on('change', function(){
-        get_region_adm('prov', $(this).val(), '#kabkot_id')
+    $('#id_provinsi').on('change', function(){
+        get_region_adm('prov', $(this).val(), '#id_kabkot')
         
     })
 
-    $('#kabkot_id').on('change', function(){
-        get_region_adm('kabkot', $(this).val(), '#kecamatan_id')
+    $('#id_kabkot').on('change', function(){
+        get_region_adm('kabkot', $(this).val(), '#id_kecamatan')
     })
 
-    $('#kecamatan_id').on('change', function(){
+    $('#id_kecamatan').on('change', function(){
         get_region_adm('kec', $(this).val(), '#id_r104')
     })
 
@@ -1126,7 +1130,7 @@
            $(this).html('')
         });
 
-        $('.is_invalid').each(function(i, obj) {
+        $('.form-control').each(function(i, obj) {
             $(this).removeClass('is_invalid')
          });
     }
@@ -1196,6 +1200,7 @@
                 $('html, body').animate({
                     scrollTop: $("body").offset().top
                 }, 10);
+                clean_form()
             },
             error: (response) => {
                 var errors = response["responseJSON"]["error"]

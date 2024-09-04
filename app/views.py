@@ -1093,17 +1093,19 @@ class FamiliesAddClassView(LoginRequiredMixin, View):
                 data_families = json.loads(request.POST.get('form_families'))
                 data_art = json.loads(request.POST.get('form_art'))
                 data_art = helpers.transform_data(data_art)
-                
-                for fl in ['province', 'kabkot', 'kecamatan']:
-                    del data_families[fl]
-                
                 forms_errors = dict()
+
+                for fl in ['provinsi', 'kabkot', 'kecamatan']:
+                    if fl in data_families.keys():
+                        if len(data_families[fl]) == 0:
+                            forms_errors[fl] = ['This field is required.']
+                        del data_families[fl]
+
                 form_family = forms.FamiliesForm(data_families)
                 if form_family.is_valid() is False:
                     for key, val in form_family.errors.items():
                         forms_errors[key] = val
                 
-
                 for idx, dt in enumerate(data_art):
                     form_art = forms.PopulationsForm(dt)
                     if form_art.is_valid() is False:
@@ -1111,25 +1113,24 @@ class FamiliesAddClassView(LoginRequiredMixin, View):
                             if key != 'family_id':
                                 forms_errors[f'form_art_{key}_{idx+1}'] = val
                 
+                if len(forms_errors) > 0:
+                    return JsonResponse({"status": 'failed', "error": forms_errors}, status=400)
+
                 last_validations = helpers.combine_validations(data_families, data_art)
                 
                 if len(last_validations) > 0:
                     for key, val in last_validations.items():
                         forms_errors[key] = val
-
-                if len(forms_errors) > 0:
                     return JsonResponse({"status": 'failed', "error": forms_errors}, status=400)
-
-                pprint(forms_errors)
-                # form_family.save()
-                # last_id = models.FamiliesModels.objects.latest('id').id
-
+                
+                form_family.save()
+                last_id = models.FamiliesModels.objects.latest('id').id
                 art_names = ''
-                # for idx, dt in enumerate(data_art):
-                #     data_art[idx]['family_id'] = last_id
-                #     form_art = forms.PopulationsForm(dt)
-                #     form_art.save()
-                #     art_names += f'<li class="px-2">{idx+1}. {dt["r402"]}</li>'
+                for idx, dt in enumerate(data_art):
+                    data_art[idx]['family_id'] = last_id
+                    form_art = forms.PopulationsForm(dt)
+                    form_art.save()
+                    art_names += f'<li class="px-2">{idx+1}. {dt["r402"]}</li>'
                 
                 msg = f'<ul class="px-0" style="list-style:none">\
                             Data keluarga dengan ART berhasil ditambahkan: <br>\
