@@ -33,23 +33,37 @@ class FamiliesModels(models.Model):
     class Meta:
         verbose_name = 'Master Data Keluarga'
         verbose_name_plural = 'Master Data Keluarga'
-   
+    
     r104 = models.ForeignKey(RegionAdministrativeModels, on_delete=models.RESTRICT, null=False, related_name='families_location_by_region', verbose_name='Kode Desa/Kelurahan')
     r105 = models.ForeignKey(RegionSLSModels, on_delete=models.RESTRICT, null=False, related_name='families_location_by_sls', verbose_name='Kode SLS/Non SLS')
-    r107 = models.TextField(max_length=256, blank=False, null=False, verbose_name="Alamat lengkap")
-    r108 = models.CharField(max_length=128, blank=False, null=False, verbose_name="Nama Kepala Keluarga (KK)")
-    r112 = models.IntegerField(blank=False, null=False, verbose_name="Jumlah Anggota Keluarga?")
-    r115 = models.CharField(max_length=16, blank=False, null=False, unique=True, validators=[MinLengthValidator(16)], verbose_name="Nomor Kartu Keluarga (KK)")
+    r106 = models.TextField(max_length=256, blank=False, null=False, verbose_name="Alamat lengkap")
+    r107 = models.CharField(max_length=128, blank=False, null=False, verbose_name="Nama Kepala Keluarga (KK)")
+    r108 = models.CharField(max_length=16, blank=False, null=False, unique=True, validators=[MinLengthValidator(16)], verbose_name="Nomor Kartu Keluarga (KK)")
+    r109 = models.IntegerField(blank=False, null=False, verbose_name="Jumlah Anggota Keluarga?")
+    r110 = models.CharField(max_length=128, blank=False, null=False, verbose_name="Nama Pemberi Informasi")
 
+    r206_choices = (
+        ('1', 'Terisi Lengkap'),
+        ('2', 'Tidak Terisi Lengkap'),
+    )
+
+    r201 = models.CharField(max_length=128, blank=False, null=False, verbose_name="Nama Pencacah")
+    r202 = models.DateField(blank=False, null=False, verbose_name="Tgl Kunjungan Pertama")
+    r203 = models.DateField(blank=False, null=False, verbose_name="Tgl Kunjungan Terakhir")
+    r204 = models.CharField(max_length=128, blank=False, null=False, verbose_name="Nama Pemeriksa")
+    r205 = models.DateField(blank=False, null=False, verbose_name="Tanggal Pemeriksaan")
+    r206 = models.CharField(max_length=1, blank=False, null=False, choices=r206_choices, verbose_name="Hasil Pencacahan")
 
 
     r301a_choices = (
         ('1', 'Milik Sendiri'),
         ('2', 'Kontrak/Sewa'),
         ('3', 'Bebas Sewa'),
-        ('4', 'Dinas'),
-        ('5', 'Lainnya'),
+        ('4', 'Dipinjami'),
+        ('5', 'Dinas'),
+        ('6', 'Lainnya'),
     )
+    r301a = models.CharField(max_length=1, blank=False, null=False, choices=r301a_choices, verbose_name="Status kepemilikan bangunan tempat tinggal yang ditempati?")
 
     r301b_choices = (
         ('1', 'SHM atas Nama Anggota Keluarga'),
@@ -60,7 +74,6 @@ class FamiliesModels(models.Model):
         ('6', 'Tidak punya'),
     )
 
-    r301a = models.CharField(max_length=1, blank=False, null=False, choices=r301a_choices, verbose_name="Status kepemilikan bangunan tempat tinggal yang ditempati?")
     r301b = models.CharField(max_length=1, blank=True, null=True, choices=r301b_choices, verbose_name="Apa bukti kepemilikan tanah bangunan tempat tinggal saat ini?")
 
     r303_choices = (
