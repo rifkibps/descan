@@ -39,340 +39,562 @@
 
 <form action="" method="post" class="needs-validation" novalidate>
     {% csrf_token %}
-    <div class="row mb-2">
+    <div class="row mb-4">
         <div class="col-12">
             <h4>Blok I. Keterangan Tempat</h4>
         </div>
     </div>
 
-    <div class="row">
+    <div class="row mb-4">
         <div class="col-6">
-            <div class="form-group">
-                <label for="id_provinsi">Provinsi</label>
-                <div class="position-relative">
-                    <select name="provinsi" id="id_provinsi" class="form-control px-3 form-family" required>
-                        <option value="" selected="selected">---------</option>
-                        {% for prov_reg in province_regions %}
-                            <option value="{{prov_reg.reg_code}}">{{prov_reg.reg_code}}&ensp;{{prov_reg.reg_name}}</option>
-                        {% endfor %}
-                    </select>
-                    <div class="invalid-feedback" id="msg-id_provinsi">
-                    </div>
+            <div class="row">
+                <div class="col-5">
+                    <label for="id_provinsi">Provinsi</label>
                 </div>
-            </div>
-            <div class="form-group">
-                <label for="id_kabkot">Kabupaten/Kota <strong>*)</strong></label>
-                <div class="position-relative">
-                    <select name="kabkot" id="id_kabkot" class="form-control px-3 form-family" required>
-                        <option value="" selected="selected">---------</option>
-                    </select>
-                    <div class="invalid-feedback" id="msg-id_kabkot">
-                    </div>
-                </div>
-            </div>
-            <div class="form-group">
-                <label for="id_kecamatan">Kecamatan</label>
-                <div class="position-relative">
-                    <select name="kecamatan" id="id_kecamatan" class="form-control px-3 form-family" required>
-                        <option value="" selected="selected">---------</option>
-                    </select>
-                    <div class="invalid-feedback" id="msg-id_kecamatan">
-                    </div>
-                </div>
-            </div>
-            <div class="form-group">
-                <label for="{{ form.r104.id_for_label }}">{{ form.r104.label }}</label>
-                <div class="position-relative">
-                    <select name="{{ form.r104.name }}" id="{{ form.r104.id_for_label }}" class="form-control px-3 form-family" required="">
-                        <option value="" selected="selected">---------</option>
-                    </select>
-                    <div class="invalid-feedback" id="msg-{{ form.r104.id_for_label }}">
-                    </div>
-                </div>
-            </div>
-            <div class="form-group">
-                <label for="{{ form.r105.id_for_label }}">{{ form.r105.label }}</label>
-                <div class="position-relative">
-                    <select name="{{ form.r105.name }}" id="{{ form.r105.id_for_label }}" class="form-control px-3 form-family" required="">
-                        <option value="" selected="selected">---------</option>
-                    </select>
-                    <div class="invalid-feedback" id="msg-{{ form.r105.id_for_label }}">
+                <div class="col-6 col-offset-1">
+                    <div class="form-group">
+                        <div class="position-relative">
+                            <select name="provinsi" id="id_provinsi" class="form-control px-3 form-family" required>
+                                <option value="" selected="selected">---------</option>
+                                {% for prov_reg in province_regions %}
+                                    <option value="{{prov_reg.reg_code}}">{{prov_reg.reg_code}}&ensp;{{prov_reg.reg_name}}</option>
+                                {% endfor %}
+                            </select>
+                            <div class="invalid-feedback" id="msg-id_provinsi">
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
 
-        </div>
-        <div class="col-6">
-            <div class="form-group">
-                <label for="{{ form.r106.id_for_label }}">{{ form.r106.label }}</label>
-                <div class="position-relative">
-                    {% render_field form.r106 class="form-control px-3 form-family"  id=form.r106.id_for_label  rows="1" %}
-                    <div class="invalid-feedback" id="msg-{{ form.r106.id_for_label }}">
-                    </div>
+            <div class="row">
+                <div class="col-5">
+                    <label for="id_kabkot">Kabupaten/Kota <strong>*)</strong></label>
                 </div>
-            </div>
-            <div class="form-group">
-                <label for="{{ form.r107.id_for_label }}">{{ form.r107.label }}</label>
-                <div class="position-relative">
-                    {% render_field form.r107 class="form-control px-3 form-family"  id=form.r107.id_for_label %}
-                    <div class="invalid-feedback" id="msg-{{ form.r107.id_for_label }}">
+                <div class="col-6 col-offset-1">
+                    <div class="form-group">
+                        <div class="position-relative">
+                            <select name="kabkot" id="id_kabkot" class="form-control px-3 form-family" required>
+                                <option value="" selected="selected">---------</option>
+                            </select>
+                            <div class="invalid-feedback" id="msg-id_kabkot">
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
 
-            <div class="form-group">
-                <label for="{{ form.r108.id_for_label }}">{{ form.r108.label }}</label>
-                <div class="position-relative">
-                    {% render_field form.r108 class="form-control px-3 form-family"  id=form.r108.id_for_label %}
-                    <div class="invalid-feedback" id="msg-{{ form.r108.id_for_label }}">
+            <div class="row">
+                <div class="col-5">
+                    <label for="id_kecamatan">Kecamatan</label>
+                </div>
+                <div class="col-6 col-offset-1">
+                    <div class="form-group">
+                        <div class="position-relative">
+                            <select name="kecamatan" id="id_kecamatan" class="form-control px-3 form-family" required>
+                                <option value="" selected="selected">---------</option>
+                            </select>
+                            <div class="invalid-feedback" id="msg-id_kecamatan">
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
-            <div class="form-group">
-                <label for="{{ form.r109.id_for_label }}">{{ form.r109.label }}</label>
-                <div class="position-relative">
-                    {% render_field form.r109 class="form-control px-3 form-family"  id=form.r109.id_for_label %}
-                    <div class="invalid-feedback" id="msg-{{ form.r109.id_for_label }}">
+            <div class="row">
+                <div class="col-5">
+                    <label for="{{ form.r104.id_for_label }}">{{ form.r104.label }} <strong>*)</strong></label>
+                </div>
+                <div class="col-6 col-offset-1">
+                    <div class="form-group">
+                        <div class="position-relative">
+                            <select name="{{ form.r104.name }}" id="{{ form.r104.id_for_label }}" class="form-control px-3 form-family" required="">
+                                <option value="" selected="selected">---------</option>
+                            </select>
+                            <div class="invalid-feedback" id="msg-{{ form.r104.id_for_label }}">
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
-            <div class="form-group">
-                <label for="{{ form.r110.id_for_label }}">{{ form.r110.label }}</label>
-                <div class="position-relative">
-                    {% render_field form.r110 class="form-control px-3 form-family"  id=form.r110.id_for_label %}
-                    <div class="invalid-feedback" id="msg-{{ form.r110.id_for_label }}">
+            <div class="row">
+                <div class="col-5">
+                    <label for="{{ form.r105.id_for_label }}">{{ form.r105.label }}</label>
+                </div>
+                <div class="col-6 col-offset-1">
+                    <div class="form-group">
+                        <div class="position-relative">
+                            <select name="{{ form.r105.name }}" id="{{ form.r105.id_for_label }}" class="form-control px-3 form-family" required="">
+                                <option value="" selected="selected">---------</option>
+                            </select>
+                            <div class="invalid-feedback" id="msg-{{ form.r105.id_for_label }}">
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
+        <div class="col-6">
+            <div class="row">
+                <div class="col-5">
+                    <label for="{{ form.r106.id_for_label }}">{{ form.r106.label }}</label>
+                </div>
+                <div class="col-6 col-offset-1">
+                    <div class="form-group">
+                        <div class="position-relative">
+                            {% render_field form.r106 class="form-control px-3 form-family"  id=form.r106.id_for_label  rows="1" %}
+                            <div class="invalid-feedback" id="msg-{{ form.r106.id_for_label }}">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-5">
+                    <label for="{{ form.r107.id_for_label }}">{{ form.r107.label }}</label>
+                </div>
+                <div class="col-6 col-offset-1">
+                    <div class="form-group">
+                        <div class="position-relative">
+                            {% render_field form.r107 class="form-control px-3 form-family"  id=form.r107.id_for_label %}
+                            <div class="invalid-feedback" id="msg-{{ form.r107.id_for_label }}">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-5">
+                    <label for="{{ form.r108.id_for_label }}">{{ form.r108.label }}</label>
+                </div>
+                <div class="col-6 col-offset-1">
+                    <div class="form-group">
+                        <div class="position-relative">
+                            {% render_field form.r108 class="form-control px-3 form-family"  id=form.r108.id_for_label %}
+                            <div class="invalid-feedback" id="msg-{{ form.r108.id_for_label }}">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-5">
+                    <label for="{{ form.r109.id_for_label }}">{{ form.r109.label }}</label>
+                </div>
+                <div class="col-6 col-offset-1">
+                    <div class="form-group">
+                        <div class="position-relative">
+                            {% render_field form.r109 class="form-control px-3 form-family"  id=form.r109.id_for_label %}
+                            <div class="invalid-feedback" id="msg-{{ form.r109.id_for_label }}">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-5">
+                    <label for="{{ form.r110.id_for_label }}">{{ form.r110.label }}</label>
+                </div>
+                <div class="col-6 col-offset-1">
+                    <div class="form-group">
+                        <div class="position-relative">
+                            {% render_field form.r110 class="form-control px-3 form-family"  id=form.r110.id_for_label %}
+                            <div class="invalid-feedback" id="msg-{{ form.r110.id_for_label }}">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+         </div>
     </div>
-
-    <div class="row my-3">
+   
+    <div class="row mb-4">
         <div class="col-12">
             <h4>Blok II. Keterangan Petugas</h4>
         </div>
     </div>
 
-    <div class="row">
+    <div class="row mb-4">
         <div class="col-6">
-            <div class="form-group">
-                <label for="{{ form.r201.id_for_label }}">{{ form.r201.label }}</label>
-                <div class="position-relative">
-                    {% render_field form.r201 id=form.r201.id_for_label class="form-control px-3 form-family"  %}
-                    <div class="invalid-feedback" id="msg-{{ form.r201.id_for_label }}">
+            <div class="row">
+                <div class="col-5">
+                    <label for="{{ form.r201.id_for_label }}">{{ form.r201.label }}</label>
+                </div>
+                <div class="col-6 col-offset-1">
+                    <div class="form-group">
+                        <div class="position-relative">
+                            {% render_field form.r201 id=form.r201.id_for_label class="form-control px-3 form-family"  %}
+                            <div class="invalid-feedback" id="msg-{{ form.r201.id_for_label }}">
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
-            <div class="form-group">
-                <label for="{{ form.r202.id_for_label }}">{{ form.r202.label }}</label>
-                <div class="position-relative">
-                    {% render_field form.r202 class="form-control px-3 form-family"  id=form.r202.id_for_label type="date" %}
-                    <div class="invalid-feedback" id="msg-{{ form.r202.id_for_label }}">
+            <div class="row">
+                <div class="col-5">
+                    <label for="{{ form.r202.id_for_label }}">{{ form.r202.label }}</label>
+                </div>
+                <div class="col-6 col-offset-1">
+                    <div class="form-group">
+                        <div class="position-relative">
+                            {% render_field form.r202 class="form-control px-3 form-family"  id=form.r202.id_for_label type="date" %}
+                            <div class="invalid-feedback" id="msg-{{ form.r202.id_for_label }}">
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
-            <div class="form-group">
-                <label for="{{ form.r203.id_for_label }}">{{ form.r203.label }}</label>
-                <div class="position-relative">
-                    {% render_field form.r203 class="form-control px-3 form-family"  id=form.r203.id_for_label type="date" %}
-                    <div class="invalid-feedback" id="msg-{{ form.r203.id_for_label }}">
+            <div class="row">
+                <div class="col-5">
+                    <label for="{{ form.r203.id_for_label }}">{{ form.r203.label }}</label>
+                </div>
+                <div class="col-6 col-offset-1">
+                    <div class="form-group">
+                        <div class="position-relative">
+                            {% render_field form.r203 class="form-control px-3 form-family"  id=form.r203.id_for_label type="date" %}
+                            <div class="invalid-feedback" id="msg-{{ form.r203.id_for_label }}">
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
+
         <div class="col-6">
-            <div class="form-group">
-                <label for="{{ form.r204.id_for_label }}">{{ form.r204.label }}</label>
-                <div class="position-relative">
-                    {% render_field form.r204 id=form.r204.id_for_label class="form-control px-3 form-family"  %}
-                    <div class="invalid-feedback" id="msg-{{ form.r204.id_for_label }}">
+            <div class="row">
+                <div class="col-5">
+                    <label for="{{ form.r204.id_for_label }}">{{ form.r204.label }}</label>
+                </div>
+                <div class="col-6 col-offset-1">
+                    <div class="form-group">
+                        <div class="position-relative">
+                            {% render_field form.r204 id=form.r204.id_for_label class="form-control px-3 form-family"  %}
+                            <div class="invalid-feedback" id="msg-{{ form.r204.id_for_label }}">
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
-            <div class="form-group">
-                <label for="{{ form.r205.id_for_label }}">{{ form.r205.label }}</label>
-                <div class="position-relative">
-                    {% render_field form.r205 class="form-control px-3 form-family"  id=form.r205.id_for_label type="date" %}
-                    <div class="invalid-feedback" id="msg-{{ form.r205.id_for_label }}">
+            <div class="row">
+                <div class="col-5">
+                    <label for="{{ form.r205.id_for_label }}">{{ form.r205.label }}</label>
+                </div>
+                <div class="col-6 col-offset-1">
+                    <div class="form-group">
+                        <div class="position-relative">
+                            {% render_field form.r205 class="form-control px-3 form-family"  id=form.r205.id_for_label type="date" %}
+                            <div class="invalid-feedback" id="msg-{{ form.r205.id_for_label }}">
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
-            <div class="form-group">
-                <label for="{{ form.r206.id_for_label }}">{{ form.r206.label }}</label>
-                <div class="position-relative">
-                    {% render_field form.r206 class="form-control px-3 form-family"  id=form.r206.id_for_label type="date" %}
-                    <div class="invalid-feedback" id="msg-{{ form.r206.id_for_label }}">
+            <div class="row">
+                <div class="col-5">
+                    <label for="{{ form.r206.id_for_label }}">{{ form.r206.label }}</label>
+                </div>
+                <div class="col-6 col-offset-1">
+                    <div class="form-group">
+                        <div class="position-relative">
+                            {% render_field form.r206 class="form-control px-3 form-family"  id=form.r206.id_for_label type="date" %}
+                            <div class="invalid-feedback" id="msg-{{ form.r206.id_for_label }}">
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
 
-    <div class="row my-3">
+    <div class="row mb-4">
         <div class="col-12">
             <h4>Blok III. Keterangan Perumahan</h4>
         </div>
     </div>
 
-    <div class="row">
+    <div class="row mb-4">
         <div class="col-12">
-            <div class="form-group">
-                <label for="{{ form.r301.id_for_label }}">{{ form.r301.label }}</label>
-                <div class="position-relative">
-                    {% render_field form.r301 class="form-control px-3 form-family" id=form.r301.id_for_label %}
-                    <div class="invalid-feedback" id="msg-{{ form.r301.id_for_label }}">
+
+            <div class="row">
+                <div class="col-4">
+                    <label for="{{ form.r301.id_for_label }}">{{ form.r301.label }}</label>
+                </div>
+                <div class="col-6 col-offset-2">
+                    <div class="form-group">
+                        <div class="position-relative">
+                            {% render_field form.r301 class="form-control px-3 form-family" id=form.r301.id_for_label %}
+                            <div class="invalid-feedback" id="msg-{{ form.r301.id_for_label }}">
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
-            <div class="form-group">
-                <label for="{{ form.r302.id_for_label }}">{{ form.r302.label }}</label>
-                <div class="position-relative">
-                    {% render_field form.r302 class="form-control px-3 form-family" id=form.r302.id_for_label %}
-                    <div class="invalid-feedback" id="msg-{{ form.r302.id_for_label }}">
+
+            <div class="row">
+                <div class="col-4">
+                    <label for="{{ form.r302.id_for_label }}">{{ form.r302.label }}</label>
+                </div>
+                <div class="col-6 col-offset-2">
+                    <div class="form-group">
+                        <div class="position-relative">
+                            {% render_field form.r302 class="form-control px-3 form-family" id=form.r302.id_for_label %}
+                            <div class="invalid-feedback" id="msg-{{ form.r302.id_for_label }}">
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
-            <div class="form-group">
-                <label for="{{ form.r303.id_for_label }}">{{ form.r303.label }}</label>
-                <div class="position-relative">
-                    {% render_field form.r303 class="form-control px-3 form-family" id=form.r303.id_for_label %}
-                    <div class="invalid-feedback" id="msg-{{ form.r303.id_for_label }}">
+
+            <div class="row">
+                <div class="col-4">
+                    <label for="{{ form.r303.id_for_label }}">{{ form.r303.label }}</label>
+                </div>
+                <div class="col-6 col-offset-2">
+                    <div class="form-group">
+                        <div class="position-relative">
+                            {% render_field form.r303 class="form-control px-3 form-family" id=form.r303.id_for_label %}
+                            <div class="invalid-feedback" id="msg-{{ form.r303.id_for_label }}">
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
-            <div class="form-group">
-                <label for="{{ form.r304.id_for_label }}">{{ form.r304.label }}</label>
-                <div class="position-relative">
-                    {% render_field form.r304 class="form-control px-3 form-family" id=form.r304.id_for_label %}
-                    <div class="invalid-feedback" id="msg-{{ form.r304.id_for_label }}">
+            <div class="row">
+                <div class="col-4">
+                    <label for="{{ form.r304.id_for_label }}">{{ form.r304.label }}</label>
+                </div>
+                <div class="col-6 col-offset-2">
+                    <div class="form-group">
+                        <div class="position-relative">
+                            {% render_field form.r304 class="form-control px-3 form-family" id=form.r304.id_for_label %}
+                            <div class="invalid-feedback" id="msg-{{ form.r304.id_for_label }}">
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
-            <div class="form-group">
-                <label for="{{ form.r305.id_for_label }}">{{ form.r305.label }}</label>
-                <div class="position-relative">
-                    {% render_field form.r305 class="form-control px-3 form-family" id=form.r305.id_for_label %}
-                    <div class="invalid-feedback" id="msg-{{ form.r305.id_for_label }}">
+            <div class="row">
+                <div class="col-4">
+                    <label for="{{ form.r305.id_for_label }}">{{ form.r305.label }}</label>
+                </div>
+                <div class="col-6 col-offset-2">
+                    <div class="form-group">
+                        <div class="position-relative">
+                            {% render_field form.r305 class="form-control px-3 form-family" id=form.r305.id_for_label %}
+                            <div class="invalid-feedback" id="msg-{{ form.r305.id_for_label }}">
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
-            <div class="form-group">
-                <label for="{{ form.r306.id_for_label }}">{{ form.r306.label }}</label>
-                <div class="position-relative">
-                    {% render_field form.r306 class="form-control px-3 form-family" id=form.r306.id_for_label %}
-                    <div class="invalid-feedback" id="msg-{{ form.r306.id_for_label }}">
+            <div class="row">
+                <div class="col-4">
+                    <label for="{{ form.r306.id_for_label }}">{{ form.r306.label }}</label>
+                </div>
+                <div class="col-6 col-offset-2">
+                    <div class="form-group">
+                        <div class="position-relative">
+                            {% render_field form.r306 class="form-control px-3 form-family" id=form.r306.id_for_label %}
+                            <div class="invalid-feedback" id="msg-{{ form.r306.id_for_label }}">
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
-            <div class="form-group">
-                <label for="{{ form.r307.id_for_label }}">{{ form.r307.label }}</label>
-                <div class="position-relative">
-                    {% render_field form.r307 class="form-control px-3 form-family" id=form.r307.id_for_label %}
-                    <div class="invalid-feedback" id="msg-{{ form.r307.id_for_label }}">
+            <div class="row">
+                <div class="col-4">
+                    <label for="{{ form.r307.id_for_label }}">{{ form.r307.label }}</label>
+                </div>
+                <div class="col-6 col-offset-2">
+                    <div class="form-group">
+                        <div class="position-relative">
+                            {% render_field form.r307 class="form-control px-3 form-family" id=form.r307.id_for_label %}
+                            <div class="invalid-feedback" id="msg-{{ form.r307.id_for_label }}">
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
-            <div class="form-group">
-                <label for="{{ form.r308.id_for_label }}">{{ form.r308.label }}</label>
-                <div class="position-relative">
-                    {% render_field form.r308 class="form-control px-3 form-family" id=form.r308.id_for_label %}
-                    <div class="invalid-feedback" id="msg-{{ form.r308.id_for_label }}">
+            
+            <div class="row">
+                <div class="col-4">
+                    <label for="{{ form.r308.id_for_label }}">{{ form.r308.label }}</label>
+                </div>
+                <div class="col-6 col-offset-2">
+                    <div class="form-group">
+                        <div class="position-relative">
+                            {% render_field form.r308 class="form-control px-3 form-family" id=form.r308.id_for_label %}
+                            <div class="invalid-feedback" id="msg-{{ form.r308.id_for_label }}">
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
-            <div class="form-group">
-                <label for="{{ form.r309.id_for_label }}">{{ form.r309.label }}</label>
-                <div class="position-relative">
-                    {% render_field form.r309 class="form-control px-3 form-family" id=form.r309.id_for_label %}
-                    <div class="invalid-feedback" id="msg-{{ form.r309.id_for_label }}">
+            
+            <div class="row">
+                <div class="col-4">
+                    <label for="{{ form.r309.id_for_label }}">{{ form.r309.label }}</label>
+                </div>
+                <div class="col-6 col-offset-2">
+                    <div class="form-group">
+                        <div class="position-relative">
+                            {% render_field form.r309 class="form-control px-3 form-family" id=form.r309.id_for_label %}
+                            <div class="invalid-feedback" id="msg-{{ form.r309.id_for_label }}">
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
-            <div class="form-group">
-                <label for="{{ form.r310.id_for_label }}">{{ form.r310.label }}</label>
-                <div class="position-relative">
-                    {% render_field form.r310 class="form-control px-3 form-family" id=form.r310.id_for_label %}
-                    <div class="invalid-feedback" id="msg-{{ form.r310.id_for_label }}">
+
+            <div class="row">
+                <div class="col-4">
+                    <label for="{{ form.r310.id_for_label }}">{{ form.r310.label }}</label>
+                </div>
+                <div class="col-6 col-offset-2">
+                    <div class="form-group">
+                        <div class="position-relative">
+                            {% render_field form.r310 class="form-control px-3 form-family" id=form.r310.id_for_label %}
+                            <div class="invalid-feedback" id="msg-{{ form.r310.id_for_label }}">
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
+            
         </div>
     </div>
 
-    <div class="row my-3">
+    <div class="row mb-4">
         <div class="col-12">
             <h4>Blok IV. Kepemilikan Aset</h4>
         </div>
     </div>
 
-    <div class="row">
-        <div class="col-6">
-            <div class="form-group">
-                <label for="{{ form.r401a.id_for_label }}">{{ form.r401a.label }}</label>
-                <div class="position-relative">
-                    {% render_field form.r401a class="form-control px-3 form-family" id=form.r401a.id_for_label %}
-                    <div class="invalid-feedback" id="msg-{{ form.r401a.id_for_label }}">
+    <div class="row mb-5">
+        <div class="col-12">
+            <div class="row mb-3">
+                <div class="col-6">
+                    <div class="row">
+                        <div class="col-5">
+                            <label for="{{ form.r401a.id_for_label }}">{{ form.r401a.label }}</label>
+                        </div>
+                        <div class="col-6 col-offset-1">
+                            <div class="form-group">
+                                <div class="position-relative">
+                                    {% render_field form.r401a class="form-control px-3 form-family" id=form.r401a.id_for_label %}
+                                    <div class="invalid-feedback" id="msg-{{ form.r401a.id_for_label }}">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row d-none">
+                        <div class="col-5">
+                            <label for="{{ form.r401b.id_for_label }}">{{ form.r401b.label }} (M2)</label>
+                        </div>
+                        <div class="col-6 col-offset-1">
+                            <div class="form-group">
+                                <div class="position-relative">
+                                    {% render_field form.r401b class="form-control px-3 form-family" id=form.r401b.id_for_label %}
+                                    <div class="invalid-feedback" id="msg-{{ form.r401b.id_for_label }}">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
-            <div class="form-group">
-                <label for="{{ form.r401b.id_for_label }}">{{ form.r401b.label }}</label>
-                <div class="position-relative">
-                    {% render_field form.r401b class="form-control px-3 form-family" id=form.r401b.id_for_label %}
-                    <div class="invalid-feedback" id="msg-{{ form.r401b.id_for_label }}">
+
+            <div class="row">
+                <div class="col-6">
+                    <label class="mb-3"> Kepemilikan Hewan Ternak (Ekor): </label>
+                    <br>
+                    <div class="row">
+                        <div class="col-5 px-4">
+                            <label for="{{ form.r402a.id_for_label }}">a. {{ form.r402a.label }}</label>
+                        </div>
+                        <div class="col-6 col-offset-1">
+                            <div class="form-group">
+                                <div class="position-relative">
+                                    {% render_field form.r402a class="form-control px-3 form-family" id=form.r402a.id_for_label %}
+                                    <div class="invalid-feedback" id="msg-{{ form.r402a.id_for_label }}">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-5 px-4">
+                            <label for="{{ form.r402b.id_for_label }}">b. {{ form.r402b.label }}</label>
+                        </div>
+                        <div class="col-6 col-offset-1">
+                            <div class="form-group">
+                                <div class="position-relative">
+                                    {% render_field form.r402b class="form-control px-3 form-family" id=form.r402b.id_for_label %}
+                                    <div class="invalid-feedback" id="msg-{{ form.r402b.id_for_label }}">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-5 px-4">
+                            <label for="{{ form.r402c.id_for_label }}">c. {{ form.r402c.label }}</label>
+                        </div>
+                        <div class="col-6 col-offset-1">
+                            <div class="form-group">
+                                <div class="position-relative">
+                                    {% render_field form.r402c class="form-control px-3 form-family" id=form.r402c.id_for_label %}
+                                    <div class="invalid-feedback" id="msg-{{ form.r402c.id_for_label }}">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-5 px-4">
+                            <label for="{{ form.r402d.id_for_label }}">d. {{ form.r402d.label }}</label>
+                        </div>
+                        <div class="col-6 col-offset-1">
+                            <div class="form-group">
+                                <div class="position-relative">
+                                    {% render_field form.r402d class="form-control px-3 form-family" id=form.r402d.id_for_label %}
+                                    <div class="invalid-feedback" id="msg-{{ form.r402d.id_for_label }}">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-5 px-4">
+                            <label for="{{ form.r402e.id_for_label }}">e. {{ form.r402e.label }}</label>
+                        </div>
+                        <div class="col-6 col-offset-1">
+                            <div class="form-group">
+                                <div class="position-relative">
+                                    {% render_field form.r402e class="form-control px-3 form-family" id=form.r402e.id_for_label %}
+                                    <div class="invalid-feedback" id="msg-{{ form.r402e.id_for_label }}">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
-            <div class="form-group">
-                <label for="{{ form.r402a.id_for_label }}">{{ form.r402a.label }}</label>
-                <div class="position-relative">
-                    {% render_field form.r402a class="form-control px-3 form-family" id=form.r402a.id_for_label %}
-                    <div class="invalid-feedback" id="msg-{{ form.r402a.id_for_label }}">
-                    </div>
-                </div>
-            </div>
-            <div class="form-group">
-                <label for="{{ form.r402b.id_for_label }}">{{ form.r402b.label }}</label>
-                <div class="position-relative">
-                    {% render_field form.r402b class="form-control px-3 form-family" id=form.r402b.id_for_label %}
-                    <div class="invalid-feedback" id="msg-{{ form.r402b.id_for_label }}">
-                    </div>
-                </div>
-            </div>
-            <div class="form-group">
-                <label for="{{ form.r402c.id_for_label }}">{{ form.r402c.label }}</label>
-                <div class="position-relative">
-                    {% render_field form.r402c class="form-control px-3 form-family" id=form.r402c.id_for_label %}
-                    <div class="invalid-feedback" id="msg-{{ form.r402c.id_for_label }}">
-                    </div>
-                </div>
-            </div>
-            <div class="form-group">
-                <label for="{{ form.r402d.id_for_label }}">{{ form.r402d.label }}</label>
-                <div class="position-relative">
-                    {% render_field form.r402d class="form-control px-3 form-family" id=form.r402d.id_for_label %}
-                    <div class="invalid-feedback" id="msg-{{ form.r402d.id_for_label }}">
-                    </div>
-                </div>
-            </div>
-            <div class="form-group">
-                <label for="{{ form.r402e.id_for_label }}">{{ form.r402e.label }}</label>
-                <div class="position-relative">
-                    {% render_field form.r402e class="form-control px-3 form-family" id=form.r402e.id_for_label %}
-                    <div class="invalid-feedback" id="msg-{{ form.r402e.id_for_label }}">
-                    </div>
-                </div>
-            </div>
+
         </div>
     </div>
 
-    <div class="row my-3">
+    <div class="row mb-4">
         <div class="col-12">
             <h4>Bab V. Keterangan Anggota Keluarga</h4>
         </div>
     </div>
 
     <div class="art-section">
+        
     </div>
 
     <div class="row my-3">
@@ -399,227 +621,417 @@
 
     function generate_art(num){
             var form_art = `
-            <div class="row-art mt-5">
-                <div class="row">
-                    <div class="col-6">
-                        <h5 class="no_art"># ART `+ num +`</h5>
-                    </div>
-                    <div class="col-6 d-flex align-items-center justify-content-end">
-                        <a href="javascript:void(0)" class="btn icon btn-primary mx-1" onclick="addRow(this)" data-num_art="`+ num +`" style="font-size:25px">+</a> 
-                        <a href="javascript:void(0)" class="btn icon btn-danger removeRow" onclick="removeRow(this)" style="font-size:25px">-</a>
-                    </div>
+            <div class="row">
+                <div class="col-6">
+                    <h5 class="no_art">ART `+ num +`</h5>
                 </div>
-                
-                <div class="row">
-                    <div class="col-6">
-                        <div class="form-group">
-                            <label for="form_art_r501_`+ num +`">{{ form_penduduk.r501.label }}</label>
-                            <div class="position-relative">
-                                {% render_field form_penduduk.r501 class="form-control px-3" id="form_art_r501_`+ num +`" %}
-                                <div class="invalid-feedback" id="msg-form_art_r501_`+ num +`">
-                                </div>
-                            </div>
-                        </div>
-                        
-                        <div class="form-group">
-                            <label for="form_art_r502_`+ num +`">{{ form_penduduk.r502.label }}</label>
-                            <div class="position-relative">
-                                {% render_field form_penduduk.r502 class="form-control px-3" id="form_art_r502_`+ num +`" %}
-                                <div class="invalid-feedback" id="msg-form_art_r502_`+ num +`">
-                                </div>
-                            </div>
-                        </div>
-                
-                        <div class="form-group">
-                            <label for="form_art_r503_`+ num +`">{{ form_penduduk.r503.label }}</label>
-                            <div class="position-relative">
-                                {% render_field form_penduduk.r503 class="form-control px-3" id="form_art_r503_`+ num +`" %}
-                                <div class="invalid-feedback" id="msg-form_art_r503_`+ num +`">
-                                </div>
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <label for="form_art_r504_`+ num +`">{{ form_penduduk.r504.label }}</label>
-                            <div class="position-relative">
-                                {% render_field form_penduduk.r504 class="form-control px-3 form_art_r504" id="form_art_r504_`+ num +`" data-num="`+ num +`" onchange="showField404(this)" %}
-                                <div class="invalid-feedback" id="msg-form_art_r404_`+ num +`">
-                                </div>
-                            </div>
-                        </div>
-                
-                        <div class="form-group">
-                            <label for="form_art_r505_`+ num +`">{{ form_penduduk.r505.label }}</label>
-                            <div class="position-relative">
-                                {% render_field form_penduduk.r505 class="form-control field-art-`+ num +` px-3" id="form_art_r505_`+ num +`" %}
-                                <div class="invalid-feedback" id="msg-form_art_r505_`+ num +`">
-                                </div>
-                            </div>
-                        </div>
-                
-                        <div class="form-group">
-                            <label for="form_art_r506_`+ num +`">{{ form_penduduk.r506.label }}</label>
-                            <div class="position-relative">
-                                {% render_field form_penduduk.r506 class="form-control field-art-`+ num +` px-3" id="form_art_r506_`+ num +`" type="date" %}
-                                <div class="invalid-feedback" id="msg-form_art_r506_`+ num +`">
-                                </div>
-                            </div>
-                        </div>
-                
-                        <div class="form-group">
-                            <label for="form_art_r508_`+ num +`">{{ form_penduduk.r508.label }}</label>
-                            <div class="position-relative">
-                                {% render_field form_penduduk.r508 class="form-control field-art-`+ num +` px-3" id="form_art_r508_`+ num +`" data-num="`+ num +`" onchange="showField407(this)" %}
-                                <div class="invalid-feedback" id="msg-form_art_r508_`+ num +`">
-                                </div>
-                            </div>
-                        </div>
-                
-                        <div class="form-group">
-                            <label for="form_art_r510_`+ num +`">{{ form_penduduk.r408.label }}</label>
-                            <div class="position-relative">
-                                {% render_field form_penduduk.r408 class="form-control field-art-`+ num +` px-3" id="form_art_r510_`+ num +`" %}
-                                <div class="invalid-feedback" id="msg-form_art_r510_`+ num +`">
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+                <div class="col-6 d-flex align-items-center justify-content-end">
+                    <a href="javascript:void(0)" class="btn icon btn-primary mx-1" onclick="addRow(this)" data-num_art="`+ num +`" style="font-size:25px">+</a> 
+                    <a href="javascript:void(0)" class="btn icon btn-danger removeRow" onclick="removeRow(this)" style="font-size:25px">-</a>
                 </div>
-                <div class="row">
-                    <div class="col-6">
-                        <div class="form-group">
-                            <label for="form_art_r512_`+ num +`">{{ form_penduduk.r512.label }}</label>
-                            <div class="position-relative">
-                                {% render_field form_penduduk.r512 class="form-control px-3" id="form_art_r512_`+ num +`" %}
-                                <div class="invalid-feedback" id="msg-form_art_r512_`+ num +`">
-                                </div>
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <label for="form_art_r513_`+ num +`">{{ form_penduduk.r513.label }}</label>
-                            <div class="position-relative">
-                                {% render_field form_penduduk.r513 class="form-control px-3" id="form_art_r513_`+ num +`" %}
-                                <div class="invalid-feedback" id="msg-form_art_r513_`+ num +`">
-                                </div>
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <label for="form_art_r514_`+ num +`">{{ form_penduduk.r514.label }}</label>
-                            <div class="position-relative">
-                                {% render_field form_penduduk.r514 class="form-control px-3" id="form_art_r514_`+ num +`" %}
-                                <div class="invalid-feedback" id="msg-form_art_r514_`+ num +`">
-                                </div>
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <label for="form_art_r515_`+ num +`">{{ form_penduduk.r515.label }}</label>
-                            <div class="position-relative">
-                                {% render_field form_penduduk.r515 class="form-control px-3" id="form_art_r515_`+ num +`" %}
-                                <div class="invalid-feedback" id="msg-form_art_r515_`+ num +`">
-                                </div>
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <label for="form_art_r516_`+ num +`">{{ form_penduduk.r516.label }}</label>
-                            <div class="position-relative">
-                                {% render_field form_penduduk.r516 class="form-control px-3" id="form_art_r516_`+ num +`" %}
-                                <div class="invalid-feedback" id="msg-form_art_r516_`+ num +`">
-                                </div>
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <label for="form_art_r517_`+ num +`">{{ form_penduduk.r517.label }}</label>
-                            <div class="position-relative">
-                                {% render_field form_penduduk.r517 class="form-control px-3" id="form_art_r517_`+ num +`" %}
-                                <div class="invalid-feedback" id="msg-form_art_r517_`+ num +`">
-                                </div>
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <label for="form_art_r518_`+ num +`">{{ form_penduduk.r518.label }}</label>
-                            <div class="position-relative">
-                                {% render_field form_penduduk.r518 class="form-control px-3" id="form_art_r518_`+ num +`" %}
-                                <div class="invalid-feedback" id="msg-form_art_r518_`+ num +`">
-                                </div>
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <label for="form_art_r519_`+ num +`">{{ form_penduduk.r519.label }}</label>
-                            <div class="position-relative">
-                                {% render_field form_penduduk.r519 class="form-control px-3" id="form_art_r519_`+ num +`" %}
-                                <div class="invalid-feedback" id="msg-form_art_r519_`+ num +`">
-                                </div>
-                            </div>
-                        </div>
+            </div>
 
-                        <div class="form-group">
-                            <label for="form_art_r520a_`+ num +`">{{ form_penduduk.r520a.label }}</label>
-                            <div class="position-relative">
-                                {% render_field form_penduduk.r520a class="form-control px-3" id="form_art_r520a_`+ num +`" %}
-                                <div class="invalid-feedback" id="msg-form_art_r520a_`+ num +`">
+            <div class="row">
+                <div class="col-6">
+                    <h5 class="mb-3">Keterangan Demografi</h5>
+                    <div class="row">
+                        <div class="col-5">
+                            <label for="form_art_r501_`+ num +`">{{ form_penduduk.r501.label }}</label>
+                        </div>
+                        <div class="col-2 col-offset-5">
+                            <div class="form-group">
+                                <div class="position-relative">
+                                    {% render_field form_penduduk.r501 class="form-control px-3" id="form_art_r501_`+ num +`" %}
+                                    <div class="invalid-feedback" id="msg-form_art_r501_`+ num +`">
+                                    </div>
                                 </div>
                             </div>
                         </div>
-                        <div class="form-group">
-                            <label for="form_art_r520b_`+ num +`">{{ form_penduduk.r520b.label }}</label>
-                            <div class="position-relative">
-                                {% render_field form_penduduk.r520b class="form-control px-3" id="form_art_r520b_`+ num +`" %}
-                                <div class="invalid-feedback" id="msg-form_art_r520b_`+ num +`">
+                    </div>
+                    <div class="row">
+                        <div class="col-5">
+                            <label for="form_art_r502_`+ num +`">{{ form_penduduk.r502.label }}</label>
+                        </div>
+                        <div class="col-6 col-offset-1">
+                            <div class="form-group">
+                                <div class="position-relative">
+                                    {% render_field form_penduduk.r502 class="form-control px-3" id="form_art_r502_`+ num +`" %}
+                                    <div class="invalid-feedback" id="msg-form_art_r502_`+ num +`">
+                                    </div>
                                 </div>
                             </div>
                         </div>
-                        <div class="form-group">
-                            <label for="form_art_r520c_`+ num +`">{{ form_penduduk.r520c.label }}</label>
-                            <div class="position-relative">
-                                {% render_field form_penduduk.r520c class="form-control px-3" id="form_art_r520c_`+ num +`" %}
-                                <div class="invalid-feedback" id="msg-form_art_r520c_`+ num +`">
+                    </div>
+                    <div class="row">
+                        <div class="col-5">
+                            <label for="form_art_r503_`+ num +`">{{ form_penduduk.r503.label }}</label>
+                        </div>
+                        <div class="col-6 col-offset-1">
+                            <div class="form-group">
+                                <div class="position-relative">
+                                    {% render_field form_penduduk.r503 class="form-control px-3" id="form_art_r503_`+ num +`" %}
+                                    <div class="invalid-feedback" id="msg-form_art_r503_`+ num +`">
+                                    </div>
                                 </div>
                             </div>
                         </div>
-                        <div class="form-group">
-                            <label for="form_art_r520d_`+ num +`">{{ form_penduduk.r520d.label }}</label>
-                            <div class="position-relative">
-                                {% render_field form_penduduk.r520d class="form-control px-3" id="form_art_r520d_`+ num +`" %}
-                                <div class="invalid-feedback" id="msg-form_art_r520d_`+ num +`">
+                    </div>
+
+                    <div class="row">
+                        <div class="col-5">
+                            <label for="form_art_r504_`+ num +`">{{ form_penduduk.r504.label }}</label>
+                        </div>
+                        <div class="col-6 col-offset-1">
+                            <div class="form-group">
+                                <div class="position-relative">
+                                    {% render_field form_penduduk.r504 class="form-control px-3 " id="form_art_r504_`+ num +`" data-num="`+ num +`" %}
+                                    <div class="invalid-feedback" id="msg-form_art_r404_`+ num +`">
+                                    </div>
                                 </div>
                             </div>
                         </div>
-                        <div class="form-group">
-                            <label for="form_art_r520e_`+ num +`">{{ form_penduduk.r520e.label }}</label>
-                            <div class="position-relative">
-                                {% render_field form_penduduk.r520e class="form-control px-3" id="form_art_r520e_`+ num +`" %}
-                                <div class="invalid-feedback" id="msg-form_art_r520e_`+ num +`">
+                    </div>
+
+                    <div class="row">
+                        <div class="col-5">
+                            <label for="form_art_r505_`+ num +`">{{ form_penduduk.r505.label }}</label>
+                        </div>
+                        <div class="col-6 col-offset-1">
+                            <div class="form-group">
+                                <div class="position-relative">
+                                    {% render_field form_penduduk.r505 class="form-control px-3" id="form_art_r505_`+ num +`" data-num="`+ num +`" onchange="showField505(this)" %}
+                                    <div class="invalid-feedback" id="msg-form_art_r505_`+ num +`">
+                                    </div>
                                 </div>
                             </div>
                         </div>
-                        <div class="form-group">
-                            <label for="form_art_r520f_`+ num +`">{{ form_penduduk.r520f.label }}</label>
-                            <div class="position-relative">
-                                {% render_field form_penduduk.r520f class="form-control px-3" id="form_art_r520f_`+ num +`" %}
-                                <div class="invalid-feedback" id="msg-form_art_r520f_`+ num +`">
+                    </div>
+
+                    <div class="row">
+                        <div class="col-5">
+                            <label for="form_art_r506_`+ num +`">{{ form_penduduk.r506.label }}</label>
+                        </div>
+                        <div class="col-6 col-offset-1">
+                            <div class="form-group">
+                                <div class="position-relative">
+                                    {% render_field form_penduduk.r506 class="form-control px-3" id="form_art_r506_`+ num +`" type="date" %}
+                                    <div class="invalid-feedback" id="msg-form_art_r506_`+ num +`">
+                                    </div>
                                 </div>
                             </div>
                         </div>
-                        <div class="form-group">
-                            <label for="form_art_r520g_`+ num +`">{{ form_penduduk.r520g.label }}</label>
-                            <div class="position-relative">
-                                {% render_field form_penduduk.r520g class="form-control px-3" id="form_art_r520g_`+ num +`" %}
-                                <div class="invalid-feedback" id="msg-form_art_r520g_`+ num +`">
+                    </div>
+
+                    <div class="row">
+                        <div class="col-5">
+                            <label for="form_art_r507_`+ num +`">{{ form_penduduk.r507.label }}</label>
+                        </div>
+                        <div class="col-6 col-offset-1">
+                            <div class="form-group">
+                                <div class="position-relative">
+                                    {% render_field form_penduduk.r507 class="form-control px-3" id="form_art_r507_`+ num +`" data-num="`+ num +`" onchange="showField407(this)" %}
+                                    <div class="invalid-feedback" id="msg-form_art_r507_`+ num +`">
+                                    </div>
                                 </div>
                             </div>
                         </div>
-                        <div class="form-group">
-                            <label for="form_art_r520h_`+ num +`">{{ form_penduduk.r520h.label }}</label>
-                            <div class="position-relative">
-                                {% render_field form_penduduk.r520h class="form-control px-3" id="form_art_r520h_`+ num +`" %}
-                                <div class="invalid-feedback" id="msg-form_art_r520h_`+ num +`">
+                    </div>
+
+                    <div class="row">
+                        <div class="col-5">
+                            <label for="form_art_r508_`+ num +`">{{ form_penduduk.r508.label }}</label>
+                        </div>
+                        <div class="col-6 col-offset-1">
+                            <div class="form-group">
+                                <div class="position-relative">
+                                    {% render_field form_penduduk.r508 class="form-control px-3" id="form_art_r508_`+ num +`" data-num="`+ num +`" onchange="showField407(this)" type="date" %}
+                                    <div class="invalid-feedback" id="msg-form_art_r508_`+ num +`">
+                                    </div>
                                 </div>
                             </div>
                         </div>
-                        <div class="form-group">
-                            <label for="form_art_r520i_`+ num +`">{{ form_penduduk.r520i.label }}</label>
-                            <div class="position-relative">
-                                {% render_field form_penduduk.r520i class="form-control px-3" id="form_art_r520i_`+ num +`" %}
-                                <div class="invalid-feedback" id="msg-form_art_r520i_`+ num +`">
+                    </div>
+                    <div class="row">
+                        <div class="col-5">
+                            <label for="form_art_r510_`+ num +`">{{ form_penduduk.r510.label }}</label>
+                        </div>
+                        <div class="col-6 col-offset-1">
+                            <div class="form-group">
+                                <div class="position-relative">
+                                    {% render_field form_penduduk.r510 class="form-control px-3" id="form_art_r510_`+ num +`" %}
+                                    <div class="invalid-feedback" id="msg-form_art_r510_`+ num +`">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-5">
+                            <label for="form_art_r511_`+ num +`">{{ form_penduduk.r511.label }}</label>
+                        </div>
+                        <div class="col-6 col-offset-1">
+                            <div class="form-group">
+                                <div class="position-relative">
+                                    {% render_field form_penduduk.r511 class="form-control px-3" id="form_art_r511_`+ num +`" %}
+                                    <div class="invalid-feedback" id="msg-form_art_r511_`+ num +`">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-5">
+                            <label for="form_art_r512_`+ num +`">{{ form_penduduk.r512.label }}</label>
+                        </div>
+                        <div class="col-6 col-offset-1">
+                            <div class="form-group">
+                                <div class="position-relative">
+                                    {% render_field form_penduduk.r512 class="form-control px-3" id="form_art_r512_`+ num +`" %}
+                                    <div class="invalid-feedback" id="msg-form_art_r512_`+ num +`">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <br>
+                    <h5 class="mb-4 field-hide-`+ num +` d-none">Keterangan Ketenagakerjaan</h5>
+                    <div class="row d-none">
+                        <div class="col-5">
+                            <label for="form_art_r513_`+ num +`">{{ form_penduduk.r513.label }}</label>
+                        </div>
+                        <div class="col-6 col-offset-1">
+                            <div class="form-group">
+                                <div class="position-relative">
+                                    {% render_field form_penduduk.r513 class="form-control px-3 field-art-`+ num +`" id="form_art_r513_`+ num +`" data-num="`+ num +`"  onchange="showField514_516(this)" %}
+                                    <div class="invalid-feedback" id="msg-form_art_r513_`+ num +`">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row  d-none">
+                        <div class="col-5">
+                            <label for="form_art_r514_`+ num +`">{{ form_penduduk.r514.label }}</label>
+                        </div>
+                        <div class="col-6 col-offset-1">
+                            <div class="form-group">
+                                <div class="position-relative">
+                                    {% render_field form_penduduk.r514 class="form-control px-3 field-art-`+ num +`" id="form_art_r514_`+ num +`" %}
+                                    <div class="invalid-feedback" id="msg-form_art_r514_`+ num +`">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row  d-none">
+                        <div class="col-5">
+                            <label for="form_art_r515_`+ num +`">{{ form_penduduk.r515.label }}</label>
+                        </div>
+                        <div class="col-6 col-offset-1">
+                            <div class="form-group">
+                                <div class="position-relative">
+                                    {% render_field form_penduduk.r515 class="form-control px-3 field-art-`+ num +`" id="form_art_r515_`+ num +`" %}
+                                    <div class="invalid-feedback" id="msg-form_art_r515_`+ num +`">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row  d-none">
+                        <div class="col-5">
+                            <label for="form_art_r516_`+ num +`">{{ form_penduduk.r516.label }}</label>
+                        </div>
+                        <div class="col-6 col-offset-1">
+                            <div class="form-group">
+                                <div class="position-relative">
+                                    {% render_field form_penduduk.r516 class="form-control px-3 field-art-`+ num +`" id="form_art_r516_`+ num +`" %}
+                                    <div class="invalid-feedback" id="msg-form_art_r516_`+ num +`">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <br>
+                    <h5 class="mb-4 field-hide-`+ num +` d-none">Keterangan Pendidikan</h5>
+                    <div class="row  d-none">
+                        <div class="col-5">
+                            <label for="form_art_r517_`+ num +`">{{ form_penduduk.r517.label }}</label>
+                        </div>
+                        <div class="col-6 col-offset-1">
+                            <div class="form-group">
+                                <div class="position-relative">
+                                    {% render_field form_penduduk.r517 class="form-control px-3 field-art-`+ num +`" id="form_art_r517_`+ num +`" data-num="`+ num +`" onchange="showField518(this)" %}
+                                    <div class="invalid-feedback" id="msg-form_art_r517_`+ num +`">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row  d-none">
+                        <div class="col-5">
+                            <label for="form_art_r518_`+ num +`">{{ form_penduduk.r518.label }}</label>
+                        </div>
+                        <div class="col-6 col-offset-1">
+                            <div class="form-group">
+                                <div class="position-relative">
+                                    {% render_field form_penduduk.r518 class="form-control px-3 field-art-`+ num +`" id="form_art_r518_`+ num +`" %}
+                                    <div class="invalid-feedback" id="msg-form_art_r518_`+ num +`">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+                <div class="col-6">
+                    <br>
+                    <h5 class="mb-4 field-hide-`+ num +` d-none">Keterangan Kesehatan</h5>
+                    <div class="row  d-none">
+                        <div class="col-5">
+                            <label for="form_art_r519_`+ num +`">{{ form_penduduk.r519.label }}</label>
+                        </div>
+                        <div class="col-6 col-offset-1">
+                            <div class="form-group">
+                                <div class="position-relative">
+                                    {% render_field form_penduduk.r519 class="form-control px-3 field-art-`+ num +`" id="form_art_r519_`+ num +`" %}
+                                    <div class="invalid-feedback" id="msg-form_art_r519_`+ num +`">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <br>
+                    <h5 class="mb-4 field-hide-`+ num +` d-none">Keterangan Disabilitas</h5>
+                    <div class="row  d-none">
+                        <div class="col-5 px-4">
+                            <label for="form_art_r520a_`+ num +`">a. {{ form_penduduk.r520a.label }}</label>
+                        </div>
+                        <div class="col-6 col-offset-1">
+                            <div class="form-group">
+                                <div class="position-relative">
+                                    {% render_field form_penduduk.r520a class="form-control px-3 field-art-`+ num +`" id="form_art_r520a_`+ num +`" %}
+                                    <div class="invalid-feedback" id="msg-form_art_r520a_`+ num +`">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row  d-none">
+                        <div class="col-5 px-4">
+                            <label for="form_art_r520b_`+ num +`">b. {{ form_penduduk.r520b.label }}</label>
+                        </div>
+                        <div class="col-6 col-offset-1">
+                            <div class="form-group">
+                                <div class="position-relative">
+                                    {% render_field form_penduduk.r520b class="form-control px-3 field-art-`+ num +`" id="form_art_r520b_`+ num +`" %}
+                                    <div class="invalid-feedback" id="msg-form_art_r520b_`+ num +`">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row  d-none">
+                        <div class="col-5 px-4">
+                            <label for="form_art_r520c_`+ num +`">c. {{ form_penduduk.r520c.label }}</label>
+                        </div>
+                        <div class="col-6 col-offset-1">
+                            <div class="form-group">
+                                <div class="position-relative">
+                                    {% render_field form_penduduk.r520c class="form-control px-3 field-art-`+ num +`" id="form_art_r520c_`+ num +`" %}
+                                    <div class="invalid-feedback" id="msg-form_art_r520c_`+ num +`">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row  d-none">
+                        <div class="col-5 px-4">
+                            <label for="form_art_r520d_`+ num +`">d. {{ form_penduduk.r520d.label }}</label>
+                        </div>
+                        <div class="col-6 col-offset-1">
+                            <div class="form-group">
+                                <div class="position-relative">
+                                    {% render_field form_penduduk.r520d class="form-control px-3 field-art-`+ num +`" id="form_art_r520d_`+ num +`" %}
+                                    <div class="invalid-feedback" id="msg-form_art_r520d_`+ num +`">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row  d-none">
+                        <div class="col-5 px-4">
+                            <label for="form_art_r520e_`+ num +`">e. {{ form_penduduk.r520e.label }}</label>
+                        </div>
+                        <div class="col-6 col-offset-1">
+                            <div class="form-group">
+                                <div class="position-relative">
+                                    {% render_field form_penduduk.r520e class="form-control px-3 field-art-`+ num +`" id="form_art_r520e_`+ num +`" %}
+                                    <div class="invalid-feedback" id="msg-form_art_r520e_`+ num +`">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row  d-none">
+                        <div class="col-5 px-4">
+                            <label for="form_art_r520f_`+ num +`">f. {{ form_penduduk.r520f.label }}</label>
+                        </div>
+                        <div class="col-6 col-offset-1">
+                            <div class="form-group">
+                                <div class="position-relative">
+                                    {% render_field form_penduduk.r520f class="form-control px-3 field-art-`+ num +`" id="form_art_r520f_`+ num +`" %}
+                                    <div class="invalid-feedback" id="msg-form_art_r520f_`+ num +`">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row  d-none">
+                        <div class="col-5 px-4">
+                            <label for="form_art_r520g_`+ num +`">g. {{ form_penduduk.r520g.label }}</label>
+                        </div>
+                        <div class="col-6 col-offset-1">
+                            <div class="form-group">
+                                <div class="position-relative">
+                                    {% render_field form_penduduk.r520g class="form-control px-3 field-art-`+ num +`" id="form_art_r520g_`+ num +`" %}
+                                    <div class="invalid-feedback" id="msg-form_art_r520g_`+ num +`">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row  d-none">
+                        <div class="col-5 px-4">
+                            <label for="form_art_r520h_`+ num +`">h. {{ form_penduduk.r520h.label }}</label>
+                        </div>
+                        <div class="col-6 col-offset-1">
+                            <div class="form-group">
+                                <div class="position-relative">
+                                    {% render_field form_penduduk.r520h class="form-control px-3 field-art-`+ num +`" id="form_art_r520h_`+ num +`" %}
+                                    <div class="invalid-feedback" id="msg-form_art_r520h_`+ num +`">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row  d-none">
+                        <div class="col-5 px-4">
+                            <label for="form_art_r520i_`+ num +`">i. {{ form_penduduk.r520i.label }}</label>
+                        </div>
+                        <div class="col-6 col-offset-1">
+                            <div class="form-group">
+                                <div class="position-relative">
+                                    {% render_field form_penduduk.r520i class="form-control px-3 field-art-`+ num +`" id="form_art_r520i_`+ num +`" %}
+                                    <div class="invalid-feedback" id="msg-form_art_r520i_`+ num +`">
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -631,6 +1043,7 @@
     }
 
     $('.art-section').append(generate_art(1))
+
     function addRow(e){
         var last_row = $(e).data('num_art')
         var current_row = $(e).parent().parent().parent()
@@ -655,71 +1068,8 @@
         });
     }
 
-    function get_region_adm(level, val, target){
-
-        var data = {}
-        var opt = '<option value="" selected="selected">---------</option>'
-
-        if (level == 'prov'){
-            data['province_id'] = val
-            $('#id_kabkot').html(opt)
-            $('#id_kecamatan').html(opt)
-            $('#id_r104').html(opt)
-            $('#id_r105').html(opt)
-        }else if (level == 'kabkot'){
-            data['regency_id'] = val
-            $('#id_kecamatan').html(opt)
-            $('#id_r104').html(opt)
-            $('#id_r105').html(opt)
-        }else if (level == 'kec'){
-            data['district_id'] = val
-            $('#id_r104').html(opt)
-            $('#id_r105').html(opt)
-        }else if (level == 'deskel'){
-            data['subdistrict_id'] = val
-            $('#id_r105').html(opt)
-        }else{
-            return false
-        }
-        
-        $.ajax({
-            url: '{% url "app:fetch-region" %}',
-            type: "POST",
-            dataType: "json",
-            data : data,
-            headers: {
-                "X-Requested-With": "XMLHttpRequest",
-                "X-CSRFToken": '{{csrf_token}}',
-            },
-            success: (result) => {
-
-                if (level == 'kec'){
-                    for (let i = 0; i < result.data.length; i++) {
-                        opt += '<option value="'+result.data[i].id+'" data-code="'+result.data[i].reg_code+'">['+result.data[i].reg_code+'] &ensp;'+result.data[i].reg_name+'</option>'
-                    }
-                }else if (level == 'deskel'){
-                    for (let i = 0; i < result.data.length; i++) {
-                        opt += '<option value="'+result.data[i].id+'">['+result.data[i].reg_sls_code+'] &ensp;'+result.data[i].reg_sls_name+'</option>'
-                    }
-                }else{
-                    for (let i = 0; i < result.data.length; i++) {
-                        opt += '<option value="'+result.data[i].reg_code+'">['+result.data[i].reg_code+'] &ensp;'+result.data[i].reg_name+'</option>'
-                    }
-                }
-
-                $(target).html(opt)
-            },
-            error: (error) => {
-                console.log(error);
-            }
-        });
-
-        return
-    }
-
     $('#id_provinsi').on('change', function(){
         get_region_adm('prov', $(this).val(), '#id_kabkot')
-        
     })
 
     $('#id_kabkot').on('change', function(){
@@ -734,15 +1084,14 @@
         get_region_adm('deskel', $('option:selected', this).attr('data-code'), '#id_r105')
     })
 
-    $('#{{form.r301a.id_for_label}}').on('change', function(){
-        var target = $('#{{ form.r301b.id_for_label }}')
+    $('#{{form.r401a.id_for_label}}').on('change', function(){
+        var target = $('#{{ form.r401b.id_for_label }}')
         if ($(this).val() == 1){
             target.attr('required', 'required')
-            target.parent().parent().removeClass('d-none')
-        }
-        else{
+            target.parent().parent().parent().parent().removeClass('d-none')
+        }else{
             target.removeAttr('required')
-            target.parent().parent().addClass('d-none')
+            target.parent().parent().parent().parent().addClass('d-none')
         }
     })
 
@@ -752,177 +1101,76 @@
         }
     })
 
-    $('#{{form.r306a.id_for_label}}').on('change', function(){
-        var target = $('#{{ form.r306b.id_for_label }}')
-        var val = parseInt($(this).val())
-        if ([4, 5, 6, 7, 8].includes(val)){
-            target.attr('required', 'required')
-            target.parent().parent().removeClass('d-none')
-        }else{
-            target.removeAttr('required')
-            target.parent().parent().addClass('d-none')
-        }
-    })
-
-    $('#{{form.r307a.id_for_label}}').on('change', function(){
-        var target = $('#{{ form.r307b.id_for_label }}')
-        if ($(this).val() == 1){
-            target.attr('required', 'required')
-            target.parent().parent().removeClass('d-none')
-        }else{
-            target.removeAttr('required')
-            target.parent().parent().addClass('d-none')
-        }
-    })
-    
-    $('#{{form.r309a.id_for_label}}').on('change', function(){
-        var target = $('#{{ form.r309b.id_for_label }}')
-        var val = parseInt($(this).val())
-        if ([1 ,2, 3].includes(val)){
-            target.attr('required', 'required')
-            target.parent().parent().removeClass('d-none')
-        }else{
-            target.removeAttr('required')
-            target.parent().parent().addClass('d-none')
-        }
-    })
-
-    function showField407(e){
+    function showField518(e){
         var val = parseInt($(e).val())
         var attr_num = parseInt($(e).attr('data-num'))
-        
-        var target1 = $('#form_art_r427_'+attr_num)
-        var target2 = $('#form_art_r431f_'+attr_num)
-
-        var target_year_mt_5 = [
-            '#form_art_r412_'+ attr_num,
-            '#form_art_r416a_'+ attr_num,
-            '#form_art_r416b_'+ attr_num,
-            '#form_art_r417_'+ attr_num,
-            '#form_art_r418_'+ attr_num,
-            '#form_art_r420a_'+ attr_num,
-            '#form_art_r421_'+ attr_num,
-            '#form_art_r422_23_'+ attr_num,
-            '#form_art_r425_'+ attr_num,
-        ]
-
-        if (val >= 5 ){
-            target_year_mt_5.forEach((obj) => {
-                $(obj).attr('required', 'required')
-                $(obj).parent().parent().removeClass('d-none')
-            });
-        }else{
-            target_year_mt_5.forEach((obj) => {
-                $(obj).removeAttr('required')
-                $(obj).parent().parent().addClass('d-none')
-            });
-        }
-
-        if (val <= 4 ){
-            target1.attr('required', 'required')
-            target1.parent().parent().removeClass('d-none')
-        }else{
-            target1.removeAttr('required')
-            target1.parent().parent().addClass('d-none')
-        }
-
-        if (val >= 15){
-            target2.attr('required', 'required')
-            target2.parent().parent().removeClass('d-none')
-        }else{
-            target2.removeAttr('required')
-            target2.parent().parent().addClass('d-none')
-        }
-    }
-
-    function showField420(e){
-        var val = parseInt($(e).val())
-        var attr_num = parseInt($(e).attr('data-num'))
-
-        var target = [
-            '#form_art_r421_'+attr_num,
-            '#form_art_r422_23_'+attr_num,
-            '#form_art_r425_'+attr_num
-        ]
-        
-        if (val == 1){
-            target.forEach((obj) => {
-                $(obj).attr('required', 'required')
-                $(obj).parent().parent().removeClass('d-none')
-            });
-        }else{
-            target.forEach((obj) => {
-                $(obj).removeAttr('required')
-                $(obj).parent().parent().addClass('d-none')
-            });
-        }
-
-    }
-
-    function showField416(e){
-        var val = parseInt($(e).val())
-        var attr_num = parseInt($(e).attr('data-num'))
-        var target = [
-            '#form_art_r416b_'+attr_num,
-            '#form_art_r417_'+attr_num,
-            '#form_art_r418_'+attr_num
-        ]
-
-        if (val == 1){
-            target.forEach((obj) => {
-                $(obj).attr('required', 'required')
-                $(obj).parent().parent().removeClass('d-none')
-            });
-            
-        }else{
-            target.forEach((obj) => {
-                $(obj).removeAttr('required')
-                $(obj).parent().parent().addClass('d-none')
-            });
-        }
-
-    }
-
-    function showField412(e){
-        var val = parseInt($(e).val())
-        var attr_num = parseInt($(e).attr('data-num'))
-        var target = $('#form_art_r415_'+attr_num)
+        var target = $('#form_art_r518_' + attr_num)
         
         if ([2, 3].includes(val)){
             target.attr('required', 'required')
-            target.parent().parent().removeClass('d-none')
+            target.parent().parent().parent().parent().removeClass('d-none')
         }else{
             target.removeAttr('required')
-            target.parent().parent().addClass('d-none')
+            target.parent().parent().parent().parent().addClass('d-none')
         }
     }
 
-    function showField404(e){
+
+    function showField514_516(e){
         var val = parseInt($(e).val())
         var attr_num = parseInt($(e).attr('data-num'))
 
-        var not_showen_fields = ['form_art_r427_' + attr_num, 'form_art_r431f_'+attr_num, 'form_art_r412_'+attr_num, 'form_art_r415_' + attr_num, 'form_art_r416a_' + attr_num, 'form_art_r416b_' + attr_num, 'form_art_r417_' + attr_num, 'form_art_r418_' + attr_num, 'form_art_r420a_'+attr_num,'form_art_r421_'+attr_num, 'form_art_r422_23_'+attr_num, 'form_art_r425_'+attr_num]
-
-        if ([1, 5].includes(val)){
-            $('.field-art-'+ attr_num).each(function(i, obj) {
-                if (!not_showen_fields.includes($(this).attr('id'))){
-                    $(this).attr('required', 'required')
-                    $(this).parent().parent().removeClass('d-none')
-                }
+        var target = [$('#form_art_r514_'+attr_num), $('#form_art_r515_'+attr_num), $('#form_art_r516_'+attr_num)]
+        if (val == 5){
+            target.forEach((obj) => {
+                $(obj).attr('required', 'required')
+                $(obj).parent().parent().parent().parent().removeClass('d-none')
             });
         }else{
-            $('.field-art-' + attr_num).each(function(i, obj) {
-                $(this).removeAttr('required', 'required')
-                $(this).parent().parent().addClass('d-none')
+            target.forEach((obj) => {
+                $(obj).removeAttr('required')
+                $(obj).parent().parent().parent().parent().addClass('d-none')
             });
         }
+    }
+
+    function showField505(e){
+        var val = parseInt($(e).val())
+        var attr_num = parseInt($(e).attr('data-num'))
+        
+        var exception_fields = ['form_art_r514_' + attr_num, 'form_art_r515_' + attr_num, 'form_art_r516_' + attr_num, 'form_art_r518_' + attr_num]
+
+        if ([1, 4].includes(val)){
+            $('.field-hide-'+ attr_num).each(function(i, obj) {
+                $(this).removeClass('d-none')
+            });
+
+            $('.field-art-' + attr_num).each(function(i, obj) {
+                if (!exception_fields.includes($(this).attr('id'))){
+                    $(this).attr('required', 'required')
+                    $(this).parent().parent().parent().parent().removeClass('d-none')
+                }
+            });
+            
+        }else{
+            $('.field-hide-'+ attr_num).each(function(i, obj) {
+                $(this).addClass('d-none')
+            });
+
+            $('.field-art-' + attr_num).each(function(i, obj) {
+                if (!exception_fields.includes($(this).attr('id'))){
+                    $(this).removeAttr('required', 'required')
+                    $(this).parent().parent().parent().parent().addClass('d-none')
+                }
+            });
+        }
+
     }
 
     function clean_form(){
         $('.invalid-feedback').each(function(i, obj) {
            $(this).html('')
         });
-
         $('.form-control').each(function(i, obj) {
             $(this).removeClass('is_invalid')
          });
@@ -965,7 +1213,35 @@
         $('#message-respons').html('')
     
         var art_form_data = clean_inline_form(
-            ['input_r401','input_r402','input_r403','r404','r405','input_r406','input_r407','r408','r409','r411','r412','r415','r416a','input_r416b','r417','r418','r420a','r421','input_r422_23','r425','r427','r430','r431a','r431f']
+            [
+                'input_r501',
+                'input_r502',
+                'input_r503',
+                'r504',
+                'r505',
+                'r506',
+                'input_r507',
+                'input_r508',
+                'r510',
+                'r511',
+                'r512',
+                'r513',
+                'r514',
+                'r515',
+                'r516',
+                'r517',
+                'r518',
+                'r519',
+                'r520a',
+                'r520b',
+                'r520c',
+                'r520d',
+                'r520e',
+                'r520f',
+                'r520g',
+                'r520h',
+                'r520i',
+            ]
         )
 
         var form_data = {}
@@ -1015,8 +1291,6 @@
                 }
             }
         });
-
-        return
     }
 
 

@@ -70,11 +70,12 @@ def transform_data(data):
     all_keys = list(set(key for d in data for key in d))
     results = []
     for i in range(len(list(data[0].values())[0])):
-        new_dict = {}
-        for key in all_keys:
-            new_dict[key] = next((list(dt.values())[0][i] for dt in data if key in dt.keys()), None)
+        return pprint(i)
+        # new_dict = {}
+        # for key in all_keys:
+        #     new_dict[key] = next((list(dt.values())[0][i] for dt in data if key in dt.keys()), None)
     
-        results.append(new_dict)
+        # results.append(new_dict)
 
     return results
 

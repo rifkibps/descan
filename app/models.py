@@ -163,18 +163,18 @@ class FamiliesModels(models.Model):
         ('2', 'Tidak')
     )
 
-    r401a = models.CharField(max_length=1, blank=False, null=False, choices=state, verbose_name="Tanah/Lahan Pertanian")
-    r401b = models.CharField(max_length=1, blank=False, null=False, choices=state, verbose_name="Luas Lahan")
+    r401a = models.CharField(max_length=1, blank=False, null=False, choices=state, verbose_name="Kepemilikan Tanah/Lahan Pertanian")
+    r401b = models.IntegerField(blank=True, null=True, verbose_name="Luas Lahan")
 
     r402a = models.IntegerField(blank=True, null=True, default=0, verbose_name="Jumlah Sapi")
     r402b = models.IntegerField(blank=True, null=True, default=0, verbose_name="Jumlah Kerbau")
     r402c = models.IntegerField(blank=True, null=True, default=0, verbose_name="Jumlah Kuda")
     r402d = models.IntegerField(blank=True, null=True, default=0, verbose_name="Jumlah Babi")
     r402e = models.IntegerField(blank=True, null=True, default=0, verbose_name="Jumlah Kambing/Domba")
-    r402e = models.IntegerField(blank=True, null=True, default=0, verbose_name="Jumlah Domba")
-    r402e = models.IntegerField(blank=True, null=True, default=0, verbose_name="Jumlah Ayam Buras")
-    r402e = models.IntegerField(blank=True, null=True, default=0, verbose_name="Jumlah Ayam Ras Pedaging")
-    r402e = models.IntegerField(blank=True, null=True, default=0, verbose_name="Jumlah Ayam Ras Petelur")
+    r402f = models.IntegerField(blank=True, null=True, default=0, verbose_name="Jumlah Domba")
+    r402g = models.IntegerField(blank=True, null=True, default=0, verbose_name="Jumlah Ayam Buras")
+    r402h = models.IntegerField(blank=True, null=True, default=0, verbose_name="Jumlah Ayam Ras Pedaging")
+    r402i = models.IntegerField(blank=True, null=True, default=0, verbose_name="Jumlah Ayam Ras Petelur")
 
     created_at = models.DateField(auto_now_add=True, editable=False)
     updated_at = models.DateField(auto_now=True, editable=False)
@@ -219,8 +219,9 @@ class PopulationsModels(models.Model):
     )
 
     # Null Values
-    r506 = models.CharField(max_length=1, blank=True, null=True, choices=r506_choices, verbose_name="Jenis kelamin")
-    r508 = models.DateField(blank=True, null=True, verbose_name="Tanggal lahir")
+    r506 = models.CharField(max_length=1, blank=False, null=False, choices=r506_choices, verbose_name="Jenis kelamin")
+    r507 = models.CharField(max_length=128, blank=False, null=False, verbose_name="Tempat lahir")
+    r508 = models.DateField(blank=False, null=False, verbose_name="Tanggal lahir")
 
     r510_choices = (
         ('1', 'Belum Kawin'),
@@ -228,13 +229,24 @@ class PopulationsModels(models.Model):
         ('3', 'Cerai Hidup'),
         ('4', 'Cerai Mati'),
     )
-    r510 = models.CharField(max_length=1, blank=True, null=True, choices=r510_choices, verbose_name="Status pernikahan")
+    r510 = models.CharField(max_length=1, blank=False, null=False, choices=r510_choices, verbose_name="Status pernikahan")
+
+
+    r511_choices = (
+        ('1', 'Islam'),
+        ('2', 'Kristen'),
+        ('3', 'Katolik'),
+        ('4', 'Hindu'),
+        ('5', 'Budha'),
+        ('6', 'Konghuchu'),
+    )
+    r511 = models.CharField(max_length=1, blank=False, null=False, choices=r511_choices, verbose_name="Agama")
 
     r512_choices = (
         ('1', 'Muna'),
         ('2', 'Lainnya'),
     )
-    r512 = models.CharField(max_length=1, blank=True, null=True, choices=r512_choices, verbose_name="Suku")
+    r512 = models.CharField(max_length=1, blank=False, null=False, choices=r512_choices, verbose_name="Suku")
 
     r513_choices = (
         ('1', 'Bersekolah'),

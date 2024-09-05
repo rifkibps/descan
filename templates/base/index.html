@@ -145,6 +145,68 @@
             `
             return $(target).html(html)
         }
+
+        function get_region_adm(level, val, target){
+
+            var data = {}
+            var opt = '<option value="" selected="selected">---------</option>'
+    
+            if (level == 'prov'){
+                data['province_id'] = val
+                $('#id_kabkot').html(opt)
+                $('#id_kecamatan').html(opt)
+                $('#id_r104').html(opt)
+                $('#id_r105').html(opt)
+            }else if (level == 'kabkot'){
+                data['regency_id'] = val
+                $('#id_kecamatan').html(opt)
+                $('#id_r104').html(opt)
+                $('#id_r105').html(opt)
+            }else if (level == 'kec'){
+                data['district_id'] = val
+                $('#id_r104').html(opt)
+                $('#id_r105').html(opt)
+            }else if (level == 'deskel'){
+                data['subdistrict_id'] = val
+                $('#id_r105').html(opt)
+            }else{
+                return false
+            }
+            
+            $.ajax({
+                url: '{% url "app:fetch-region" %}',
+                type: "POST",
+                dataType: "json",
+                data : data,
+                headers: {
+                    "X-Requested-With": "XMLHttpRequest",
+                    "X-CSRFToken": '{{csrf_token}}',
+                },
+                success: (result) => {
+    
+                    if (level == 'kec'){
+                        for (let i = 0; i < result.data.length; i++) {
+                            opt += '<option value="'+result.data[i].id+'" data-code="'+result.data[i].reg_code+'">['+result.data[i].reg_code+'] &ensp;'+result.data[i].reg_name+'</option>'
+                        }
+                    }else if (level == 'deskel'){
+                        for (let i = 0; i < result.data.length; i++) {
+                            opt += '<option value="'+result.data[i].id+'">['+result.data[i].reg_sls_code+'] &ensp;'+result.data[i].reg_sls_name+'</option>'
+                        }
+                    }else{
+                        for (let i = 0; i < result.data.length; i++) {
+                            opt += '<option value="'+result.data[i].reg_code+'">['+result.data[i].reg_code+'] &ensp;'+result.data[i].reg_name+'</option>'
+                        }
+                    }
+    
+                    $(target).html(opt)
+                },
+                error: (error) => {
+                    console.log(error);
+                }
+            });
+    
+            return
+        }
     </script>
     {% block js-extender %}
     {% endblock js-extender %}
