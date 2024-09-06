@@ -1115,26 +1115,28 @@ class FamiliesAddClassView(LoginRequiredMixin, View):
                 if len(forms_errors) > 0:
                     return JsonResponse({"status": 'failed', "error": forms_errors}, status=400)
                 
-                last_validations = helpers.combine_validations(data_families, data_art)
-                if len(last_validations) > 0:
-                    for key, val in last_validations.items():
-                        forms_errors[key] = val
-                    return JsonResponse({"status": 'failed', "error": forms_errors}, status=400)
-                
+                pprint(forms_errors)
+
+                # last_validations = helpers.combine_validations(data_families, data_art)
+                # if len(last_validations) > 0:
+                #     for key, val in last_validations.items():
+                #         forms_errors[key] = val
+                    # return JsonResponse({"status": 'failed', "error": forms_errors}, status=400)
+
                 # form_family.save()
                 # last_id = models.FamiliesModels.objects.latest('id').id
-                # art_names = ''
+                art_names = ''
                 # for idx, dt in enumerate(data_art):
                 #     data_art[idx]['family_id'] = last_id
                 #     form_art = forms.PopulationsForm(dt)
                 #     form_art.save()
                 #     art_names += f'<li class="px-2">{idx+1}. {dt["r402"]}</li>'
                 
-                # msg = f'<ul class="px-0" style="list-style:none">\
-                #             Data keluarga dengan ART berhasil ditambahkan: <br>\
-                #            {art_names}\
-                #         </ul>'
-                # return JsonResponse({"status": msg}, status=200)
+                msg = f'<ul class="px-0" style="list-style:none">\
+                            Data keluarga dengan ART berhasil ditambahkan: <br>\
+                           {art_names}\
+                        </ul>'
+                return JsonResponse({"status": msg}, status=200)
             
         return JsonResponse({'status': 'Invalid request'}, status=400)
 

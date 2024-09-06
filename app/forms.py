@@ -30,11 +30,33 @@ class FamiliesForm(forms.ModelForm):
         if form_data.get('r109') is not None:
             form_data['r109'] = int(form_data['r109'])
 
+        if form_data.get('r301') is not None :
+            if form_data.get('r301') == '1':
+                if form_data.get('r302') is None:
+                    self._errors['r302'] = self.error_class(['Jika status penguasaan bangunan tempat tinggal adalah milik sendiri, maka status lahan yang ditempati harus terisi.'])
+            else:
+                form_data['r302'] = None
+
         if form_data.get('r401a') is not None and form_data.get('r401a') == '1':
             if form_data.get('r401b') is None or form_data.get('r401b') < 1:
                 self._errors['r401b'] = self.error_class(['Jika memiliki tanah/lahan pertanian, maka luas lahan yang dimiliki harus terisi.'])
         else:
             form_data['r401b'] = None
+
+        if form_data.get('r402a') is not None and form_data.get('r402a') < 0:
+            self._errors['r402a'] = self.error_class(['Jumlah kepemilikan hewan ternak Sapi tidak boleh kurang dari 0.'])
+
+        if form_data.get('r402b') is not None and form_data.get('r402b') < 0:
+            self._errors['r402b'] = self.error_class(['Jumlah kepemilikan hewan ternak Kerbau tidak boleh kurang dari 0.'])
+
+        if form_data.get('r402c') is not None and form_data.get('r402c') < 0:
+            self._errors['r402c'] = self.error_class(['Jumlah kepemilikan hewan ternak Kuda tidak boleh kurang dari 0.'])
+
+        if form_data.get('r402d') is not None and form_data.get('r402d') < 0:
+            self._errors['r402d'] = self.error_class(['Jumlah kepemilikan hewan ternak Babi tidak boleh kurang dari 0.'])
+
+        if form_data.get('r402e') is not None and form_data.get('r402e') < 0:
+            self._errors['r402e'] = self.error_class(['Jumlah kepemilikan hewan ternak Kambing/Domba tidak boleh kurang dari 0.'])
 
         self.cleaned_data = form_data
         return self.cleaned_data
@@ -96,25 +118,25 @@ class PopulationsForm(forms.ModelForm):
                     else:
                         form_data['r518'] = None
                 
-            if form_data.get('r519') is None:
-                self._errors['r519'] = self.error_class(['Jika ART tinggal bersama/keluarga baru, maka isian jaminan kesehatan harus terisi'])
+                if form_data.get('r519') is None:
+                    self._errors['r519'] = self.error_class(['Jika ART tinggal bersama/keluarga baru, maka isian jaminan kesehatan harus terisi'])
 
-            if form_data.get('r520a') is None:
-                self._errors['r520a'] = self.error_class(['Jika ART tinggal bersama/keluarga baru, maka isian disabilitas tunanetra/buta harus terisi'])
-            if form_data.get('r520b') is None:
-                self._errors['r520b'] = self.error_class(['Jika ART tinggal bersama/keluarga baru, maka isian disabilitas tunarungu/tuli harus terisi'])
-            if form_data.get('r520c') is None:
-                self._errors['r520c'] = self.error_class(['Jika ART tinggal bersama/keluarga baru, maka isian disabilitas tunawicara/bisu harus terisi'])
-            if form_data.get('r520d') is None:
-                self._errors['r520d'] = self.error_class(['Jika ART tinggal bersama/keluarga baru, maka isian disabilitas tunarungu–wicara/tuli–bisu harus terisi'])
-            if form_data.get('r520e') is None:
-                self._errors['r520e'] = self.error_class(['Jika ART tinggal bersama/keluarga baru, maka isian disabilitas tunadaksa/ cacat tubuh harus terisi'])
-            if form_data.get('r520f') is None:
-                self._errors['r520f'] = self.error_class(['Jika ART tinggal bersama/keluarga baru, maka isian disabilitas tunagrahita harus terisi'])
-            if form_data.get('r520g') is None:
-                self._errors['r520g'] = self.error_class(['Jika ART tinggal bersama/keluarga baru, maka isian disabilitas tunalaras harus terisi'])
-            if form_data.get('r520h') is None:
-                self._errors['r520h'] = self.error_class(['Jika ART tinggal bersama/keluarga baru, maka isian disabilitas cacat ganda harus terisi'])
+                if form_data.get('r520a') is None:
+                    self._errors['r520a'] = self.error_class(['Jika ART tinggal bersama/keluarga baru, maka isian disabilitas tunanetra/buta harus terisi'])
+                if form_data.get('r520b') is None:
+                    self._errors['r520b'] = self.error_class(['Jika ART tinggal bersama/keluarga baru, maka isian disabilitas tunarungu/tuli harus terisi'])
+                if form_data.get('r520c') is None:
+                    self._errors['r520c'] = self.error_class(['Jika ART tinggal bersama/keluarga baru, maka isian disabilitas tunawicara/bisu harus terisi'])
+                if form_data.get('r520d') is None:
+                    self._errors['r520d'] = self.error_class(['Jika ART tinggal bersama/keluarga baru, maka isian disabilitas tunarungu–wicara/tuli–bisu harus terisi'])
+                if form_data.get('r520e') is None:
+                    self._errors['r520e'] = self.error_class(['Jika ART tinggal bersama/keluarga baru, maka isian disabilitas tunadaksa/ cacat tubuh harus terisi'])
+                if form_data.get('r520f') is None:
+                    self._errors['r520f'] = self.error_class(['Jika ART tinggal bersama/keluarga baru, maka isian disabilitas tunagrahita harus terisi'])
+                if form_data.get('r520g') is None:
+                    self._errors['r520g'] = self.error_class(['Jika ART tinggal bersama/keluarga baru, maka isian disabilitas tunalaras harus terisi'])
+                if form_data.get('r520h') is None:
+                    self._errors['r520h'] = self.error_class(['Jika ART tinggal bersama/keluarga baru, maka isian disabilitas cacat ganda harus terisi'])
 
             self.cleaned_data = form_data
             return self.cleaned_data

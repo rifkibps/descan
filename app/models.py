@@ -71,7 +71,7 @@ class FamiliesModels(models.Model):
         ('3', 'Tanah Negara'),
         ('4', 'Lainnya'),
     )
-    r302 = models.CharField(max_length=1, blank=False, null=False, choices=r302_choices, verbose_name="Status lahan tempat tinggal yang ditempati")
+    r302 = models.CharField(max_length=1, blank=True, null=True, choices=r302_choices, verbose_name="Status lahan tempat tinggal yang ditempati")
 
     r303_choices = (
         ('1', 'Marmer/Granit'),
@@ -321,10 +321,10 @@ class PopulationsModels(models.Model):
     )
 
     r520a = models.CharField(max_length=1, blank=True, null=True, choices=state, verbose_name="Tunanetra/buta")
-    r520b = models.CharField(max_length=1, blank=True, null=True, choices=state, verbose_name="Tunarungu/ tuli")
-    r520c = models.CharField(max_length=1, blank=True, null=True, choices=state, verbose_name="Tunawicara/ bisu")
-    r520d = models.CharField(max_length=1, blank=True, null=True, choices=state, verbose_name="Tunarungu–wicara tuli–bisu")
-    r520e = models.CharField(max_length=1, blank=True, null=True, choices=state, verbose_name="Tunadaksa/ cacat tubuh")
+    r520b = models.CharField(max_length=1, blank=True, null=True, choices=state, verbose_name="Tunarungu/tuli")
+    r520c = models.CharField(max_length=1, blank=True, null=True, choices=state, verbose_name="Tunawicara/bisu")
+    r520d = models.CharField(max_length=1, blank=True, null=True, choices=state, verbose_name="Tunarungu–wicara/tuli–bisu")
+    r520e = models.CharField(max_length=1, blank=True, null=True, choices=state, verbose_name="Tunadaksa/cacat tubuh")
     r520f = models.CharField(max_length=1, blank=True, null=True, choices=state, verbose_name="Tunagrahita")
     r520g = models.CharField(max_length=1, blank=True, null=True, choices=state, verbose_name="Tunalaras")
     r520h = models.CharField(max_length=1, blank=True, null=True, choices=state, verbose_name="Cacat Ganda")

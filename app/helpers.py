@@ -19,7 +19,6 @@ def year_calculator(date):
     return age
 
 def comparing_date(date_first, date_last, format ='%Y-%m-%d'):
-
     # Konversi string ke objek datetime
     date_first = datetime.strptime(date_first, format)
     date_last = datetime.strptime(date_last, format)
@@ -50,6 +49,8 @@ def combine_validations(data_families, data_art):
             else:
                 if r504.count('1') != 1:
                     form_errors[f'form_art_r504_{idx+1}'] = ['Keluarga harus memiliki 1 kepala keluarga (tidak lebih)']
+                else:
+                    pass
     
     return form_errors
 
