@@ -37,161 +37,72 @@ class PopulationsForm(forms.ModelForm):
         fields = "__all__"
 
     def clean(self):
-        # 'r503': '',
-        # 'r504': '',
-        # 'r505': '',
-        # 'r506': '',
-        # 'r507': '',
-        # 'r508': '',
-        # 'r510': '',
-        # 'r511': '',
-        # 'r512': '',
-        # 'r513': '',
-        # 'r514': '',
-        # 'r515': '',
-        # 'r516': '',
-        # 'r517': '',
-        # 'r518': '',
-        # 'r519': '',
-        # 'r520a': '',
-        # 'r520b': '',
-        # 'r520c': '',
-        # 'r520d': '',
-        # 'r520e': '',
-        # 'r520f': '',
-        # 'r520g': '',
-        # 'r520h': '',
-        # 'r520i': ''
 
         form_data = self.cleaned_data
         if form_data.get('r502') is not None:
             if form_data['r502'].isnumeric() == False or len(form_data['r502']) != 16:
                 self._errors['r502'] = self.error_class(['Format Nomor kartu Keluarga harus berupa angka 16 digit.'])
 
-    
         if form_data.get('r505') is not None:
-            pass
+            if form_data['r505'] not in ['1', '4']:
+                form_data['r513'] = None
+                form_data['r517'] = None
+                form_data['r519'] = None
+                form_data['r520a'] = None
+                form_data['r520b'] = None
+                form_data['r520c'] = None
+                form_data['r520d'] = None
+                form_data['r520e'] = None
+                form_data['r520f'] = None
+                form_data['r520g'] = None
+                form_data['r520h'] = None
+                form_data['r520i'] = None
+            else:
+                if form_data.get('r513') is None:
+                    self._errors['r513'] = self.error_class(['Jika ART tinggal bersama/keluarga baru, maka kegiatan pekerjaan utama harus terisi'])
+                else:
+                    if form_data.get('r513') == '5':
+                        if form_data.get('r514') is None:
+                            self._errors['r514'] = self.error_class(['Jika ART bekerja, maka pekerjaan utama harus terisi'])
 
-    #     if form_data['r404'] not in ['1', '5']:
-    #         form_data['r405'] = None
-    #         form_data['r406'] = None
-    #         form_data['r407'] = None
-    #         form_data['r408'] = None
-    #         form_data['r409'] = None
-    #         form_data['r411'] = None
-    #         form_data['r412'] = None
-    #         form_data['r415'] = None
-    #         form_data['r416a'] = None
-    #         form_data['r416b'] = None
-    #         form_data['r417'] = None
-    #         form_data['r418'] = None
-    #         form_data['r420a'] = None
-    #         form_data['r421'] = None
-    #         form_data['r422_23'] = None
-    #         form_data['r425'] = None
-    #         form_data['r427'] = None
-    #         form_data['r430'] = None
-    #         form_data['r431a'] = None
-    #         form_data['r431f'] = None
+                        if form_data.get('r515') is None:
+                            self._errors['r515'] = self.error_class(['Jika ART bekerja, maka lapangan usaha utama harus terisi'])
 
-    #     else:
-    #         if form_data.get('r405') is None:
-    #             self._errors['r405'] = self.error_class(['Jika ART ditemukan/keluarga baru, maka isian jenis kelamin harus terisi'])
-            
-    #         if form_data.get('r406') is None:
-    #             self._errors['r406'] = self.error_class(['Jika ART berstatus ditemukan/keluarga baru, maka tanggal lahir harus terisi'])
+                        if form_data.get('r516') is None:
+                            self._errors['r516'] = self.error_class(['Jika ART bekerja, maka komoditas utama harus terisi'])
+                    else:
+                        form_data['r514'] = None
+                        form_data['r515'] = None
+                        form_data['r516'] = None
 
-    #         if form_data.get('r407') is None :
-    #             self._errors['r407'] = self.error_class(['Jika ART berstatus ditemukan/keluarga baru, maka umur harus terisi'])
-    #         else:
-    #             form_data['r407'] = int(form_data['r407'])
-    #             if form_data.get('r406') is not None:
-    #                 age = helpers.year_calculator(form_data.get('r406'))
-    #                 if form_data['r407'] != age:
-    #                     self._errors['r407'] = self.error_class(['Umur tidak sesuai dengan tanggal lahir'])
-
-    #         if form_data.get('r408') is None:
-    #             self._errors['r408'] = self.error_class(['Jika ART berstatus ditemukan/keluarga baru, maka status perkawinan harus terisi'])
-
-    #         if form_data.get('r409') is None:
-    #             self._errors['r409'] = self.error_class(['Jika ART berstatus ditemukan/keluarga baru, maka status hubungan dengan kepala keluarga harus terisi'])
-    #         else:
-    #             if form_data.get('r408') == '1':
-    #                 if form_data.get('r409') in ['2', '4' ,'6']:
-    #                     self._errors['r409'] = self.error_class(['Jika status hubungan dengan kepala keluarga adalah istri/suami/menantu/orangtua/mertua, maka status perkawinan tidak boleh "Belum Kawin"'])
-
-    #         if form_data.get('r411') is None:
-    #             self._errors['r411'] = self.error_class(['Jika ART berstatus ditemukan/keluarga baru, maka kepemilikan kartu identitas harus terisi'])
-
-    #         if form_data.get('r412') is None:
-    #             self._errors['r412'] = self.error_class(['Jika ART berstatus ditemukan/keluarga baru, maka partisipasi sekolah harus terisi'])
-    #         else:
-    #             if form_data.get('r415') is None:
-    #                 self._errors['r415'] = self.error_class(['Jika ART masih bersekolah/pernah bersekolah, maka ijazah/STTB tertinggi harus terisi'])
-    #             else:
-    #                 pendidikan = form_data.get('r415')
-    #                 age = form_data.get('r407')
-    #                 if age is not None:
-    #                     if pendidikan in ['1', '2', '3', '4', '5'] and int(age) < 11:
-    #                         self._errors['r415'] = self.error_class(['Jika ART berpendidikan SD/Setara, maka umur ART harus berusia minimal 11 tahun'])
-    #                     elif pendidikan in ['6', '7', '8', '9', '10'] and int(age) < 13 :
-    #                         self._errors['r415'] = self.error_class(['Jika ART berpendidikan SMP/Setara, maka umur ART harus berusia minimal 13 tahun'])
-    #                     elif pendidikan in ['11', '12', '13', '14', '15', '16', '17', '18', '19', '20', '21', '22'] and int(age) < 17:
-    #                         self._errors['r415'] = self.error_class(['Jika ART berpendidikan SMA - S3, maka umur ART harus berusia minimal 17 tahun'])
-
-    #         if form_data.get('r416a') is None:
-    #             self._errors['r416a'] = self.error_class(['Jika ART berstatus ditemukan/keluarga baru, maka status bekerja harus terisi'])
-    #         else:
-    #             if form_data.get('r416a') == '1':
-    #                 if form_data.get('r416b') is None:
-    #                     self._errors['r416b'] = self.error_class(['Jika ART bekerja selama seminggu yang lalu, maka jam kerja harus terisi'])
-    #                 else:
-    #                     if int(form_data.get('r416b')) < 1:
-    #                         self._errors['r416b'] = self.error_class(['Jika ART bekerja selama seminggu yang lalu, maka jam kerja harus lebih dari 0 jam'])
-
-    #                 if form_data.get('r417') is None:
-    #                     self._errors['r417'] = self.error_class(['Jika ART bekerja selama seminggu yang lalu, maka lapangan usaha harus terisi'])
-                    
-    #                 if form_data.get('r418') is None:
-    #                     self._errors['r418'] = self.error_class(['Jika ART bekerja selama seminggu yang lalu, maka status dalam bekerja harus terisi'])
+                if form_data.get('r517') is None:
+                    self._errors['r517'] = self.error_class(['Jika ART tinggal bersama/keluarga baru, maka partisipasi sekolah harus terisi'])
+                else:
+                    if form_data.get('r517') in ['2', '3']:
+                        if form_data.get('r518') is None:
+                            self._errors['r518'] = self.error_class(['Jika ART masih bersekolah/tidak bersekolah lagi, maka jenjang pendidikan tertinggi harus terisi'])
+                    else:
+                        form_data['r518'] = None
                 
-    #             else:
-    #                 form_data['r416b'] = None
-    #                 form_data['r417'] = None
-    #                 form_data['r418'] = None
-                
-    #         if form_data.get('r420a') is None:
-    #             self._errors['r420a'] = self.error_class(['Jika ART berstatus ditemukan/keluarga baru, maka kepemilikan usaha harus terisi'])
-    #         else:
-    #             if form_data.get('r420a') == '1':
-    #                 if form_data.get('r421') is None:
-    #                     self._errors['r421'] = self.error_class(['Jika ART memiliki usaha, maka lapangan usaha dari usaha utama harus terisi'])
-    #                 if form_data.get('r422_23') is None:
-    #                     self._errors['r422_23'] = self.error_class(['Jika ART memiliki usaha, maka jumlah pekerja harus terisi'])
-    #                 else:
-    #                     if form_data.get('r422_23') < 1:
-    #                         print('Jumalah tenaga kerja error')
-    #                         self._errors['r422_23'] = self.error_class(['Jika ART memiliki usaha, maka jumlah pekerja harus lebih dari 0 jam'])
+            if form_data.get('r519') is None:
+                self._errors['r519'] = self.error_class(['Jika ART tinggal bersama/keluarga baru, maka isian jaminan kesehatan harus terisi'])
 
-    #                 if form_data.get('r425') is None:
-    #                     self._errors['r425'] = self.error_class(['Jika ART memiliki usaha, maka omset usaha utama perbulan harus terisi'])
+            if form_data.get('r520a') is None:
+                self._errors['r520a'] = self.error_class(['Jika ART tinggal bersama/keluarga baru, maka isian disabilitas tunanetra/buta harus terisi'])
+            if form_data.get('r520b') is None:
+                self._errors['r520b'] = self.error_class(['Jika ART tinggal bersama/keluarga baru, maka isian disabilitas tunarungu/tuli harus terisi'])
+            if form_data.get('r520c') is None:
+                self._errors['r520c'] = self.error_class(['Jika ART tinggal bersama/keluarga baru, maka isian disabilitas tunawicara/bisu harus terisi'])
+            if form_data.get('r520d') is None:
+                self._errors['r520d'] = self.error_class(['Jika ART tinggal bersama/keluarga baru, maka isian disabilitas tunarungu–wicara/tuli–bisu harus terisi'])
+            if form_data.get('r520e') is None:
+                self._errors['r520e'] = self.error_class(['Jika ART tinggal bersama/keluarga baru, maka isian disabilitas tunadaksa/ cacat tubuh harus terisi'])
+            if form_data.get('r520f') is None:
+                self._errors['r520f'] = self.error_class(['Jika ART tinggal bersama/keluarga baru, maka isian disabilitas tunagrahita harus terisi'])
+            if form_data.get('r520g') is None:
+                self._errors['r520g'] = self.error_class(['Jika ART tinggal bersama/keluarga baru, maka isian disabilitas tunalaras harus terisi'])
+            if form_data.get('r520h') is None:
+                self._errors['r520h'] = self.error_class(['Jika ART tinggal bersama/keluarga baru, maka isian disabilitas cacat ganda harus terisi'])
 
-    #             else:
-    #                 form_data['r421'] = None
-    #                 form_data['r422_23'] = None
-    #                 form_data['r425'] = None
-                    
-    #         if form_data.get('r430') is None:
-    #             self._errors['r430'] = self.error_class(['Jika ART berstatus ditemukan/keluarga baru, maka keluhan kesehatan harus terisi'])
-
-    #         if form_data.get('r431a') is None:
-    #             self._errors['r431a'] = self.error_class(['Jika ART berstatus ditemukan/keluarga baru, maka kepemilikan jaminan kesehatan harus terisi'])
-    #         else:
-    #             if form_data.get('r418') is not None and form_data.get('r418') == '5' and form_data.get('r431a') in ['0', '1', '4', '8', '99']:
-    #                 self._errors['r431a'] = self.error_class(['Jika ART adalah PNS/TNI/Polri/ BUMN/BUMD/pejabat negara, maka kepemilikan jaminan kesehatan harus terisi JKN Mandiri'])
-
-    #         if form_data.get('r431f') is None:
-    #             self._errors['r431f'] = self.error_class(['Jika ART berstatus ditemukan/keluarga baru, maka kepemilikan jaminan ketenagakerjaan harus terisi'])
-
-    #         self.cleaned_data = form_data
-    #         return self.cleaned_data
+            self.cleaned_data = form_data
+            return self.cleaned_data

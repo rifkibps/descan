@@ -328,7 +328,6 @@ class PopulationsModels(models.Model):
     r520f = models.CharField(max_length=1, blank=True, null=True, choices=state, verbose_name="Tunagrahita")
     r520g = models.CharField(max_length=1, blank=True, null=True, choices=state, verbose_name="Tunalaras")
     r520h = models.CharField(max_length=1, blank=True, null=True, choices=state, verbose_name="Cacat Ganda")
-    r520i = models.CharField(max_length=1, blank=True, null=True, choices=state, verbose_name="Dipasung")
 
     created_at = models.DateField(auto_now_add=True, editable=False)
     updated_at = models.DateField(auto_now=True, editable=False)

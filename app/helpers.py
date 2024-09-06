@@ -18,50 +18,27 @@ def year_calculator(date):
 
     return age
 
-
-
 def combine_validations(data_families, data_art):
-    
     form_errors = {}
     
-    if len(data_art) > 0:
-        if int(data_families['r112']) != len(data_art):
-            form_errors['r112'] = ['Jumlah anggota keluarga tidak sesuai dengan jumlah art yang terisi']
-    else:
+    if len(data_art) < 1:
         form_errors['r112'] = ['Jumlah anggota keluarga adalah minimal 1']
     
-    r401 = [int(dt['r401']) for dt in data_art]
-    r404 = [dt['r404'] for dt in data_art]
-    r409 = [dt['r409'] for dt in data_art]
+    r501 = [int(dt['r501']) for dt in data_art]
+    r504 = [dt['r504'] for dt in data_art]
     
     # Pastikan urutan anggota keluarga
-    if check_sorted(r401) is False:
-        form_errors['form_art_r401_1'] = ['Nomor urut ART harus berurut']
+    if check_sorted(r501) is False:
+        form_errors['form_art_r501_1'] = ['Nomor urut ART harus berurut']
 
     # Validasi KRT, Harus ada, dan harus 1
-
-    # if data_families['r108'].lower() != ''
-    r108 = data_families['r108'].lower() # Nama Kepala keluarga
-    
     for idx, dt in enumerate(data_art):
-        if dt['r404'] in ['1', '5']:
-            if '1' not in r409:
-                form_errors[f'form_art_r409_{idx+1}'] = ['Keluarga belum memiliki kepala keluarga']
+        if dt['r505'] in ['1', '4']:
+            if '1' not in r504:
+                form_errors[f'form_art_r504_{idx+1}'] = ['Keluarga belum memiliki kepala keluarga']
             else:
-                if r409.count('1') != 1:
-                    form_errors[f'form_art_r409_{idx+1}'] = ['Keluarga harus memiliki 1 kepala keluarga (tidak lebih)']
-                else:
-                    if dt['r409'] == '1' and dt['r402'].lower() != r108:
-                        form_errors[f'form_art_r402_{idx+1}'] = ['Nama Kepala Keluarga tidak sesuai. Mohon periksa kembali']
-
-    if data_families['r506'] in ['1', '3']:
-        error_r506 = False
-        for dt in data_art:
-            if dt['r420a'] != '2':
-                error_r506 = True
-
-        if error_r506 is False:
-            form_errors[f'form_art_r420a_1'] = ['Keluarga memiliki rekening aktif untuk usaha, tetapi tidak ada ART yang memiliki usaha sendiri/bersama.']
+                if r504.count('1') != 1:
+                    form_errors[f'form_art_r504_{idx+1}'] = ['Keluarga harus memiliki 1 kepala keluarga (tidak lebih)']
     
     return form_errors
 
