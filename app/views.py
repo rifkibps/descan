@@ -1121,7 +1121,6 @@ class FamiliesAddClassView(LoginRequiredMixin, View):
                         forms_errors[key] = val
                     return JsonResponse({"status": 'failed', "error": forms_errors}, status=400)
                 
-                print('CLEANED')
                 # form_family.save()
                 # last_id = models.FamiliesModels.objects.latest('id').id
                 # art_names = ''

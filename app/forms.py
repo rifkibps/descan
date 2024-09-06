@@ -14,6 +14,14 @@ class FamiliesForm(forms.ModelForm):
 
     def clean(self):
         form_data = self.cleaned_data 
+        
+        if form_data.get('r202') is not None and form_data.get('r203') is not None and form_data.get('r205') is not None:
+            if helpers.comparing_date(str(form_data['r202']), str(form_data['r203'])) is False:
+                self._errors['r203'] = self.error_class(['Tgl kunjungan pertama tidak boleh lebih besar dari tgl kunjungan terakhir'])
+
+            if helpers.comparing_date(str(form_data['r203']), str(form_data['r205'])) is False:
+                self._errors['r205'] = self.error_class(['Tgl kunjungan akhir tidak boleh lebih besar dari tgl pemeriksaan'])
+
         if form_data.get('r108') is not None:
             # Validasi NIK
             if form_data['r108'].isnumeric() == False or len(form_data['r108']) != 16:
@@ -78,6 +86,10 @@ class PopulationsForm(forms.ModelForm):
                 if form_data.get('r517') is None:
                     self._errors['r517'] = self.error_class(['Jika ART tinggal bersama/keluarga baru, maka partisipasi sekolah harus terisi'])
                 else:
+                    if form_data.get('r513') is not None and form_data.get('r513') == '1':
+                        if form_data.get('r517') != '2':
+                            self._errors['r517'] = self.error_class(['Jika kegiatan utama ART adalah bersekolah, maka partisipasi sekolah harus terisi "Masih Sekolah"'])
+
                     if form_data.get('r517') in ['2', '3']:
                         if form_data.get('r518') is None:
                             self._errors['r518'] = self.error_class(['Jika ART masih bersekolah/tidak bersekolah lagi, maka jenjang pendidikan tertinggi harus terisi'])

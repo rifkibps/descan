@@ -3,6 +3,7 @@ from django.db.models import Q
 from django.db.models import Q, Count, Sum
 from pprint import pprint
 from django.utils import timezone
+from datetime import datetime
 
 
 def check_sorted(list_):
@@ -12,18 +13,28 @@ def check_sorted(list_):
             return False
 
 def year_calculator(date):
-
     today = timezone.now()
     age = today.year - date.year - ((today.month, today.day) < (date.month, date.day))
 
     return age
 
+def comparing_date(date_first, date_last, format ='%Y-%m-%d'):
+
+    # Konversi string ke objek datetime
+    date_first = datetime.strptime(date_first, format)
+    date_last = datetime.strptime(date_last, format)
+    dev = date_last - date_first
+    return dev.days >= 0 
+
 def combine_validations(data_families, data_art):
     form_errors = {}
     
-    if len(data_art) < 1:
-        form_errors['r112'] = ['Jumlah anggota keluarga adalah minimal 1']
-    
+    if len(data_art) > 0:
+        if int(data_families['r109']) != len(data_art):
+            form_errors['r109'] = ['Jumlah ART tidak sesuai dengan jumlah art yang terisi']
+    else:
+        form_errors['r109'] = ['Jumlah ART adalah minimal 1']
+
     r501 = [int(dt['r501']) for dt in data_art]
     r504 = [dt['r504'] for dt in data_art]
     
