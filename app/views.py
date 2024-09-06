@@ -1094,26 +1094,29 @@ class FamiliesAddClassView(LoginRequiredMixin, View):
                 data_art = helpers.transform_data(data_art)
                 forms_errors = dict()
 
-                # for fl in ['provinsi', 'kabkot', 'kecamatan']:
-                #     if fl in data_families.keys():
-                #         if len(data_families[fl]) == 0:
-                #             forms_errors[fl] = ['This field is required.']
-                #         del data_families[fl]
+                pprint(data_art)
+                for fl in ['provinsi', 'kabkot', 'kecamatan']:
+                    if fl in data_families.keys():
+                        if len(data_families[fl]) == 0:
+                            forms_errors[fl] = ['This field is required.']
+                        del data_families[fl]
 
-                # form_family = forms.FamiliesForm(data_families)
-                # if form_family.is_valid() is False:
-                #     for key, val in form_family.errors.items():
-                #         forms_errors[key] = val
+                form_family = forms.FamiliesForm(data_families)
+                if form_family.is_valid() is False:
+                    for key, val in form_family.errors.items():
+                        forms_errors[key] = val
                 
-                # for idx, dt in enumerate(data_art):
-                #     form_art = forms.PopulationsForm(dt)
-                #     if form_art.is_valid() is False:
-                #         for key, val in form_art.errors.items():
-                #             if key != 'family_id':
-                #                 forms_errors[f'form_art_{key}_{idx+1}'] = val
+
                 
-                # if len(forms_errors) > 0:
-                #     return JsonResponse({"status": 'failed', "error": forms_errors}, status=400)
+                for idx, dt in enumerate(data_art):
+                    form_art = forms.PopulationsForm(dt)
+                    if form_art.is_valid() is False:
+                        for key, val in form_art.errors.items():
+                            if key != 'family_id':
+                                forms_errors[f'form_art_{key}_{idx+1}'] = val
+
+                if len(forms_errors) > 0:
+                    return JsonResponse({"status": 'failed', "error": forms_errors}, status=400)
 
                 # last_validations = helpers.combine_validations(data_families, data_art)
                 

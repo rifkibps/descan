@@ -19,10 +19,10 @@ def year_calculator(date):
     return age
 
 
+
 def combine_validations(data_families, data_art):
     
     form_errors = {}
-
     
     if len(data_art) > 0:
         if int(data_families['r112']) != len(data_art):
@@ -66,16 +66,14 @@ def combine_validations(data_families, data_art):
     return form_errors
 
 def transform_data(data):
-
     all_keys = list(set(key for d in data for key in d))
     results = []
     for i in range(len(list(data[0].values())[0])):
-        return pprint(i)
-        # new_dict = {}
-        # for key in all_keys:
-        #     new_dict[key] = next((list(dt.values())[0][i] for dt in data if key in dt.keys()), None)
+        new_dict = {}
+        for key in all_keys:
+            new_dict[key] = next((list(dt.values())[0][i] for dt in data if key in dt.keys()), None)
     
-        # results.append(new_dict)
+        results.append(new_dict)
 
     return results
 

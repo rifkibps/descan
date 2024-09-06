@@ -71,7 +71,7 @@ class FamiliesModels(models.Model):
         ('3', 'Tanah Negara'),
         ('4', 'Lainnya'),
     )
-    r302 = models.CharField(max_length=1, blank=True, null=True, choices=r302_choices, verbose_name="Status lahan tempat tinggal yang ditempati")
+    r302 = models.CharField(max_length=1, blank=False, null=False, choices=r302_choices, verbose_name="Status lahan tempat tinggal yang ditempati")
 
     r303_choices = (
         ('1', 'Marmer/Granit'),

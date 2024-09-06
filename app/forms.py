@@ -12,127 +12,65 @@ class FamiliesForm(forms.ModelForm):
         model = models.FamiliesModels
         fields = "__all__"
 
-    # def clean(self):
+    def clean(self):
+        form_data = self.cleaned_data 
+        if form_data.get('r108') is not None:
+            # Validasi NIK
+            if form_data['r108'].isnumeric() == False or len(form_data['r108']) != 16:
+                self._errors['r108'] = self.error_class(['Format Nomor kartu Keluarga harus berupa angka 16 digit.'])
 
-    #     form_data = self.cleaned_data 
-    #     list_fields_val = [
-    #         'r112',
-    #         'r115',
-    #         'r301a',
-    #         'r301b',
-    #         'r302',
-    #         'r306a',
-    #         'r306b',
-    #         'r307a',
-    #         'r307b',        
-    #         'r309a',
-    #         'r309b',
-    #         'r310',
-    #         'r501d',
-    #         'r504a',
-    #         'r504b',
-    #         'r504c',
-    #         'r504d',
-    #         'r504e',
-    #         'r502n',
-    #         'r505'
-    #     ]
-    #     for field in list_fields_val:
-    #         if field not in form_data.keys():
-    #             return form_data
-            
-    #     form_data['r112'] = int(form_data['r112'])
-        
-    #     # Validasi NIK
-    #     if form_data['r115'].isnumeric() == False or len(form_data['r115']) != 16:
-    #         self._errors['r115'] = self.error_class(['Format Nomor kartu Keluarga harus berupa angka 16 digit.'])
+        if form_data.get('r109') is not None:
+            form_data['r109'] = int(form_data['r109'])
 
-    #     # Validasi r301a
-    #     if form_data['r301a'] == '1':
-    #         if(form_data.get('r301b') is None):
-    #             self._errors['r301b'] = self.error_class(['Jika status kepemilikan bangunan adalah milik sendiri, maka bukti kepemilikan harus terisi.'])
-    #     else:
-    #         form_data['r301b'] = None
-        
-    #     if form_data['r302'] <= 0 :
-    #         self._errors['r302'] = self.error_class(['Luas lantai bangunan harus lebih dari 0'])
+        if form_data.get('r401a') is not None and form_data.get('r401a') == '1':
+            if form_data.get('r401b') is None or form_data.get('r401b') < 1:
+                self._errors['r401b'] = self.error_class(['Jika memiliki tanah/lahan pertanian, maka luas lahan yang dimiliki harus terisi.'])
+        else:
+            form_data['r401b'] = None
 
-    #     # Validasi r306a
-    #     if form_data['r306a'] in ['4', '5', '6', '7', '8']:
-    #         if(form_data.get('r306b') is None):
-    #             self._errors['r306b'] = self.error_class(['Jika sumber air minum utama adalah sumur bor/ sumur terlindung/ sumur tak terlindung/ mata air terlindung/ mata air tak terlindung, maka jarak sumber air minum utama ke tempat penampungan limbah harus terisi.'])
-    #     else:
-    #         form_data['r306b'] = None
-
-    #     # Validasi r307a
-    #     if form_data['r307a'] == '1':
-    #         if(form_data.get('r307b') is None):
-    #             self._errors['r307b'] = self.error_class(['Jika sumber penerangan utama adalah Listrik PLN dengan meteran, maka besaran daya harus terisi.'])
-    #     else:
-    #         form_data['r307b'] = None
-
-    #     # Validasi r309a
-    #     if form_data['r309a'] in ['1', '2', '3']:
-    #         if(form_data.get('r309b') is None):
-    #             self._errors['r309b'] = self.error_class(['Jika kepemilikan dan penggunaan fasilitas tempat buang air besar utama berkode 1, 2, atau 3, maka jenis kloset harus terisi.'])
-    #     else:
-    #         form_data['r309b'] = None
-    #         form_data['r310'] = None
-
-    #     #Validasi Status Penerimaan Bantuan
-    #     if form_data.get('r307b') == '1':
-    #         if form_data.get('r501d') != '1':
-    #             self._errors['r501d'] = self.error_class(['Jika daya listrik sebesar 450 Watt, maka status penerimaan Program Subsidi Listrik harus terisi "Ya"'])
-
-    #     # Validasi Hewan Ternak
-
-    #     if form_data['r504a'] < 0 :
-    #         self._errors['r504a'] = self.error_class(['Jumlah ternak sapi harus bernilai > 0'])
-        
-    #     if form_data['r504b'] < 0 :
-    #         self._errors['r504b'] = self.error_class(['Jumlah ternak kerbau harus bernilai > 0'])
-
-    #     if form_data['r504c'] < 0 :
-    #         self._errors['r504c'] = self.error_class(['Jumlah ternak kuda harus bernilai > 0'])
-        
-    #     if form_data['r504d'] < 0 :
-    #         self._errors['r504d'] = self.error_class(['Jumlah ternak babi harus bernilai > 0'])
-
-    #     if form_data['r504e'] < 0 :
-    #         self._errors['r504e'] = self.error_class(['Jumlah ternak kambing harus bernilai > 0'])
-
-    #     if form_data['r502n'] == '1' and form_data['r505'] == '0':
-    #         self._errors['r505'] = self.error_class(['Keluarga memiliki Smartphone, tetapi tidak menggunakan akses internet.'])
-
-    #     if form_data['r505'] == '3' and form_data['r502n'] == '2' :
-    #         self._errors['r505'] = self.error_class(['Keluarga tidak memiliki Smartphone, tetapi menggunakan akses internet handphone.'])
-
-    #     self.cleaned_data = form_data
-    #     return self.cleaned_data
+        self.cleaned_data = form_data
+        return self.cleaned_data
 
 class PopulationsForm(forms.ModelForm):
     class Meta:
         model = models.PopulationsModels
         fields = "__all__"
 
-    # def clean(self):
-    #     form_data = self.cleaned_data
-   
-    #     list_fields_val = [
-    #         'r401',
-    #         'r403',
-    #         'r404',
-    #     ]
-        
-    #     for field in list_fields_val:
-    #         if field not in form_data.keys():
-    #             return form_data
-            
-    #     form_data['r401'] = int(form_data['r401'])
-    #     # Validasi NIK
+    def clean(self):
+        # 'r503': '',
+        # 'r504': '',
+        # 'r505': '',
+        # 'r506': '',
+        # 'r507': '',
+        # 'r508': '',
+        # 'r510': '',
+        # 'r511': '',
+        # 'r512': '',
+        # 'r513': '',
+        # 'r514': '',
+        # 'r515': '',
+        # 'r516': '',
+        # 'r517': '',
+        # 'r518': '',
+        # 'r519': '',
+        # 'r520a': '',
+        # 'r520b': '',
+        # 'r520c': '',
+        # 'r520d': '',
+        # 'r520e': '',
+        # 'r520f': '',
+        # 'r520g': '',
+        # 'r520h': '',
+        # 'r520i': ''
 
-    #     if form_data['r403'].isnumeric() == False or len(form_data['r403']) != 16:
-    #         self._errors['r403'] = self.error_class(['Format NIK harus berupa angka 16 digit.'])
+        form_data = self.cleaned_data
+        if form_data.get('r502') is not None:
+            if form_data['r502'].isnumeric() == False or len(form_data['r502']) != 16:
+                self._errors['r502'] = self.error_class(['Format Nomor kartu Keluarga harus berupa angka 16 digit.'])
+
+    
+        if form_data.get('r505') is not None:
+            pass
 
     #     if form_data['r404'] not in ['1', '5']:
     #         form_data['r405'] = None
