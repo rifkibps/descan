@@ -14,7 +14,8 @@ class FamiliesForm(forms.ModelForm):
 
     def clean(self):
         form_data = self.cleaned_data 
-        
+        data_not_cleaned = self.data
+
         if form_data.get('r202') is not None and form_data.get('r203') is not None and form_data.get('r205') is not None:
             if helpers.comparing_date(str(form_data['r202']), str(form_data['r203'])) is False:
                 self._errors['r203'] = self.error_class(['Tgl kunjungan pertama tidak boleh lebih besar dari tgl kunjungan terakhir'])
@@ -26,9 +27,19 @@ class FamiliesForm(forms.ModelForm):
             # Validasi NIK
             if form_data['r108'].isnumeric() == False or len(form_data['r108']) != 16:
                 self._errors['r108'] = self.error_class(['Format Nomor kartu Keluarga harus berupa angka 16 digit.'])
+            else:
+                check_kk = models.FamiliesModels.objects.filter(r108=form_data['r108'])
+                if check_kk.exists():
+                    if data_not_cleaned.get('id') is not None:
+                        if check_kk.first().pk != int(data_not_cleaned.get('id')):
+                            self._errors['r108'] = self.error_class(['No KK telah terdaftar pada database'])
+                    else:
+                        self._errors['r108'] = self.error_class(['No KK telah terdaftar pada database'])
 
         if form_data.get('r109') is not None:
             form_data['r109'] = int(form_data['r109'])
+            if form_data['r109'] < 1:
+                self._errors['r109'] = self.error_class(['Jumlah ART harus lebih dari 0.'])
 
         if form_data.get('r301') is not None :
             if form_data.get('r301') == '1':
@@ -69,9 +80,27 @@ class PopulationsForm(forms.ModelForm):
     def clean(self):
 
         form_data = self.cleaned_data
+        data_not_cleaned = self.data
+        
+        if form_data.get('r501') is not None:
+            if int(form_data['r501']) < 1:
+                self._errors['r501'] = self.error_class(['Nomor urut harus lebih dari 1'])
+
         if form_data.get('r502') is not None:
             if form_data['r502'].isnumeric() == False or len(form_data['r502']) != 16:
                 self._errors['r502'] = self.error_class(['Format Nomor kartu Keluarga harus berupa angka 16 digit.'])
+            else:
+                check_nik = models.PopulationsModels.objects.filter(r502=form_data['r502'])
+                if check_nik.exists():
+                    if data_not_cleaned.get('art_id') is not None:
+                        if check_nik.first().pk != int(data_not_cleaned.get('art_id')):
+                            self._errors['r502'] = self.error_class(['NIK telah terdaftar pada database'])
+                    else:
+                        self._errors['r502'] = self.error_class(['NIK telah terdaftar pada database'])
+
+        if form_data.get('r504') is not None and form_data.get('r510') is not None:
+            if form_data.get('r504') in ['2', '4', '6'] and form_data.get('r510') == '1':
+                self._errors['r510'] = self.error_class(['Jika ART bersatus Istri/Suami/Menantu/Mertua/Orang Tua, maka status pernikahan tidak boleh "Belum Kawin'])
 
         if form_data.get('r505') is not None:
             if form_data['r505'] not in ['1', '4']:
@@ -138,5 +167,5 @@ class PopulationsForm(forms.ModelForm):
                 if form_data.get('r520h') is None:
                     self._errors['r520h'] = self.error_class(['Jika ART tinggal bersama/keluarga baru, maka isian disabilitas cacat ganda harus terisi'])
 
-            self.cleaned_data = form_data
-            return self.cleaned_data
+        self.cleaned_data = form_data
+        return self.cleaned_data

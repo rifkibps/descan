@@ -4,7 +4,7 @@ from django.db.models import Q, Count, Sum
 from pprint import pprint
 from django.utils import timezone
 from datetime import datetime
-
+from django.db.models.functions import Length
 
 def check_sorted(list_):
     
@@ -42,6 +42,7 @@ def combine_validations(data_families, data_art):
         form_errors['form_art_r501_1'] = ['Nomor urut ART harus berurut']
 
     # Validasi KRT, Harus ada, dan harus 1
+    nama_kk = data_families['r107'].lower()
     for idx, dt in enumerate(data_art):
         if dt['r505'] in ['1', '4']:
             if '1' not in r504:
@@ -50,9 +51,57 @@ def combine_validations(data_families, data_art):
                 if r504.count('1') != 1:
                     form_errors[f'form_art_r504_{idx+1}'] = ['Keluarga harus memiliki 1 kepala keluarga (tidak lebih)']
                 else:
-                    pass
-    
+                    if dt['r504'] == '1' and dt['r503'].lower() != nama_kk:
+                        form_errors[f'form_art_r503_{idx+1}'] = ['Nama kepala keluarga pada Blok V tidak sesuai dengan Blok I Rincian Nama KK']
+
     return form_errors
+
+def get_region_code(r104, r105):
+
+    data_region = dict()
+    region = models.RegionAdministrativeModels.objects
+
+    prov = r104[:2]
+    provs = region.annotate(text_len=Length('reg_code')).filter(text_len=2).order_by('reg_code').values()
+    opt_prov = [f'<option value="{dt["reg_code"]}" {"selected" if dt["reg_code"]==prov else ""}>[{dt["reg_code"]}]&ensp;{dt["reg_name"]}</option>' for dt in provs]
+
+    data_region['prov'] = {
+        'value' : prov,
+        'opt' : ''.join(opt_prov)
+    }
+
+    kabkot = r104[:4]
+    kabkots = region.annotate(text_len=Length('reg_code')).filter(text_len=4).filter(reg_code__icontains=prov).order_by('reg_code').values()
+    opt_kabkots = [f'<option value="{dt["reg_code"]}" {"selected" if dt["reg_code"]==kabkot else ""}>[{dt["reg_code"]}]&ensp;{dt["reg_name"]}</option>' for dt in kabkots]
+    data_region['kabkot'] = {
+        'value' : kabkot,
+        'opt' : ''.join(opt_kabkots)
+    }
+
+    kec = r104[:7]
+    kecs = region.annotate(text_len=Length('reg_code')).filter(text_len=7).filter(reg_code__icontains=kabkot).order_by('reg_code').values()
+    opt_kabkots = [f'<option value="{dt["reg_code"]}" {"selected" if dt["reg_code"]==kec else ""}>[{dt["reg_code"]}]&ensp;{dt["reg_name"]}</option>' for dt in kecs]
+    data_region['kec'] = {
+        'value' : kec,
+        'opt' : ''.join(opt_kabkots)
+    }
+
+    r104_model = region.filter(reg_code = r104).first()
+    r104_lists = region.annotate(text_len=Length('reg_code')).filter(text_len=10).filter(reg_code__icontains=kec).order_by('reg_code').values()
+    opt_r104 = [f'<option value="{dt["id"]}" {"selected" if dt["reg_code"]==r104 else ""}>[{dt["reg_code"]}]&ensp;{dt["reg_name"]}</option>' for dt in r104_lists]
+    data_region['r104'] = {
+        'value' : r104_model.pk,
+        'opt' : ''.join(opt_r104)
+    }
+
+    r105_lists = models.RegionSLSModels.objects.filter(reg_code = r104_model.pk ).values()
+    opt_r105 = [f'<option value="{dt["id"]}" {"selected" if dt["id"]==r105 else ""}>[{dt["reg_sls_code"]}]&ensp;{dt["reg_sls_name"]}</option>' for dt in r105_lists]
+    data_region['r105'] = {
+        'value' : r105,
+        'opt' : ''.join(opt_r105)
+    }
+
+    return data_region
 
 def transform_data(data):
     all_keys = list(set(key for d in data for key in d))

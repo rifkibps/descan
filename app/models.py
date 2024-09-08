@@ -38,7 +38,7 @@ class FamiliesModels(models.Model):
     r105 = models.ForeignKey(RegionSLSModels, on_delete=models.RESTRICT, null=False, related_name='families_location_by_sls', verbose_name='Nama Dusun')
     r106 = models.TextField(max_length=256, blank=False, null=False, verbose_name="Alamat Lengkap")
     r107 = models.CharField(max_length=128, blank=False, null=False, verbose_name="Nama Kepala Keluarga")
-    r108 = models.CharField(max_length=16, blank=False, null=False, unique=True, validators=[MinLengthValidator(16)], verbose_name="Nomor Kartu Keluarga (KK)")
+    r108 = models.CharField(max_length=16, blank=False, null=False, unique=False, validators=[MinLengthValidator(16)], verbose_name="Nomor Kartu Keluarga (KK)")
     r109 = models.IntegerField(blank=False, null=False, verbose_name="Jumlah Anggota Keluarga")
     r110 = models.CharField(max_length=128, blank=False, null=False, verbose_name="Nama Pemberi Informasi")
 
@@ -180,7 +180,7 @@ class FamiliesModels(models.Model):
     updated_at = models.DateField(auto_now=True, editable=False)
 
     def __str__(self):
-      return f"{self.pk}. {self.r108} | {self.r105.reg_sls_name} | Desa/Kel. {self.r104.reg_name}"
+      return f"{self.pk}. KRT {self.r107} | {self.r105.reg_sls_name} | Desa/Kel. {self.r104.reg_name}"
     
 
 class PopulationsModels(models.Model):
@@ -190,7 +190,7 @@ class PopulationsModels(models.Model):
     
     family_id = models.ForeignKey(FamiliesModels, on_delete=models.CASCADE, blank=False, null=False, related_name='families_members', verbose_name='ID Keluarga')
     r501 = models.IntegerField(blank=False, null=False, verbose_name="Nomor Urut")
-    r502 = models.CharField(max_length=16, blank=False, null=False, unique=True, validators=[MinLengthValidator(16)], verbose_name="NIK")
+    r502 = models.CharField(max_length=16, blank=False, null=False, unique=False, validators=[MinLengthValidator(16)], verbose_name="NIK")
     r503 = models.CharField(max_length=128, blank=False, null=False, verbose_name="Nama Lengkap")
 
     r504_choices = (
@@ -320,14 +320,14 @@ class PopulationsModels(models.Model):
         ('2', 'Tidak')
     )
 
-    r520a = models.CharField(max_length=1, blank=True, null=True, choices=state, verbose_name="Tunanetra/buta")
-    r520b = models.CharField(max_length=1, blank=True, null=True, choices=state, verbose_name="Tunarungu/tuli")
-    r520c = models.CharField(max_length=1, blank=True, null=True, choices=state, verbose_name="Tunawicara/bisu")
-    r520d = models.CharField(max_length=1, blank=True, null=True, choices=state, verbose_name="Tunarungu–wicara/tuli–bisu")
-    r520e = models.CharField(max_length=1, blank=True, null=True, choices=state, verbose_name="Tunadaksa/cacat tubuh")
-    r520f = models.CharField(max_length=1, blank=True, null=True, choices=state, verbose_name="Tunagrahita")
-    r520g = models.CharField(max_length=1, blank=True, null=True, choices=state, verbose_name="Tunalaras")
-    r520h = models.CharField(max_length=1, blank=True, null=True, choices=state, verbose_name="Cacat Ganda")
+    r520a = models.CharField(max_length=1, blank=True, null=True, default='2', choices=state, verbose_name="Tunanetra/buta")
+    r520b = models.CharField(max_length=1, blank=True, null=True, default='2', choices=state, verbose_name="Tunarungu/tuli")
+    r520c = models.CharField(max_length=1, blank=True, null=True, default='2', choices=state, verbose_name="Tunawicara/bisu")
+    r520d = models.CharField(max_length=1, blank=True, null=True, default='2', choices=state, verbose_name="Tunarungu–wicara/tuli–bisu")
+    r520e = models.CharField(max_length=1, blank=True, null=True, default='2', choices=state, verbose_name="Tunadaksa/cacat tubuh")
+    r520f = models.CharField(max_length=1, blank=True, null=True, default='2', choices=state, verbose_name="Tunagrahita")
+    r520g = models.CharField(max_length=1, blank=True, null=True, default='2', choices=state, verbose_name="Tunalaras")
+    r520h = models.CharField(max_length=1, blank=True, null=True, default='2', choices=state, verbose_name="Cacat Ganda")
 
     created_at = models.DateField(auto_now_add=True, editable=False)
     updated_at = models.DateField(auto_now=True, editable=False)

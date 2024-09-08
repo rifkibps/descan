@@ -39,57 +39,57 @@
             <div class="card">
                 <div class="card-header d-flex justify-content-between align-items-center">
                     <h4 class="card-title">Filter Wilayah</h4>
-                    <div class="d-flex ">
-                        <i data-feather="download"></i>
-                    </div>
                 </div>
                 <div class="card-body px-4 pb-4">
                     <div class="row">
-                        <div class="col-3">Filter Provinsi</div>
+                        <div class="col-3">Provinsi</div>
                         <div class="col-9">
-                            <div class="form-group" style="width:400px!important">
-                                <select class="choices form-select" >
-                                    <option value="romboid">Sulawesi Tenggara</option>
+                            <div class="form-group">
+                                <select class="form-select" id="id_provinsi">
+                                    <option value="" selected="selected">---------</option>
+                                    {% for prov_reg in province_regions %}
+                                        <option value="{{prov_reg.reg_code}}">[{{prov_reg.reg_code}}]&ensp;{{prov_reg.reg_name}}</option>
+                                    {% endfor %}
                                 </select>
                             </div>
                         </div>
                     </div>
                     <div class="row">
-                        <div class="col-3">Filter Kabupaten/Kota</div>
+                        <div class="col-3">Kabupaten/Kota</div>
                         <div class="col-9">
-                            <div class="form-group" style="width:400px!important">
-                                <select class="choices form-select" >
-                                    <option value="romboid">Kabupaten Muna</option>
+                            <div class="form-group" >
+                                <select class="form-select" id="id_kabkot">
+                                    <option value="" selected="selected">---------</option>
                                 </select>
                             </div>
                         </div>
                     </div>
                     <div class="row">
-                        <div class="col-3">Filter Kecamatan</div>
+                        <div class="col-3">Kecamatan</div>
                         <div class="col-9">
-                            <div class="form-group" style="width:400px!important">
-                                <select class="choices form-select" >
-                                    <option value="romboid">Duruka</option>
+                            <div class="form-group" >
+                                <select class="form-select" id="id_kecamatan">
+                                    <option value="" selected="selected">---------</option>
                                 </select>
                             </div>
                         </div>
                     </div>
                     <div class="row">
-                        <div class="col-3">Filter Desa/Kelurahan</div>
+                        <div class="col-3">Desa/Kelurahan</div>
                         <div class="col-9">
-                            <div class="form-group" style="width:400px!important">
-                                <select class="choices form-select">
-                                    <option value="romboid">Banggai</option>
+                            <div class="form-group" >
+                                <select class="form-select" id="id_desa">
+                                    <option value="" selected="selected">---------</option>
                                 </select>
                             </div>
                         </div>
                     </div>
                     <div class="row">
-                        <div class="col-3">Filter SLS/Non SLS</div>
+                        <div class="col-3">SLS/Non SLS</div>
                         <div class="col-9">
-                            <div class="form-group" style="width:400px!important">
-                                <select class="choices form-select">
-                                    <option value="romboid">RT 001 RW 001</option>
+                            <div class="form-group" >
+                                <select class="form-select" id="id_sls">
+                                    <option value="" selected="selected">---------</option>
                                 </select>
                             </div>
                         </div>
@@ -101,16 +101,13 @@
             <div class="card">
                 <div class="card-header d-flex justify-content-between align-items-center">
                     <h4 class="card-title">Filter Karakteristik Keluarga</h4>
-                    <div class="d-flex ">
-                        <i data-feather="download"></i>
-                    </div>
                 </div>
                 <div class="card-body px-4 pb-4">
                     <div class="row">
                         <div class="col-5">Pendidikan KRT</div>
                         <div class="col-7">
-                            <div class="form-group" style="width:400px!important">
-                                <select class="choices form-select">
+                            <div class="form-group" >
+                                <select class="form-control">
                                     <option>----</option>
                                     {% for edu_level in education_levels %}
                                         <option value="{{edu_level.0}}">{{edu_level.1}}</option>
@@ -122,8 +119,8 @@
                     <div class="row">
                         <div class="col-5">Status Kepemilikan Bangunan</div>
                         <div class="col-7">
-                            <div class="form-group" style="width:400px!important">
-                                <select class="choices form-select" >
+                            <div class="form-group" >
+                                <select class="form-control" >
                                     <option>----</option>
                                     {% for state in home_ownership_state %}
                                         <option value="{{state.0}}">{{state.1}}</option>
@@ -135,8 +132,8 @@
                     <div class="row">
                         <div class="col-5">Kepemilikan Aset</div>
                         <div class="col-7">
-                            <div class="form-group" style="width:400px!important">
-                                <select class="choices form-select" >
+                            <div class="form-group" >
+                                <select class="form-control" >
                                     <option value="romboid">Rumah</option>
                                 </select>
                             </div>
@@ -145,8 +142,8 @@
                     <div class="row">
                         <div class="col-5">Penerima Program Bantuan</div>
                         <div class="col-7">
-                            <div class="form-group" style="width:400px!important">
-                                <select class="choices form-select" >
+                            <div class="form-group" >
+                                <select class="form-control" >
                                     <option value="romboid">BLT</option>
                                 </select>
                             </div>
@@ -170,34 +167,33 @@
                 </div>
                 <div class="card-body px-3 pb-0">
                     <div class="table-responsive">
-                        <table class='table mb-0' id="table">
+                        <table class="table w-100 dt-responsive" id="table">
                             <thead>
                                 <tr>
                                     <th class="text-center">No</th>
+                                    <th>Desa/SLS </th>
                                     <th>Kepala Keluarga</th>
                                     <th class="text-center">Jumlah ART</th>
-                                    <th>Alamat</th>
-                                    <th>Status Penerima Bantuan</th>
-                                    <th>Kepemilikan Aset</th>
+                                    <th>Tgl Pendataan</th>
+                                    <th>Tgl Entri</th>
                                     <th class="text-center">Aksi</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 {% for family in families %}
                                     <tr>
-                                        
                                         <td class="text-center">{{forloop.counter}}</td>
-                                        <td>{{family.r108}}</td>
-                                        <td class="text-center">{{family.r112}}</td>
-                                        <td>{{family.r104}}</td>
+                                        <td>{{family.r104.reg_name}} / ({{family.r105.reg_sls_code}}) {{family.r105.reg_sls_name}}</td>
+                                        <td>{{family.r107}}</td>
+                                        <td class="text-center">{{family.r109}}</td>
                                         <td>
-                                            {{family.welf|safe}}
+                                            {{family.r203}}
                                         </td>
                                         <td class="text-center">
-                                            {{family.assets|safe}}
+                                            {{family.created_at}}
                                         </td>
                                         <td class="text-center">
-                                            <button class="btn btn-primary icon btn-edit" data-id="{{family.id}}"><i data-feather="edit"></i></button>
+                                            <a href="{% url 'app:mnj_families_edit' %}?id={{family.id}}" target="_blank" class="btn btn-primary icon btn-edit" data-id="{{family.id}}"><i data-feather="edit"></i></a>
                                             <button class="btn btn-danger icon btn-delete" data-id="{{family.id}}"><i data-feather="trash"></i></button>
                                         </td>
                                     </tr>
@@ -218,6 +214,33 @@
 <script src="{% static 'app-design/assets/vendors/choices.js/choices.min.js' %}"></script>
 
 <script>
+    var table = $("#table").DataTable({
+        pageLength: 5,
+        bInfo : false,
+        bLengthChange: false,
+        drawCallback: function () {
+            $(".dataTables_paginate > .pagination").addClass("pagination-primary");
+        }
+    });
+</script>
+
+<script>
+
+    $('#id_provinsi').on('change', function(){
+        get_region_adm('prov', $(this).val(), '#id_kabkot')
+    })
+
+    $('#id_kabkot').on('change', function(){
+        get_region_adm('kabkot', $(this).val(), '#id_kecamatan')
+    })
+
+    $('#id_kecamatan').on('change', function(){
+        get_region_adm('kec', $(this).val(), '#id_desa')
+    })
+
+    $('#id_desa').on('change', function(){
+        get_region_adm('deskel', $('option:selected', this).attr('data-code'), '#id_sls')
+    })
 
     $('.btn-delete').on('click', function(e){
         var val = $(this).attr('data-id')
@@ -232,13 +255,15 @@
                 "X-CSRFToken": '{{csrf_token}}',
             },
             success: (response) => {
+                $("#message-respons").html('')
                 push_notif(response.message, 'alert-success', "#message-respons")
                 $('html, body').animate({
                     scrollTop: $("body").offset().top
                 }, 10);
             },
-            error: (error) => {
-                console.log(error);
+            error: (response) => {
+                $("#message-respons").html('')
+                push_notif(response.message, 'alert-danger', "#message-respons")
             }
         });
     })

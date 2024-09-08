@@ -7,7 +7,7 @@ from pprint import pprint
 from django.db.models import Q, Count, Sum, Avg
 from django.db.models.functions import Length
 import json
-from django.shortcuts import get_object_or_404
+from django.shortcuts import get_object_or_404, redirect
 
 # Create your views here.
 class DashboardClassView(LoginRequiredMixin, View):
@@ -990,88 +990,112 @@ class ManajemenFamiliesClassView(LoginRequiredMixin, View):
         education_levels = models.PopulationsModels.r518.field.choices
         home_ownership_state = models.FamiliesModels.r301.field.choices
         
-        data_families = []
-        for family in families:
-            dt = {}
-            dt['id'] = family.pk
-            dt['r108'] = family.r108
-            dt['r112'] = family.r112
-            dt['r104'] = f"{family.r104.reg_name}, {family.r105.reg_sls_name}"
-
-            members = models.PopulationsModels.objects.filter(family_id = family.pk, r409 = '2' )
-            if members.exists():
-                dt['r108'] = f"{dt['r108']} / { members.first().r402}"
-
-            welf = '<select class="form-select" style="width:70%">'
-            if family.r501a == '1':
-                welf += '<option>BPNT</option>'
-            if family.r501b == '1':
-                welf += '<option>PKH</option>'
-            if family.r501c == '1':
-                welf += '<option>BLT</option>'
-            if family.r501d == '1':
-                welf += '<option>Subsidi Listrik</option>'
-            if family.r501e == '1':
-                welf += '<option>Bantuan Pemda</option>'
-            if family.r501f == '1':
-                welf += '<option>Subsidi Pupuk</option>'
-            if family.r501g == '1':
-                welf += '<option>Subsidi LPG</option>'
-            welf += '</select>'
-
-            if welf.find('<option>') != -1:
-                dt['welf'] = welf
-            else:
-                dt['welf'] = 'Bukan penerima bantuan'
-
-
-            assets = '<select class="form-select" style="width:100%">'
-            if family.r502a == '1':
-                assets += '<option>Tabung Gas >= 5,5 kg</option>'
-            if family.r502n == '1':
-                assets += '<option>Smartphone</option>'
-            if family.r502b == '1':
-                assets += '<option>Lemari Es/Kulkas</option>'
-            if family.r502c == '1':
-                assets += '<option>AC</option>'
-            if family.r502d == '1':
-                assets += '<option>Water Heater</option>'
-            if family.r502e == '1':
-                assets += '<option>Telepon Rumah</option>'
-            if family.r502f == '1':
-                assets += '<option>Televisi Layar Datar</option>'
-            if family.r502g == '1':
-                assets += '<option>Emas/Perhiasan</option>'
-            if family.r502h == '1':
-                assets += '<option>Komputer/Laptop/Tablet</option>'
-            if family.r502i == '1':
-                assets += '<option>Sepeda Motor</option>'
-            if family.r502j == '1':
-                assets += '<option>Sepeda</option>'
-            if family.r502k == '1':
-                assets += '<option>Mobil</option>'
-            if family.r502l == '1':
-                assets += '<option>Perahu</option>'
-            if family.r502m == '1':
-                assets += '<option>Perahu Motor</option>'
-
-            assets += '</select>'
-            if assets.find('<option>') != -1:
-                dt['assets'] = assets
-            else:
-                dt['assets'] = 'Tidak memiliki aset'
-
-            data_families.append(dt)
-
         context = {
             'title' : 'Manajemen Keluarga',
-            'families' : data_families,
+            'families' : families,
             'education_levels' : education_levels,
             'home_ownership_state' : home_ownership_state,
+            'province_regions' : models.RegionAdministrativeModels.objects.annotate(text_len=Length('reg_code')).filter(text_len=2).order_by('reg_code')
+   
         }
 
         return render(request, 'app/master/master-keluarga.html', context)
 
+class ManajemenFamiliesEditClassView(LoginRequiredMixin, View):
+    
+    def get(self, request):
+
+        if request.GET.get('id') is not None:
+            model = models.FamiliesModels.objects.prefetch_related('families_members').filter(pk = int(request.GET.get('id')))
+            if model.exists():
+                model = model.first()
+                regions = helpers.get_region_code(model.r104.reg_code, model.r105.pk)
+                forms_art = []
+                id = []
+                for dt in model.families_members.all():
+                    form = forms.PopulationsForm(instance=dt)
+                    forms_art.append(form)
+                    id.append(dt.id)
+
+                context = {
+                    'title' : 'Edit Data Keluarga',
+                    'regions' : regions,
+                    'pk' : request.GET.get('id'),
+                    'form' : forms.FamiliesForm(instance=model),
+                    'forms_art' : zip(id, forms_art),
+                    'form_penduduk' : forms.PopulationsForm(),
+                    'province_regions' : models.RegionAdministrativeModels.objects.annotate(text_len=Length('reg_code')).filter(text_len=2).order_by('reg_code')
+                }
+                return render(request, 'app/master/master-keluarga-edit.html', context)
+        return redirect('app:mnj_families')
+    
+    def post(self, request):
+        is_ajax = request.headers.get('X-Requested-With') == 'XMLHttpRequest'
+        if is_ajax:
+            if request.method == 'POST':
+                data_families = json.loads(request.POST.get('form_families'))
+                instance = get_object_or_404(models.FamiliesModels, pk=data_families.get('id'))
+                art_colls = list(instance.families_members.values_list('id', flat=True))
+
+                data_art = json.loads(request.POST.get('form_art'))
+                art_form_colls = [int(dt) for dt in data_art[0]['art_id'] if len(dt) > 0]
+                print(art_form_colls)
+
+                art_remove = list(set(art_colls) - set(art_form_colls))
+
+                data_art = helpers.transform_data(data_art)
+                forms_errors = dict()
+
+                for fl in ['provinsi', 'kabkot', 'kecamatan']:
+                    if fl in data_families.keys():
+                        if len(data_families[fl]) == 0:
+                            forms_errors[fl] = ['This field is required.']
+                        del data_families[fl]
+
+                form_family = forms.FamiliesForm(data_families, instance=instance)
+                if form_family.is_valid() is False:
+                    for key, val in form_family.errors.items():
+                        forms_errors[key] = val
+                
+                forms_validated = []
+                for idx, dt in enumerate(data_art):
+                    data_art[idx]['family_id'] = instance.id
+                    if len(dt['art_id']) != 0:
+                        instance_art = get_object_or_404(models.PopulationsModels, pk=dt.get('art_id'))
+                        form_art = forms.PopulationsForm(dt, instance=instance_art)
+                    else:
+                        form_art = forms.PopulationsForm(dt)
+
+                    if form_art.is_valid() is False:
+                        for key, val in form_art.errors.items():
+                            forms_errors[f'form_art_{key}_{idx+1}'] = val
+                    else:
+                        forms_validated.append(form_art)
+
+                if len(forms_errors) > 0:
+                    return JsonResponse({"status": 'failed', "error": forms_errors}, status=400)
+
+                last_validations = helpers.combine_validations(data_families, data_art)
+                if len(last_validations) > 0:
+                    for key, val in last_validations.items():
+                        forms_errors[key] = val
+                    return JsonResponse({"status": 'failed', "error": forms_errors}, status=400)
+
+                form_family.save() 
+                for form in forms_validated:
+                    form.save()
+
+                for id in art_remove:
+                    data = get_object_or_404(models.PopulationsModels, pk=id)
+                    data.delete()
+
+                msg = f'<ul class="px-0" style="list-style:none">\
+                            Data Keluarga <b>{data_families["r107"]}</b> telah berhasil diupdate.<br>\
+                        </ul>'
+                return JsonResponse({"status": msg}, status=200)
+
+        return JsonResponse({'status': 'Invalid request'}, status=400)
+    
 class FamiliesAddClassView(LoginRequiredMixin, View):
 
     def get(self, request):
@@ -1088,7 +1112,6 @@ class FamiliesAddClassView(LoginRequiredMixin, View):
         is_ajax = request.headers.get('X-Requested-With') == 'XMLHttpRequest'
         if is_ajax:
             if request.method == 'POST':
-
                 data_families = json.loads(request.POST.get('form_families'))
                 data_art = json.loads(request.POST.get('form_art'))
                 data_art = helpers.transform_data(data_art)
@@ -1114,27 +1137,22 @@ class FamiliesAddClassView(LoginRequiredMixin, View):
 
                 if len(forms_errors) > 0:
                     return JsonResponse({"status": 'failed', "error": forms_errors}, status=400)
-                
-                pprint(forms_errors)
 
-                # last_validations = helpers.combine_validations(data_families, data_art)
-                # if len(last_validations) > 0:
-                #     for key, val in last_validations.items():
-                #         forms_errors[key] = val
-                    # return JsonResponse({"status": 'failed', "error": forms_errors}, status=400)
+                last_validations = helpers.combine_validations(data_families, data_art)
+                if len(last_validations) > 0:
+                    for key, val in last_validations.items():
+                        forms_errors[key] = val
+                    return JsonResponse({"status": 'failed', "error": forms_errors}, status=400)
 
-                # form_family.save()
-                # last_id = models.FamiliesModels.objects.latest('id').id
-                art_names = ''
-                # for idx, dt in enumerate(data_art):
-                #     data_art[idx]['family_id'] = last_id
-                #     form_art = forms.PopulationsForm(dt)
-                #     form_art.save()
-                #     art_names += f'<li class="px-2">{idx+1}. {dt["r402"]}</li>'
+                form_family.save()
+                last_id = models.FamiliesModels.objects.latest('id').id
+                for idx, dt in enumerate(data_art):
+                    data_art[idx]['family_id'] = last_id
+                    form_art = forms.PopulationsForm(dt)
+                    form_art.save()
                 
                 msg = f'<ul class="px-0" style="list-style:none">\
-                            Data keluarga dengan ART berhasil ditambahkan: <br>\
-                           {art_names}\
+                            Data Keluarga <b>{data_families["r107"]}</b> telah berhasil ditambahkan.<br>\
                         </ul>'
                 return JsonResponse({"status": msg}, status=200)
             
@@ -1149,14 +1167,14 @@ class ManajemenFamiliesDeleteClassView(LoginRequiredMixin, View):
             if request.method == 'POST':
                 try:
                     data = get_object_or_404(models.FamiliesModels, pk=request.POST.get('pk'))
-                    old_dt = data.r108 
+                    old_dt = data.r107
                     data.delete()
                     return JsonResponse({'status' : 'success', 'message': f'Keluarga atas nama "{old_dt}" berhasil dihapus.'})
                 except:
                     return JsonResponse({'status': 'failed', 'message': 'Data tidak tersedia'})
-                
+
         return JsonResponse({'status': 'Invalid request'}, status=400)
-        
+
 class RegionFetchDataClassView(LoginRequiredMixin, View):
         
         def post(self, request):
