@@ -1,10 +1,6 @@
 {% extends "base/index.html" %}
 {% load static %}
 
-{% block css-extender %}
-<link rel="stylesheet" href="{% static 'app-design/assets/vendors/choices.js/choices.min.css' %}" />
-{% endblock css-extender %}
-
 {% block main-content %}
 
 <section class="section mb-3">
@@ -167,11 +163,11 @@
                 </div>
                 <div class="card-body px-3 ">
                     <div class="table-responsive">
-                        <table class="table w-100 dt-responsive" id="table">
+                        <table class="table w-100" id="table">
                             <thead>
                                 <tr>
-                                    <th class="text-center">No</th>
-                                    <th>Desa/SLS </th>
+                                    <th class="text-center ">No</th>
+                                    <th class="">Desa/SLS </th>
                                     <th>Kepala Keluarga</th>
                                     <th class="text-center">Jumlah ART</th>
                                     <th>Tgl Pendataan</th>
@@ -217,9 +213,19 @@
     var table = $("#table").DataTable({
         pageLength: 5,
         bInfo : false,
+        bFilter : true,
         bLengthChange: false,
+        language: {
+            search: '<span style="font-size:13px">Cari data keluarga</span>',
+            searchPlaceholder: "...",
+            paginate: {
+                previous: "<i class='mdi mdi-chevron-left'>",
+                next: "<i class='mdi mdi-chevron-right'>",
+            },
+        },
         drawCallback: function () {
             $(".dataTables_paginate > .pagination").addClass("pagination-primary");
+            $(".dataTables_paginate > .pagination > .paginate_button > .page-link").addClass("rounded");
         }
     });
 </script>
