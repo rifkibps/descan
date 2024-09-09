@@ -257,9 +257,6 @@
             success: (response) => {
                 $("#message-respons").html('')
                 push_notif(response.message, 'alert-success', "#message-respons")
-                $('html, body').animate({
-                    scrollTop: $("body").offset().top
-                }, 10);
             },
             error: (response) => {
                 $("#message-respons").html('')

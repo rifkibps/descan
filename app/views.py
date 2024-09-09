@@ -151,7 +151,6 @@ class DashboardClassView(LoginRequiredMixin, View):
 
         return render(request, 'app/dashboard/dashboard.html', context)
 
-
 class TabulationsFamiliesClassView(LoginRequiredMixin, View):
     
     def get(self, request):
@@ -1024,7 +1023,6 @@ class ManajemenFamiliesEditClassView(LoginRequiredMixin, View):
                     'form' : forms.FamiliesForm(instance=model),
                     'forms_art' : zip(id, forms_art),
                     'form_penduduk' : forms.PopulationsForm(),
-                    'province_regions' : models.RegionAdministrativeModels.objects.annotate(text_len=Length('reg_code')).filter(text_len=2).order_by('reg_code')
                 }
                 return render(request, 'app/master/master-keluarga-edit.html', context)
         return redirect('app:mnj_families')
@@ -1039,7 +1037,6 @@ class ManajemenFamiliesEditClassView(LoginRequiredMixin, View):
 
                 data_art = json.loads(request.POST.get('form_art'))
                 art_form_colls = [int(dt) for dt in data_art[0]['art_id'] if len(dt) > 0]
-                print(art_form_colls)
 
                 art_remove = list(set(art_colls) - set(art_form_colls))
 
@@ -1096,7 +1093,7 @@ class ManajemenFamiliesEditClassView(LoginRequiredMixin, View):
 
         return JsonResponse({'status': 'Invalid request'}, status=400)
     
-class FamiliesAddClassView(LoginRequiredMixin, View):
+class ManajemenFamiliesAddClassView(LoginRequiredMixin, View):
 
     def get(self, request):
         context = {
@@ -1197,26 +1194,139 @@ class RegionFetchDataClassView(LoginRequiredMixin, View):
 class ManajemenPopulationsClassView(LoginRequiredMixin, View): 
         
     def get(self, request):
-        # education_levels = models.PopulationsModels.r415.field.choices
-        # home_ownership_state = models.FamiliesModels.r301a.field.choices
         
-        data_populations = []
         populations = models.PopulationsModels.objects.all()
-        pprint(populations[0].__dict__)
-        # for population in populations:
-        #     dt = {}
-        #     dt['nama'] = population.r402
-        #     dt['hubungan'] = f'{population.get_r409_display()} (Keluarga {population.family_id.r108})'
-        #     dt['keberadaan'] = population.get_r404_display()
-        #     dt['tgl_lahir'] = population.r406
-        #     dt['umur'] = population.r407
-        #     dt['pendidikan'] = population.get_r415_display() if population.r415 is not None else '-'
-        #     data_populations.append(dt)
-
         context = {
             'title' : 'Manajemen Penduduk',
             'populations' : populations,
-            # 'education_levels' : education_levels,
-            # 'home_ownership_state' : home_ownership_state,
+            'province_regions' : models.RegionAdministrativeModels.objects.annotate(text_len=Length('reg_code')).filter(text_len=2).order_by('reg_code')
         }
         return render(request, 'app/master/master-penduduk.html', context)
+
+class ManajemenPopulationsAddClassView(LoginRequiredMixin, View):
+
+    def get(self, request):
+        
+        context = {
+            'title' : 'Manajemen Penduduk',
+            'form'  : forms.PopulationsForm(),
+            'province_regions' : models.RegionAdministrativeModels.objects.annotate(text_len=Length('reg_code')).filter(text_len=2).order_by('reg_code')
+        }
+        return render(request, 'app/master/master-penduduk-add.html', context)
+    
+    def post(self, request):
+        
+        is_ajax = request.headers.get('X-Requested-With') == 'XMLHttpRequest'
+
+        if is_ajax:
+            if request.method == 'POST':
+
+                data_art = json.loads(request.POST.get('form_art'))
+                data_art = helpers.transform_data(data_art)
+                forms_errors = dict()
+
+                form_art = forms.PopulationsForm(data_art[0])
+                if form_art.is_valid() is False:
+                    for key, val in form_art.errors.items():
+                        forms_errors[key] = val
+
+                if len(forms_errors) > 0:
+                    return JsonResponse({"status": 'failed', "error": forms_errors}, status=400)
+
+                family = list(models.PopulationsModels.objects.filter(family_id=data_art[0]['family_id']).values_list('r504', flat=True))
+                if data_art[0]['r504'] == '1':
+                    if '1' in family:
+                        forms_errors['r504'] = ['Keluarga hanya bisa memiliki 1 kepala keluarga (terdapat ART lain berstatus kepala keluarga)']
+                        return JsonResponse({"status": 'failed', "error": forms_errors}, status=400)
+
+                form_art.save()
+                return JsonResponse({"status": f'Data ART {data_art[0]["r503"]} berhasil ditambahkan'}, status=200)
+
+        return JsonResponse({'status': 'Invalid request'}, status=400)
+    
+
+class ManajemenPopulationsEditClassView(LoginRequiredMixin, View):
+
+    def get(self, request):
+
+        if request.GET.get('id') is not None:
+            model = models.PopulationsModels.objects.filter(pk = int(request.GET.get('id')))
+            if model.exists():
+                model = model.first()
+                form = forms.PopulationsForm(instance=model)
+
+                context = {
+                    'title' : 'Edit Data Penduduk',
+                    'pk' : model.pk,
+                    'form' : form,
+                }
+
+                return render(request, 'app/master/master-penduduk-edit.html', context)
+            
+        return redirect('app:mnj_population')
+    
+    def post(self, request):
+        
+        is_ajax = request.headers.get('X-Requested-With') == 'XMLHttpRequest'
+
+        if is_ajax:
+            if request.method == 'POST':
+                
+                data = json.loads(request.POST.get('form_art'))
+                data_art = helpers.transform_data(data)[0]
+
+                if data[0].get('id') is not None:
+                    instance = models.PopulationsModels.objects.filter(pk = int(data_art['id']))
+
+                    data_art['family_id'] = instance.first().family_id
+                    data_art['art_id'] = instance.first().pk
+
+                    forms_errors = dict()
+
+                    if instance.exists():
+                        form = forms.PopulationsForm(data_art, instance=instance.first())
+                        if form.is_valid() is False:
+                            for key, val in form.errors.items():
+                                forms_errors[key] = val
+
+                        if len(forms_errors) > 0:
+                            return JsonResponse({"status": 'failed', "error": forms_errors}, status=400)
+
+                        family = list(models.PopulationsModels.objects.filter(family_id=instance.first().family_id).exclude(Q(pk=instance.first().id)).values_list('r504', flat=True))
+
+                        if data_art['r504']  == '1' and data_art['r504'] != instance.first().r504:
+                            if '1' in family:
+                                forms_errors['r504'] = ['Keluarga hanya bisa memiliki 1 kepala keluarga (terdapat ART lain berstatus kepala keluarga)']
+                                return JsonResponse({"status": 'failed', "error": forms_errors}, status=400)
+
+                        form.save()
+                        return JsonResponse({"status": f'Data ART {data_art["r503"]} berhasil diupdate'}, status=200)
+
+        return JsonResponse({'status': 'Invalid request'}, status=400)
+    
+
+
+class ManajemenPopulationsFetchNumClassView(LoginRequiredMixin, View):
+
+    def post(self, request):
+        is_ajax = request.headers.get('X-Requested-With') == 'XMLHttpRequest'
+        if is_ajax:
+            if request.method == 'POST':
+                model = models.PopulationsModels.objects.filter(family_id = int(request.POST.get('id'))).order_by('-r501')
+                last_num = model.first().r501 + 1
+                return JsonResponse({'status' : 'success', 'message': last_num})
+
+        return JsonResponse({'status': 'Invalid request'}, status=400)
+
+class ManajemenPopulationsDeleteClassView(LoginRequiredMixin, View):
+
+    def post(self, request):
+        is_ajax = request.headers.get('X-Requested-With') == 'XMLHttpRequest'
+        if is_ajax:
+            if request.method == 'POST':
+                model = get_object_or_404(models.PopulationsModels, pk = int(request.POST.get('pk')))
+                old_data = model.r503
+                model.delete()
+                return JsonResponse({'status' : 'success', 'message': f'Data <b>{old_data}</b> berhasil dihapus'})
+
+        return JsonResponse({'status': 'Invalid request'}, status=400)

@@ -6,6 +6,12 @@ from datetime import date
 from . import helpers
 
 
+# class PopulationsForm(forms.ModelForm):
+
+#     class Meta:
+#         model = models.PopulationsModels
+#         fields = "__all__"
+
 class FamiliesForm(forms.ModelForm):
 
     class Meta:

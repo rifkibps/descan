@@ -6,12 +6,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{{title}}</title>
+    <link rel="shortcut icon" href="{% static 'app-design/assets/images/favicon.svg" type="image/x-icon'%} ">
     
-    <link href="{% static 'app-design/assets/css/vendor/dataTables.bootstrap5.css' %}" rel="stylesheet" type="text/css"/>
     <link rel="stylesheet" href="{% static 'app-design/assets/css/bootstrap.css'%} ">
     <link rel="stylesheet" href="{% static 'app-design/assets/vendors/perfect-scrollbar/perfect-scrollbar.css'%} ">
     <link rel="stylesheet" href="{% static 'app-design/assets/css/app.css'%} ">
-    <link rel="shortcut icon" href="{% static 'app-design/assets/images/favicon.svg" type="image/x-icon'%} ">
+    <link href="{% static 'app-design/assets/css/vendor/dataTables.bootstrap5.css' %}" rel="stylesheet" type="text/css"/>
     <style>
         .pagination-rounded .page-link {
             border-radius: 30px !important;
@@ -118,19 +118,18 @@
         </div>
     </div>
 
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+
     <script src="{% static 'app-design/assets/js/feather-icons/feather.min.js' %}"></script>
     <script src="{% static 'app-design/assets/js/perfect-scrollbar/perfect-scrollbar.min.js' %}"></script>
     <script src="{% static 'app-design/assets/js/app.js' %}"></script>
     <script src="{% static 'app-design/assets/js/main.js' %}"></script>
 
-    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
-    <script src="{% static 'app-design/assets/js/vendor/jquery.dataTables.min.js' %}"></script>
+    {% comment %} <script src="{% static 'app-design/assets/js/vendor/jquery.dataTables.min.js' %}"></script>
     <script src="{% static 'app-design/assets/js/vendor/dataTables.bootstrap5.js' %}"></script>
-    <script src="{% static 'app-design/assets/js/vendor/dataTables.responsive.min.js' %}"></script>
+    <script src="{% static 'app-design/assets/js/vendor/dataTables.responsive.min.js' %}"></script> {% endcomment %}
 
-    {% comment %} <script src="https://code.jquery.com/jquery-3.7.1.slim.js" integrity="sha256-UgvvN8vBkgO0luPSUl2s8TIlOSYRoGFAX4jlCIm9Adc=" crossorigin="anonymous"></script> {% endcomment %}
     <script>
-
         // Get current page and set current in nav
         $(".sidebar-menu .menu >li").each(function() {
             var navItem = $(this);

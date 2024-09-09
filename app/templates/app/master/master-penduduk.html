@@ -1,5 +1,6 @@
 {% extends "base/index.html" %}
 {% load static %}
+{% load filter_tags %}
 
 {% block css-extender %}
 <link rel="stylesheet" href="{% static 'app-design/assets/vendors/choices.js/choices.min.css' %}" />
@@ -33,57 +34,57 @@
             <div class="card">
                 <div class="card-header d-flex justify-content-between align-items-center">
                     <h4 class="card-title">Filter Wilayah</h4>
-                    <div class="d-flex ">
-                        <i data-feather="download"></i>
-                    </div>
                 </div>
                 <div class="card-body px-4 pb-4">
                     <div class="row">
-                        <div class="col-3">Filter Provinsi</div>
+                        <div class="col-3">Provinsi</div>
                         <div class="col-9">
-                            <div class="form-group" style="width:400px!important">
-                                <select class="choices form-select" >
-                                    <option value="romboid">Sulawesi Tenggara</option>
+                            <div class="form-group">
+                                <select class="form-select" id="id_provinsi">
+                                    <option value="" selected="selected">---------</option>
+                                    {% for prov_reg in province_regions %}
+                                        <option value="{{prov_reg.reg_code}}">[{{prov_reg.reg_code}}]&ensp;{{prov_reg.reg_name}}</option>
+                                    {% endfor %}
                                 </select>
                             </div>
                         </div>
                     </div>
                     <div class="row">
-                        <div class="col-3">Filter Kabupaten/Kota</div>
+                        <div class="col-3">Kabupaten/Kota</div>
                         <div class="col-9">
-                            <div class="form-group" style="width:400px!important">
-                                <select class="choices form-select" >
-                                    <option value="romboid">Kabupaten Muna</option>
+                            <div class="form-group" >
+                                <select class="form-select" id="id_kabkot">
+                                    <option value="" selected="selected">---------</option>
                                 </select>
                             </div>
                         </div>
                     </div>
                     <div class="row">
-                        <div class="col-3">Filter Kecamatan</div>
+                        <div class="col-3">Kecamatan</div>
                         <div class="col-9">
-                            <div class="form-group" style="width:400px!important">
-                                <select class="choices form-select" >
-                                    <option value="romboid">Duruka</option>
+                            <div class="form-group" >
+                                <select class="form-select" id="id_kecamatan">
+                                    <option value="" selected="selected">---------</option>
                                 </select>
                             </div>
                         </div>
                     </div>
                     <div class="row">
-                        <div class="col-3">Filter Desa/Kelurahan</div>
+                        <div class="col-3">Desa/Kelurahan</div>
                         <div class="col-9">
-                            <div class="form-group" style="width:400px!important">
-                                <select class="choices form-select">
-                                    <option value="romboid">Banggai</option>
+                            <div class="form-group" >
+                                <select class="form-select" id="id_desa">
+                                    <option value="" selected="selected">---------</option>
                                 </select>
                             </div>
                         </div>
                     </div>
                     <div class="row">
-                        <div class="col-3">Filter SLS/Non SLS</div>
+                        <div class="col-3">SLS/Non SLS</div>
                         <div class="col-9">
-                            <div class="form-group" style="width:400px!important">
-                                <select class="choices form-select">
-                                    <option value="romboid">RT 001 RW 001</option>
+                            <div class="form-group" >
+                                <select class="form-select" id="id_sls">
+                                    <option value="" selected="selected">---------</option>
                                 </select>
                             </div>
                         </div>
@@ -151,16 +152,23 @@
         </div>
     </div>
 
+    <div class="row">
+        <div class="col-md-12" id="message-respons">
+            
+        </div>
+    </div>
+
     <div class="row mb-4">
         <div class="col-md-12">
             <div class="card">
                 <div class="card-header d-flex justify-content-between align-items-center">
                     <h4 class="card-title">Daftar Penduduk</h4>
                     <div class="d-flex ">
+                        <a href="{% url 'app:mnj_population_add' %}" class="btn icon btn-primary">Tambah Penduduk</a>&ensp;
                         <button class="btn icon btn-primary"><i data-feather="download"></i> Unduh</button>
                     </div>
                 </div>
-                <div class="card-body px-3 pb-0">
+                <div class="card-body px-3">
                     <div class="table-responsive">
                         <table class='table mb-0' id="table">
                             <thead>
@@ -181,15 +189,15 @@
                                         <td class="text-center">{{forloop.counter}}</td>
                                         <td>{{population.r503}}</td>
                                         <td>{{population.r502}}</td>
-                                        <td>28</td>
+                                        <td class="text-center">{{population.r508|age}}</td>
                                         <td>{{population.get_r518_display}}</td>
-                                        <td>{{population.get_r504_display}}</td>
+                                        <td>{{population.get_r504_display}} (Kel. {{population.family_id.r107}})</td>
                                         <td>
                                             {{population.get_r505_display}}
                                         </td>
                                         <td class="text-center">
-                                            <button class="btn btn-primary icon"><i data-feather="edit"></i></button>
-                                            <button class="btn btn-danger icon"><i data-feather="trash"></i></button>
+                                            <a href="{% url 'app:mnj_population_edit' %}?id={{population.pk}}" class="btn btn-primary icon"><i data-feather="edit"></i></a>
+                                            <button class="btn btn-danger btn-delete icon" data-id="{{population.id}}"><i data-feather="trash"></i></button>
                                         </td>
                                     </tr>
                                 {% endfor %}
@@ -206,5 +214,44 @@
 
 
 {% block js-extender %}
+<script>
+    $('#id_provinsi').on('change', function(){
+        get_region_adm('prov', $(this).val(), '#id_kabkot')
+    })
+
+    $('#id_kabkot').on('change', function(){
+        get_region_adm('kabkot', $(this).val(), '#id_kecamatan')
+    })
+
+    $('#id_kecamatan').on('change', function(){
+        get_region_adm('kec', $(this).val(), '#id_desa')
+    })
+
+    $('#id_desa').on('change', function(){
+        get_region_adm('deskel', $('option:selected', this).attr('data-code'), '#id_sls')
+    })
+
+    $('.btn-delete').on('click', function(e){
+        var val = $(this).attr('data-id')
+        $("#message-respons").html('')
+
+        $.ajax({
+            url: '{% url "app:mnj_population_del" %}',
+            type: "POST",
+            dataType: "json",
+            data : {'pk' : val},
+            headers: {
+                "X-Requested-With": "XMLHttpRequest",
+                "X-CSRFToken": '{{csrf_token}}',
+            },
+            success: (response) => {
+                push_notif(response.message, 'alert-success', "#message-respons")
+            },
+            error: (response) => {
+                push_notif(response.message, 'alert-danger', "#message-respons")
+            }
+        });
+    })
+</script>
 <script src="{% static 'app-design/assets/vendors/choices.js/choices.min.js' %}"></script>
 {% endblock js-extender %}

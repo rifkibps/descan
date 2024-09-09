@@ -1,0 +1,721 @@
+{% extends "base/index.html" %}
+{% load static %}
+{% load filter_tags %}
+{% load widget_tweaks %}
+
+{% block css-extender %}
+<link rel="stylesheet" href="{% static 'app-design/assets/vendors/choices.js/choices.min.css' %}" />
+{% endblock css-extender %}
+
+{% block main-content %}
+
+<section class="section mb-3 px-3">
+    <div class="page-title">
+        <div class="row">
+            <div class="col-12 col-md-6 order-md-1 order-last">
+                <h3>Tambah Penduduk</h3>
+                <p class="text-subtitle text-muted">
+                    Manajemen data keluarga untuk memutakhirkan kondisi dan karakteristik keluarga di setiap desa.
+                </p>
+                <a href="{% url 'app:mnj_families_add' %}">Reset Form</a>
+            </div>
+            <div class="col-12 col-md-6 order-md-2 order-first">
+                <nav aria-label="breadcrumb" class='breadcrumb-header'>
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item"><a href="javascript:void(0)">Manajemen</a></li>
+                        <li class="breadcrumb-item" aria-current="page">Keluarga</li>
+                        <li class="breadcrumb-item active" aria-current="page">Keluarga Baru</li>
+                    </ol>
+                </nav>
+            </div>
+        </div>
+    </div>
+</section>
+
+
+<section class="section mt-5 px-3">
+
+    <div id="message-respons">
+    </div>
+
+    <form id="population_add" action="" method="post" class="needs-validation" novalidate>
+        {% csrf_token %}
+
+        <div class="art-section">
+            <div class="art-form-fields mb-5">
+                <div class="row">
+                    <div class="col-6">
+                        
+                        <div class="row">
+                            <div class="col-5">
+                                <label for="id_{{form.family_id.id_for_label}}">{{ form.family_id.label }}</label>
+                            </div>
+                            <div class="col-6 col-offset-1">
+                                <div class="form-group">
+                                    <div class="position-relative">
+                                        {% render_field form.family_id class="choices form-select px-3" id="id_family_id" onchange="get_last_num(this)" %}
+                                        <div class="msg-invalid text-danger my-0" id="msg-{{form.family_id.id_for_label}}">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <h5 class="mb-3">Keterangan Demografi</h5>
+                        <div class="row">
+                            <div class="col-5">
+                                <label for="{{form.r501.id_for_label}}">{{ form.r501.label }}</label>
+                            </div>
+                            <div class="col-3 col-offset-4">
+                                <div class="form-group">
+                                    <div class="position-relative">
+                                        {% render_field form.r501 class="form-control px-3" id=form.r501.id_for_label disabled="disabled" %}
+                                        <div class="invalid-feedback" id="msg-{{form.r501.id_for_label}}">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-5">
+                                <label for="{{form.r502.id_for_label}}">{{ form.r502.label }}</label>
+                            </div>
+                            <div class="col-6 col-offset-1">
+                                <div class="form-group">
+                                    <div class="position-relative">
+                                        {% render_field form.r502 class="form-control px-3" id=form.r502.id_for_label %}
+                                        <div class="invalid-feedback" id="msg-{{form.r502.id_for_label}}">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-5">
+                                <label for="{{form.r503.id_for_label}}">{{ form.r503.label }}</label>
+                            </div>
+                            <div class="col-6 col-offset-1">
+                                <div class="form-group">
+                                    <div class="position-relative">
+                                        {% render_field form.r503 class="form-control px-3" id=form.r503.id_for_label %}
+                                        <div class="invalid-feedback" id="msg-{{form.r503.id_for_label}}">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-5">
+                                <label for="{{form.r504.id_for_label}}">{{ form.r504.label }}</label>
+                            </div>
+                            <div class="col-6 col-offset-1">
+                                <div class="form-group">
+                                    <div class="position-relative">
+                                        {% render_field form.r504 class="form-select px-3" id=form.r504.id_for_label %}
+                                        <div class="invalid-feedback" id="msg-{{form.r504.id_for_label}}">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-5">
+                                <label for="{{form.r505.id_for_label}}">{{ form.r505.label }}</label>
+                            </div>
+                            <div class="col-6 col-offset-1">
+                                <div class="form-group">
+                                    <div class="position-relative">
+                                        {% render_field form.r505 class="form-select px-3" id=form.r505.id_for_label onchange="showField505(this)" %}
+                                        <div class="invalid-feedback" id="msg-{{form.r505.id_for_label}}">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-5">
+                                <label for="{{form.r506.id_for_label}}">{{ form.r506.label }}</label>
+                            </div>
+                            <div class="col-6 col-offset-1">
+                                <div class="form-group">
+                                    <div class="position-relative">
+                                        {% render_field form.r506 class="form-select px-3" id=form.r506.id_for_label type="date" %}
+                                        <div class="invalid-feedback" id="msg-{{form.r506.id_for_label}}">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-5">
+                                <label for="{{form.r507.id_for_label}}">{{ form.r507.label }}</label>
+                            </div>
+                            <div class="col-6 col-offset-1">
+                                <div class="form-group">
+                                    <div class="position-relative">
+                                        {% render_field form.r507 class="form-control px-3" id=form.r507.id_for_label %}
+                                        <div class="invalid-feedback" id="msg-{{form.r507.id_for_label}}">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-5">
+                                <label for="{{form.r508.id_for_label}}">{{ form.r508.label }}</label>
+                            </div>
+                            <div class="col-6 col-offset-1">
+                                <div class="form-group">
+                                    <div class="position-relative">
+                                        {% render_field form.r508 class="form-control px-3" id=form.r508.id_for_label type="date" %}
+                                        <div class="invalid-feedback" id="msg-{{form.r508.id_for_label}}">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-5">
+                                <label for="{{form.r510.id_for_label}}">{{ form.r510.label }}</label>
+                            </div>
+                            <div class="col-6 col-offset-1">
+                                <div class="form-group">
+                                    <div class="position-relative">
+                                        {% render_field form.r510 class="form-select px-3" id=form.r510.id_for_label %}
+                                        <div class="invalid-feedback" id="msg-{{form.r510.id_for_label}}">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-5">
+                                <label for="{{form.r511.id_for_label}}">{{ form.r511.label }}</label>
+                            </div>
+                            <div class="col-6 col-offset-1">
+                                <div class="form-group">
+                                    <div class="position-relative">
+                                        {% render_field form.r511 class="form-select px-3" id=form.r511.id_for_label %}
+                                        <div class="invalid-feedback" id="msg-{{form.r511.id_for_label}}">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-5">
+                                <label for="{{form.r512.id_for_label}}">{{ form.r512.label }}</label>
+                            </div>
+                            <div class="col-6 col-offset-1">
+                                <div class="form-group">
+                                    <div class="position-relative">
+                                        {% render_field form.r512 class="form-select px-3" id=form.r512.id_for_label %}
+                                        <div class="invalid-feedback" id="msg-{{form.r512.id_for_label}}">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <br>
+
+                        <h5 class="mb-4 field-hide d-none">Keterangan Ketenagakerjaan</h5>
+                        <div class="row d-none">
+                            <div class="col-5">
+                                <label for="{{form.r513.id_for_label}}">{{ form.r513.label }}</label>
+                            </div>
+                            <div class="col-6 col-offset-1">
+                                <div class="form-group">
+                                    <div class="position-relative">
+                                        {% render_field form.r513 class="form-select px-3 field-art" id=form.r513.id_for_label onchange="showField514_516(this)" %}
+                                        <div class="invalid-feedback" id="msg-{{form.r513.id_for_label}}">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row d-none">
+                            <div class="col-5">
+                                <label for="{{form.r514.id_for_label}}">{{ form.r514.label }}</label>
+                            </div>
+                            <div class="col-6 col-offset-1">
+                                <div class="form-group">
+                                    <div class="position-relative">
+                                        {% render_field form.r514 class="form-control px-3 field-art" id=form.r514.id_for_label %}
+                                        <div class="invalid-feedback" id="msg-{{form.r514.id_for_label}}">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row d-none">
+                            <div class="col-5">
+                                <label for="{{form.r515.id_for_label}}">{{ form.r515.label }}</label>
+                            </div>
+                            <div class="col-6 col-offset-1">
+                                <div class="form-group">
+                                    <div class="position-relative">
+                                        {% render_field form.r515 class="form-select px-3 field-art" id=form.r515.id_for_label %}
+                                        <div class="msg-invalid text-danger my-0" id="msg-{{form.r515.id_for_label}}">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="row d-none">
+                            <div class="col-5">
+                                <label for="{{form.r516.id_for_label}}">{{ form.r516.label }}</label>
+                            </div>
+                            <div class="col-6 col-offset-1">
+                                <div class="form-group">
+                                    <div class="position-relative">
+                                        {% render_field form.r516 class="form-control px-3 field-art" id=form.r516.id_for_label %}
+                                        <div class="invalid-feedback" id="msg-{{form.r516.id_for_label}}">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <br>
+                        <h5 class="mb-4 field-hide d-none">Keterangan Pendidikan</h5>
+                        <div class="row d-none">
+                            <div class="col-5">
+                                <label for="{{form.r517.id_for_label}}">{{ form.r517.label }}</label>
+                            </div>
+                            <div class="col-6 col-offset-1">
+                                <div class="form-group">
+                                    <div class="position-relative">
+                                        {% render_field form.r517 class="form-select px-3 field-art" id=form.r517.id_for_label onchange="showField518(this)" %}
+                                        <div class="invalid-feedback" id="msg-{{form.r517.id_for_label}}">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row d-none">
+                            <div class="col-5">
+                                <label for="{{form.r518.id_for_label}}">{{ form.r518.label }}</label>
+                            </div>
+                            <div class="col-6 col-offset-1">
+                                <div class="form-group">
+                                    <div class="position-relative">
+                                        {% render_field form.r518 class="form-select px-3 field-art" id=form.r518.id_for_label %}
+                                        <div class="invalid-feedback" id="msg-{{form.r518.id_for_label}}">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-6">
+                        <br>
+                        <h5 class="mb-4 field-hide d-none">Keterangan Kesehatan</h5>
+                        <div class="row d-none">
+                            <div class="col-5">
+                                <label for="{{form.r519.id_for_label}}">{{ form.r519.label }}</label>
+                            </div>
+                            <div class="col-6 col-offset-1">
+                                <div class="form-group">
+                                    <div class="position-relative">
+                                        {% render_field form.r519 class="form-select px-3 field-art" id=form.r519.id_for_label %}
+                                        <div class="invalid-feedback" id="msg-{{form.r519.id_for_label}}">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <br>
+                        <h5 class="mb-4 field-hide d-none">Keterangan Disabilitas</h5>
+                        <div class="row d-none">
+                            <div class="col-5 px-4">
+                                <label for="{{form.r520a.id_for_label}}">a. {{ form.r520a.label }}</label>
+                            </div>
+                            <div class="col-6 col-offset-1">
+                                <div class="form-group">
+                                    <div class="position-relative">
+                                        {% render_field form.r520a class="form-select px-3 field-art" id=form.r520a.id_for_label %}
+                                        <div class="invalid-feedback" id="msg-{{form.r520a.id_for_label}}">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row d-none">
+                            <div class="col-5 px-4">
+                                <label for="{{form.r520b.id_for_label}}">b. {{ form.r520b.label }}</label>
+                            </div>
+                            <div class="col-6 col-offset-1">
+                                <div class="form-group">
+                                    <div class="position-relative">
+                                        {% render_field form.r520b class="form-select px-3 field-art" id=form.r520b.id_for_label %}
+                                        <div class="invalid-feedback" id="msg-{{form.r520b.id_for_label}}">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row d-none">
+                            <div class="col-5 px-4">
+                                <label for="{{form.r520c.id_for_label}}">c. {{ form.r520c.label }}</label>
+                            </div>
+                            <div class="col-6 col-offset-1">
+                                <div class="form-group">
+                                    <div class="position-relative">
+                                        {% render_field form.r520c class="form-select px-3 field-art" id=form.r520c.id_for_label %}
+                                        <div class="invalid-feedback" id="msg-{{form.r520c.id_for_label}}">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row d-none">
+                            <div class="col-5 px-4">
+                                <label for="{{form.r520d.id_for_label}}">d. {{ form.r520d.label }}</label>
+                            </div>
+                            <div class="col-6 col-offset-1">
+                                <div class="form-group">
+                                    <div class="position-relative">
+                                        {% render_field form.r520d class="form-select px-3 field-art" id=form.r520d.id_for_label %}
+                                        <div class="invalid-feedback" id="msg-{{form.r520d.id_for_label}}">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row d-none">
+                            <div class="col-5 px-4">
+                                <label for="{{form.r520e.id_for_label}}">e. {{ form.r520e.label }}</label>
+                            </div>
+                            <div class="col-6 col-offset-1">
+                                <div class="form-group">
+                                    <div class="position-relative">
+                                        {% render_field form.r520e class="form-select px-3 field-art" id=form.r520e.id_for_label %}
+                                        <div class="invalid-feedback" id="msg-{{form.r520e.id_for_label}}">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row d-none">
+                            <div class="col-5 px-4">
+                                <label for="{{form.r520f.id_for_label}}">f. {{ form.r520f.label }}</label>
+                            </div>
+                            <div class="col-6 col-offset-1">
+                                <div class="form-group">
+                                    <div class="position-relative">
+                                        {% render_field form.r520f class="form-select px-3 field-art" id=form.r520f.id_for_label %}
+                                        <div class="invalid-feedback" id="msg-{{form.r520f.id_for_label}}">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row d-none">
+                            <div class="col-5 px-4">
+                                <label for="{{form.r520g.id_for_label}}">g. {{ form.r520g.label }}</label>
+                            </div>
+                            <div class="col-6 col-offset-1">
+                                <div class="form-group">
+                                    <div class="position-relative">
+                                        {% render_field form.r520g class="form-select px-3 field-art" id=form.r520g.id_for_label %}
+                                        <div class="invalid-feedback" id="msg-{{form.r520g.id_for_label}}">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row d-none">
+                            <div class="col-5 px-4">
+                                <label for="{{form.r520h.id_for_label}}">h. {{ form.r520h.label }}</label>
+                            </div>
+                            <div class="col-6 col-offset-1">
+                                <div class="form-group">
+                                    <div class="position-relative">
+                                        {% render_field form.r520h class="form-select px-3 field-art" id=form.r520h.id_for_label %}
+                                        <div class="invalid-feedback" id="msg-{{form.r520h.id_for_label}}">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row my-3">
+            <div class="col-12">
+                <a href="{% url 'app:mnj_families' %}" class="btn btn-danger btn-sm">Batal</a>
+                <button class="btn btn-primary btn-sm" onclick="checkSubmit()">Tambah Data</button>
+            </div>
+        </div>
+
+    </form>
+
+</section>
+
+{% endblock main-content %}
+
+
+{% block js-extender %}
+<script src="{% static 'app-design/assets/vendors/choices.js/choices.min.js' %}"></script>
+
+
+<script>
+
+    $('#id_provinsi').on('change', function(){
+        get_region_adm('prov', $(this).val(), '#id_kabkot')
+    })
+
+    $('#id_kabkot').on('change', function(){
+        get_region_adm('kabkot', $(this).val(), '#id_kecamatan')
+    })
+
+    $('#id_kecamatan').on('change', function(){
+        get_region_adm('kec', $(this).val(), '#id_r104')
+    })
+
+    $('#id_r104').on('change', function(){
+        get_region_adm('deskel', $('option:selected', this).attr('data-code'), '#id_r105')
+    })
+    
+    function get_last_num(e){
+        var val = parseInt($(e).val())
+        var target = $('#id_r501')
+        target.val('')
+
+        $.ajax({
+            url: '{% url "app:mnj_population_fetch_num" %}',
+            type: "POST",
+            dataType: "json",
+            data : {
+                'id' : val
+            },
+            headers: {
+                "X-Requested-With": "XMLHttpRequest",
+                "X-CSRFToken": '{{csrf_token}}',
+            },
+            success: (response) => {
+                target.val(response.message)
+                target.removeClass('is-invalid')
+                $(this).removeClass('is-invalid')
+            },
+            error: (response) => {
+            }
+        });
+
+    }
+
+    function showField518(e){
+        var val = parseInt($(e).val())
+        var target = $('#id_r518')
+        
+        if ([2, 3].includes(val)){
+            target.attr('required', 'required')
+            target.parent().parent().parent().parent().removeClass('d-none')
+        }else{
+            target.removeAttr('required')
+            target.parent().parent().parent().parent().addClass('d-none')
+        }
+    }
+
+    function showField514_516(e){
+        var val = parseInt($(e).val())
+        var target = [$('#id_r514'), $('#id_r515'), $('#id_r516')]
+        if (val == 5){
+            target.forEach((obj) => {
+                $(obj).attr('required', 'required')
+                $(obj).parent().parent().parent().parent().removeClass('d-none')
+            });
+        }else{
+            target.forEach((obj) => {
+                $(obj).removeAttr('required')
+                $(obj).parent().parent().parent().parent().addClass('d-none')
+            });
+        }
+    }
+
+    function showField505(e){
+        var val = parseInt($(e).val())
+        var attr_num = parseInt($(e).attr('data-num'))
+        
+        var exception_fields = ['id_r514', 'id_r515', 'id_r516', 'id_r518']
+
+        if ([1, 4].includes(val)){
+            $('.field-hide').each(function(i, obj) {
+                $(this).removeClass('d-none')
+            });
+
+            $('.field-art').each(function(i, obj) {
+                if (!exception_fields.includes($(this).attr('id'))){
+                    $(this).attr('required', 'required')
+                    $(this).parent().parent().parent().parent().removeClass('d-none')
+                }
+            });
+            
+        }else{
+            $('.field-hide').each(function(i, obj) {
+                $(this).addClass('d-none')
+            });
+
+            $('.field-art').each(function(i, obj) {
+                if (!exception_fields.includes($(this).attr('id'))){
+                    $(this).removeAttr('required', 'required')
+                    $(this).parent().parent().parent().parent().addClass('d-none')
+                }
+            });
+        }
+
+    }
+
+    function clear_form(){
+        $('.invalid-feedback').each(function(i, obj) {
+           $(this).html('')
+        });
+        $('.form-control, .form-select').each(function(i, obj) {
+            $(this).removeClass('is_invalid')
+        });
+    }
+
+    function clean_inline_form(list){
+        var datalists = []
+        list.forEach(function (item, index) {
+            var data = []
+            var key = {}
+            
+            if (item.includes('input')) {
+                var item = item.replace('input_', "");
+                $('input[name="'+item+'"]').each(function(i, obj) {
+                    if($(this).val().length == 0){
+                        data.push('')
+                    }else{
+                        data.push($(this).val())
+                    }
+                });
+            }else{
+                $('select[name="'+item+'"]').each(function(i, obj) {
+                    if($(this).val().length == 0){
+                        data.push('')
+                    }else{
+                        data.push($(this).val())
+                    }
+                });
+            }
+
+            key[item] =  data
+            datalists.push(key)
+        });
+        return datalists
+    }
+    
+    function checkSubmit(){
+
+        clear_form()
+        $('#message-respons').html('')
+    
+        var art_form_data = clean_inline_form(
+            [
+                'family_id',
+                'input_r501',
+                'input_r502',
+                'input_r503',
+                'r504',
+                'r505',
+                'r506',
+                'input_r507',
+                'input_r508',
+                'r510',
+                'r511',
+                'r512',
+                'r513',
+                'input_r514',
+                'r515',
+                'input_r516',
+                'r517',
+                'r518',
+                'r519',
+                'r520a',
+                'r520b',
+                'r520c',
+                'r520d',
+                'r520e',
+                'r520f',
+                'r520g',
+                'r520h',
+            ]
+        )
+
+        var form_data = {}
+        $('.form-family').each(function(i, obj) {
+            form_data[$(this).attr('name')] = $(this).val()
+        });
+
+        var formData = new FormData()
+        formData.append('form_art', JSON.stringify(art_form_data))
+
+        $.ajax({
+            url: '{% url "app:mnj_population_add" %}',
+            type: "POST",
+            processData: false,
+            contentType: false,
+            dataType: "json",
+            data : formData,
+            headers: {
+                "X-Requested-With": "XMLHttpRequest",
+                "X-CSRFToken": '{{csrf_token}}',
+            },
+            success: (response) => {
+                $('#message-respons').html('')
+                push_notif(response.status, 'alert-success', "#message-respons") 
+                clear_form()
+                $("#population_add")[0].reset();
+            },
+            error: (response) => {
+                $('#message-respons').html('')
+                push_notif('Terjadi kesalahan saat menyimpan data', 'alert-danger', "#message-respons")
+                
+                var errors = response["responseJSON"]["error"]
+                
+                console.log(errors)
+                for (const [key, value] of Object.entries(errors)) {
+                    var msgs = '<ul>'
+                    value.forEach(function (item, index) {
+                        msgs += '<li>'+item+'</li>'
+                    });
+                    msgs += '</ul>'
+
+                    $('#id_'+ key).addClass('is-invalid');
+                    $('#msg-id_'+key).html(msgs)
+                }
+            }
+        });
+        $('html, body').animate({
+            scrollTop: $("body").offset().top
+        }, 10);
+    }
+
+    $(document).on('change', '.form-control, .form-select', function() {
+        if ($(this).hasClass('is-invalid')){
+            $(this).removeClass('is-invalid')
+            $('.msg-invalid').html('')
+        }
+    });
+
+    $("form").submit(function (e) {
+        e.preventDefault();
+    });
+
+</script>
+{% endblock js-extender %}
