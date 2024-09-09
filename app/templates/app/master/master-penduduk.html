@@ -167,11 +167,11 @@
                                 <tr>
                                     <th class="text-center">No</th>
                                     <th>Nama</th>
-                                    <th>Hubungan Dalam Keluarga</th>
-                                    <th>Keberadaan</th>
-                                    <th class="text-center">Tanggal Lahir</th>
+                                    <th>NIK</th>
                                     <th class="text-center">Umur</th>
                                     <th>Pendidikan</th>
+                                    <th>Hubungan Dalam Keluarga</th>
+                                    <th>Keberadaan</th>
                                     <th class="text-center">Aksi</th>
                                 </tr>
                             </thead>
@@ -179,13 +179,13 @@
                                 {% for population in populations %}
                                     <tr>
                                         <td class="text-center">{{forloop.counter}}</td>
-                                        <td>{{population.nama}}</td>
-                                        <td>{{population.hubungan}}</td>
-                                        <td>{{population.keberadaan}}</td>
-                                        <td class="text-center">{{population.tgl_lahir|date:"d M Y"}}</td>
-                                        <td class="text-center">{{population.umur}}</td>
+                                        <td>{{population.r503}}</td>
+                                        <td>{{population.r502}}</td>
+                                        <td>28</td>
+                                        <td>{{population.get_r518_display}}</td>
+                                        <td>{{population.get_r504_display}}</td>
                                         <td>
-                                            {{population.pendidikan}}
+                                            {{population.get_r505_display}}
                                         </td>
                                         <td class="text-center">
                                             <button class="btn btn-primary icon"><i data-feather="edit"></i></button>

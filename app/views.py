@@ -1197,25 +1197,26 @@ class RegionFetchDataClassView(LoginRequiredMixin, View):
 class ManajemenPopulationsClassView(LoginRequiredMixin, View): 
         
     def get(self, request):
-        education_levels = models.PopulationsModels.r415.field.choices
-        home_ownership_state = models.FamiliesModels.r301a.field.choices
+        # education_levels = models.PopulationsModels.r415.field.choices
+        # home_ownership_state = models.FamiliesModels.r301a.field.choices
         
         data_populations = []
         populations = models.PopulationsModels.objects.all()
-        for population in populations:
-            dt = {}
-            dt['nama'] = population.r402
-            dt['hubungan'] = f'{population.get_r409_display()} (Keluarga {population.family_id.r108})'
-            dt['keberadaan'] = population.get_r404_display()
-            dt['tgl_lahir'] = population.r406
-            dt['umur'] = population.r407
-            dt['pendidikan'] = population.get_r415_display() if population.r415 is not None else '-'
-            data_populations.append(dt)
+        pprint(populations[0].__dict__)
+        # for population in populations:
+        #     dt = {}
+        #     dt['nama'] = population.r402
+        #     dt['hubungan'] = f'{population.get_r409_display()} (Keluarga {population.family_id.r108})'
+        #     dt['keberadaan'] = population.get_r404_display()
+        #     dt['tgl_lahir'] = population.r406
+        #     dt['umur'] = population.r407
+        #     dt['pendidikan'] = population.get_r415_display() if population.r415 is not None else '-'
+        #     data_populations.append(dt)
 
         context = {
             'title' : 'Manajemen Penduduk',
-            'populations' : data_populations,
-            'education_levels' : education_levels,
-            'home_ownership_state' : home_ownership_state,
+            'populations' : populations,
+            # 'education_levels' : education_levels,
+            # 'home_ownership_state' : home_ownership_state,
         }
         return render(request, 'app/master/master-penduduk.html', context)
