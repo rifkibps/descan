@@ -35,61 +35,65 @@
             <div class="card">
                 <div class="card-header d-flex justify-content-between align-items-center">
                     <h4 class="card-title">Filter Wilayah</h4>
+                    <div class="d-flex ">
+                        <button class="btn btn-info btn-sm icon" id="clear-filter-regs"><i class="mdi mdi-filter-off"></i></button>
+                    </div>
                 </div>
-                <div class="card-body px-4 pb-4">
+                <div class="card-body px-5 pb-4">
                     <div class="row">
-                        <div class="col-3">Provinsi</div>
-                        <div class="col-9">
+                        <div class="col-5">Provinsi</div>
+                        <div class="col-7">
                             <div class="form-group">
-                                <select class="form-select" id="id_provinsi">
+                                <select class="form-select filter-region filter-region" id="id_provinsi">
                                     <option value="" selected="selected">---------</option>
                                     {% for prov_reg in province_regions %}
-                                        <option value="{{prov_reg.reg_code}}">[{{prov_reg.reg_code}}]&ensp;{{prov_reg.reg_name}}</option>
+                                        <option value="{{prov_reg.reg_code}}" data-code="{{prov_reg.reg_code}}">[{{prov_reg.reg_code}}]&ensp;{{prov_reg.reg_name}}</option>
                                     {% endfor %}
                                 </select>
                             </div>
                         </div>
                     </div>
                     <div class="row">
-                        <div class="col-3">Kabupaten/Kota</div>
-                        <div class="col-9">
+                        <div class="col-5">Kabupaten/Kota</div>
+                        <div class="col-7">
                             <div class="form-group" >
-                                <select class="form-select" id="id_kabkot">
+                                <select class="form-select filter-region" id="id_kabkot">
                                     <option value="" selected="selected">---------</option>
                                 </select>
                             </div>
                         </div>
                     </div>
                     <div class="row">
-                        <div class="col-3">Kecamatan</div>
-                        <div class="col-9">
+                        <div class="col-5">Kecamatan</div>
+                        <div class="col-7">
                             <div class="form-group" >
-                                <select class="form-select" id="id_kecamatan">
+                                <select class="form-select filter-region" id="id_kecamatan">
                                     <option value="" selected="selected">---------</option>
                                 </select>
                             </div>
                         </div>
                     </div>
                     <div class="row">
-                        <div class="col-3">Desa/Kelurahan</div>
-                        <div class="col-9">
+                        <div class="col-5">Desa/Kelurahan</div>
+                        <div class="col-7">
                             <div class="form-group" >
-                                <select class="form-select" id="id_desa">
+                                <select class="form-select filter-region" id="id_desa">
                                     <option value="" selected="selected">---------</option>
                                 </select>
                             </div>
                         </div>
                     </div>
                     <div class="row">
-                        <div class="col-3">SLS/Non SLS</div>
-                        <div class="col-9">
+                        <div class="col-5">SLS/Non SLS</div>
+                        <div class="col-7">
                             <div class="form-group" >
-                                <select class="form-select" id="id_sls">
+                                <select class="form-select filter-region" id="id_sls">
                                     <option value="" selected="selected">---------</option>
                                 </select>
                             </div>
                         </div>
                     </div>
+
                 </div>
             </div>
         </div>
@@ -97,50 +101,69 @@
             <div class="card">
                 <div class="card-header d-flex justify-content-between align-items-center">
                     <h4 class="card-title">Filter Karakteristik Keluarga</h4>
+                    <div class="d-flex ">
+                        <button class="btn btn-info btn-sm icon" id="clear-filter-chars"><i class="mdi mdi-filter-off"></i></button>
+                    </div>
                 </div>
-                <div class="card-body px-4 pb-4">
+                <div class="card-body px-5 pb-4">
                     <div class="row">
-                        <div class="col-5">Pendidikan KRT</div>
+                        <div class="col-5">Nama Pencacah</div>
                         <div class="col-7">
                             <div class="form-group" >
-                                <select class="form-control">
-                                    <option>----</option>
-                                    {% for edu_level in education_levels %}
-                                        <option value="{{edu_level.0}}">{{edu_level.1}}</option>
+                                <select class="form-select filter-family" id="r201">
+                                    <option value="">----</option>
+                                    {% for dt in pencacah %}
+                                        <option value="{{dt.id}}">{{dt.name}}</option>
                                     {% endfor %}
                                 </select>
                             </div>
                         </div>
                     </div>
                     <div class="row">
-                        <div class="col-5">Status Kepemilikan Bangunan</div>
+                        <div class="col-5">Nama Pemeriksa</div>
                         <div class="col-7">
                             <div class="form-group" >
-                                <select class="form-control" >
-                                    <option>----</option>
-                                    {% for state in home_ownership_state %}
-                                        <option value="{{state.0}}">{{state.1}}</option>
+                                <select class="form-select filter-family" id="r204">
+                                    <option value="">----</option>
+                                    {% for dt in pemeriksa %}
+                                        <option value="{{dt.id}}">{{dt.name}}</option>
                                     {% endfor %}
                                 </select>
                             </div>
                         </div>
                     </div>
                     <div class="row">
-                        <div class="col-5">Kepemilikan Aset</div>
+                        <div class="col-5">Hasil Pencacahan</div>
                         <div class="col-7">
                             <div class="form-group" >
-                                <select class="form-control" >
-                                    <option value="romboid">Rumah</option>
+                                <select class="form-select filter-family" id="r206">
+                                    <option value="">----</option>
+                                    {% for dt in hasil %}
+                                        <option value="{{dt.0}}">{{dt.1}}</option>
+                                    {% endfor %}
                                 </select>
                             </div>
                         </div>
                     </div>
                     <div class="row">
-                        <div class="col-5">Penerima Program Bantuan</div>
+                        <div class="col-5">Karaketeristik Keluarga</div>
                         <div class="col-7">
                             <div class="form-group" >
-                                <select class="form-control" >
-                                    <option value="romboid">BLT</option>
+                                <select class="form-select filter-family" id="filter_chars">
+                                    <option value="">----</option>
+                                    {% for dt in filters %}
+                                        <option value="{{dt.0}}">{{dt.1}}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-5">Nilai Karaketeristik</div>
+                        <div class="col-7">
+                            <div class="form-group" >
+                                <select class="form-select filter-family" id="val_chars">
+                                    <option value="">----</option>
                                 </select>
                             </div>
                         </div>
@@ -149,7 +172,7 @@
             </div>
         </div>
     </div>
-
+    
     <div class="row mb-4">
         <div class="col-md-12">
             <div class="card">
@@ -157,8 +180,7 @@
                     <h4 class="card-title">Daftar Keluarga</h4>
                     <div class="d-flex ">
                         <a href="{% url 'app:mnj_families_add' %}" class="btn icon btn-primary mx-1"><i data-feather="user-plus"></i> Tambah Keluarga</a> 
-                        <button class="btn icon btn-primary"><i data-feather="download"></i> Unduh</button>
-                        
+                        <button class="btn icon btn-info" id="refresh"><i class="mdi mdi-refresh"></i></button>
                     </div>
                 </div>
                 <div class="card-body px-3 ">
@@ -176,24 +198,6 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                {% for family in families %}
-                                    <tr>
-                                        <td class="text-center">{{forloop.counter}}</td>
-                                        <td>{{family.r104.reg_name}} / ({{family.r105.reg_sls_code}}) {{family.r105.reg_sls_name}}</td>
-                                        <td>{{family.r107}}</td>
-                                        <td class="text-center">{{family.r109}}</td>
-                                        <td>
-                                            {{family.r203}}
-                                        </td>
-                                        <td class="text-center">
-                                            {{family.created_at}}
-                                        </td>
-                                        <td class="text-center">
-                                            <a href="{% url 'app:mnj_families_edit' %}?id={{family.id}}" target="_blank" class="btn btn-primary icon btn-edit" data-id="{{family.id}}"><i data-feather="edit"></i></a>
-                                            <button class="btn btn-danger icon btn-delete" data-id="{{family.id}}"><i data-feather="trash"></i></button>
-                                        </td>
-                                    </tr>
-                                {% endfor %}
                             </tbody>
                         </table>
                     </div>
@@ -210,14 +214,61 @@
 <script src="{% static 'app-design/assets/vendors/choices.js/choices.min.js' %}"></script>
 
 <script>
+    var region = ''
+    var region_sls = ''
+
     var table = $("#table").DataTable({
         pageLength: 5,
+        processing: true,
+        serverSide: true,
         bInfo : false,
-        bFilter : true,
         bLengthChange: false,
+        ajax: {
+            "url": "{% url 'app:mnj_families_fetch_data' %}",
+            "headers": {
+                "X-Requested-With": "XMLHttpRequest",
+                "X-CSRFToken": '{{csrf_token}}',
+            },
+            "type": "POST",
+            "data": function (d){
+                var data = {
+                    "region": region,
+                    "region_sls": region_sls,
+                    "r201": $('#r201').val(),
+                    "r204": $('#r204').val(),
+                    "r206" : $('#r206').val(),
+                }
+
+                if ( $('#filter_chars').val().length > 0 && $('#val_chars').val().length > 0 ){
+                    data['filter'] = $('#filter_chars').val() + '_' + $('#val_chars').val()
+                } 
+
+                return $.extend({}, d, data)
+            },
+        },
+        columns :[
+            {"data": 'no'},
+            {"data": 'r104__reg_name'},
+            {"data" : 'r107'},
+            {"data" : 'r109'},
+            {"data" : 'r203'},
+            {"data" : 'created_at'},
+            {"data" : 'actions'},
+        ],
+        order: [[0, 'asc']],
+        columnDefs: [
+            {
+                'targets': [6],
+                'orderable': false,          
+            },
+            {
+                "targets": [0, 3, 6],
+                "className": "text-center",
+           },
+        ],
         language: {
-            search: '<span style="font-size:13px">Cari data keluarga</span>',
-            searchPlaceholder: "...",
+            search: '<span style="font-size:14px">Temukan data keluarga</span>',
+            searchPlaceholder: ".....",
             paginate: {
                 previous: "<i class='mdi mdi-chevron-left'>",
                 next: "<i class='mdi mdi-chevron-right'>",
@@ -226,26 +277,102 @@
         drawCallback: function () {
             $(".dataTables_paginate > .pagination").addClass("pagination-primary");
             $(".dataTables_paginate > .pagination > .paginate_button > .page-link").addClass("rounded");
-        }
+        },
     });
 </script>
 
 <script>
 
+    $('#refresh').on('click', function(){
+        table.draw();
+    })
+
+    $('#clear-filter-chars').on('click', function(){
+        $('.filter-family').each(function(i, obj) {
+            $(this).val('')
+        });
+    })
+
+    $('#clear-filter-regs').on('click', function(){
+        $('.filter-region').each(function(i, obj) {
+            $(this).val('')
+        });
+    })
+
+
     $('#id_provinsi').on('change', function(){
+        $('#id_kabkot').val('')
+        $('#id_kecamatan').val('')
+        $('#id_desa').val('')
+        $('#id_sls').val('')
         get_region_adm('prov', $(this).val(), '#id_kabkot')
     })
 
     $('#id_kabkot').on('change', function(){
+        $('#id_kecamatan').val('')
+        $('#id_desa').val('')
+        $('#id_sls').val('')
         get_region_adm('kabkot', $(this).val(), '#id_kecamatan')
     })
 
     $('#id_kecamatan').on('change', function(){
+        $('#id_desa').val('')
+        $('#id_sls').val('')
         get_region_adm('kec', $(this).val(), '#id_desa')
     })
 
     $('#id_desa').on('change', function(){
+        $('#id_sls').val('')
         get_region_adm('deskel', $('option:selected', this).attr('data-code'), '#id_sls')
+    })
+
+    $('.filter-region').on('change',  function() {
+        var code_region = $(this).children('option:selected').attr('data-code')
+        if ($(this).attr('id') == 'id_sls'){
+            if (code_region) {
+                region_sls = code_region 
+            }else{
+                region_sls = ''
+            }
+        }else{
+            if (code_region) {
+                region = code_region 
+            }else{
+                region = ''
+            }
+        }
+        table.draw()
+    });
+
+    $('#r201, #r204, #r206').on('change', function(){
+        table.draw()
+    })
+
+    $('#val_chars').on('change', function(){
+        table.draw()
+    })
+
+    $('#filter_chars').on('change', function(){
+        var val = $(this).val()
+        if (val.length > 0) {
+            $.ajax({
+                url: '{% url "app:filter_family_req" %}',
+                type: "POST", 
+                dataType: "json",
+                data : {'req' : val},
+                headers: {
+                    "X-Requested-With": "XMLHttpRequest",
+                    "X-CSRFToken": '{{csrf_token}}',
+                },
+                success: (response) => {
+                    $("#val_chars").html(response.data)
+                },
+                error: (response) => {
+                    $("#val_chars").html('')
+                }
+            });
+        }
+
     })
 
     $('.btn-delete').on('click', function(e){
@@ -253,7 +380,7 @@
 
         $.ajax({
             url: '{% url "app:mnj_families_del" %}',
-            type: "POST",
+            type: "POST", 
             dataType: "json",
             data : {'pk' : val},
             headers: {

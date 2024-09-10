@@ -1,10 +1,6 @@
 {% extends "base/index.html" %}
 {% load static %}
 
-{% block css-extender %}
-<link rel="stylesheet" href="{% static 'app-design/assets/vendors/choices.js/choices.min.css' %}" />
-{% endblock css-extender %}
-
 {% block main-content %}
 
 <section class="section mb-3">
@@ -30,143 +26,71 @@
 
 
 <section class="section">
-
     <div class="row mb-5">
-        <div class="col-md-6">
+        <div class="col-md-12">
             <div class="card">
                 <div class="card-header d-flex justify-content-between align-items-center">
                     <h4 class="card-title">Filter Wilayah</h4>
-                    <div class="d-flex ">
-                        <i data-feather="download"></i>
-                    </div>
                 </div>
                 <div class="card-body px-4 pb-4">
                     <div class="row">
-                        <div class="col-3">Filter Provinsi</div>
+                        <div class="col-3">Provinsi</div>
                         <div class="col-9">
-                            <div class="form-group" style="width:400px!important">
-                                <select class="choices form-select" >
-                                    <option value="romboid">Sulawesi Tenggara</option>
-                                </select>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-3">Filter Kabupaten/Kota</div>
-                        <div class="col-9">
-                            <div class="form-group" style="width:400px!important">
-                                <select class="choices form-select" >
-                                    <option value="romboid">Kabupaten Muna</option>
-                                </select>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-3">Filter Kecamatan</div>
-                        <div class="col-9">
-                            <div class="form-group" style="width:400px!important">
-                                <select class="choices form-select" >
-                                    <option value="romboid">Duruka</option>
-                                </select>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-3">Filter Desa/Kelurahan</div>
-                        <div class="col-9">
-                            <div class="form-group" style="width:400px!important">
-                                <select class="choices form-select">
-                                    <option value="romboid">Banggai</option>
-                                </select>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-3">Filter SLS/Non SLS</div>
-                        <div class="col-9">
-                            <div class="form-group" style="width:400px!important">
-                                <select class="choices form-select">
-                                    <option value="romboid">RT 001 RW 001</option>
-                                </select>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="col-md-6">
-            <div class="card">
-                <div class="card-header d-flex justify-content-between align-items-center">
-                    <h4 class="card-title">Filter Karakteristik Keluarga</h4>
-                    <div class="d-flex ">
-                        <i data-feather="download"></i>
-                    </div>
-                </div>
-                <div class="card-body px-4 pb-4">
-                    <div class="row">
-                        <div class="col-5">Pendidikan KRT</div>
-                        <div class="col-7">
-                            <div class="form-group" style="width:400px!important">
-                                <select class="choices form-select">
-                                    <option>----</option>
-                                    {% for edu_level in education_levels %}
-                                        <option value="{{edu_level.0}}">{{edu_level.1}}</option>
+                            <div class="form-group">
+                                <select class="form-select" id="id_provinsi">
+                                    <option value="" selected="selected">---------</option>
+                                    {% for prov_reg in province_regions %}
+                                        <option value="{{prov_reg.reg_code}}">[{{prov_reg.reg_code}}]&ensp;{{prov_reg.reg_name}}</option>
                                     {% endfor %}
                                 </select>
                             </div>
                         </div>
                     </div>
                     <div class="row">
-                        <div class="col-5">Status Kepemilikan Bangunan</div>
-                        <div class="col-7">
-                            <div class="form-group" style="width:400px!important">
-                                <select class="choices form-select" >
-                                    <option>----</option>
-                                    {% for state in home_ownership_state %}
-                                        <option value="{{state.0}}">{{state.1}}</option>
-                                    {% endfor %}
+                        <div class="col-3">Kabupaten/Kota</div>
+                        <div class="col-9">
+                            <div class="form-group" >
+                                <select class="form-select" id="id_kabkot">
+                                    <option value="" selected="selected">---------</option>
                                 </select>
                             </div>
                         </div>
                     </div>
                     <div class="row">
-                        <div class="col-5">Kepemilikan Aset</div>
-                        <div class="col-7">
-                            <div class="form-group" style="width:400px!important">
-                                <select class="choices form-select" >
-                                    <option value="romboid">Rumah</option>
+                        <div class="col-3">Kecamatan</div>
+                        <div class="col-9">
+                            <div class="form-group" >
+                                <select class="form-select" id="id_kecamatan">
+                                    <option value="" selected="selected">---------</option>
                                 </select>
                             </div>
                         </div>
                     </div>
                     <div class="row">
-                        <div class="col-5">Penerima Program Bantuan</div>
-                        <div class="col-7">
-                            <div class="form-group" style="width:400px!important">
-                                <select class="choices form-select" >
-                                    <option value="romboid">BLT</option>
+                        <div class="col-3">Desa/Kelurahan</div>
+                        <div class="col-9">
+                            <div class="form-group" >
+                                <select class="form-select" id="id_desa">
+                                    <option value="" selected="selected">---------</option>
                                 </select>
                             </div>
                         </div>
                     </div>
                     <div class="row">
-                        <div class="col-5">Pilih Tabulasi</div>
-                        <div class="col-7">
-                            <div class="form-group" style="width:400px!important">
-                                <select class="choices form-select" onchange="tabulationPush(this)">
-                                    {% for tabulation in tabulations %}
-                                        <option value="{{tabulation.val}}">{{tabulation.text}}</option>
-                                    {% endfor %}
+                        <div class="col-3">SLS/Non SLS</div>
+                        <div class="col-9">
+                            <div class="form-group" >
+                                <select class="form-select" id="id_sls">
+                                    <option value="" selected="selected">---------</option>
                                 </select>
                             </div>
                         </div>
                     </div>
-                   
                 </div>
             </div>
         </div>
     </div>
-
+    
     <div class="row mb-5">
         <div class="col-12 col-md-3">
             <div class="card bg-primary">
@@ -263,6 +187,22 @@
 <script src="{% static 'app-design/assets/vendors/choices.js/choices.min.js' %}"></script>
 
 <script>
+    $('#id_provinsi').on('change', function(){
+        get_region_adm('prov', $(this).val(), '#id_kabkot')
+    })
+
+    $('#id_kabkot').on('change', function(){
+        get_region_adm('kabkot', $(this).val(), '#id_kecamatan')
+    })
+
+    $('#id_kecamatan').on('change', function(){
+        get_region_adm('kec', $(this).val(), '#id_desa')
+    })
+
+    $('#id_desa').on('change', function(){
+        get_region_adm('deskel', $('option:selected', this).attr('data-code'), '#id_sls')
+    })
+
     function tabulationPush(e){
         var title = $(e).text()
         var val = $(e).val()

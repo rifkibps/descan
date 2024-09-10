@@ -9,6 +9,8 @@ class PopulationsStacked(admin.StackedInline):
 class FamiliesItems(admin.ModelAdmin):
     inlines = [PopulationsStacked]
 
+admin.site.register(models.OfficerModels)
 admin.site.register(models.RegionAdministrativeModels)
 admin.site.register(models.RegionSLSModels)
 admin.site.register(models.FamiliesModels, FamiliesItems)
+

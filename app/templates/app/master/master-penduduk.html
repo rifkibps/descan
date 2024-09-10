@@ -165,12 +165,12 @@
                     <h4 class="card-title">Daftar Penduduk</h4>
                     <div class="d-flex ">
                         <a href="{% url 'app:mnj_population_add' %}" class="btn icon btn-primary">Tambah Penduduk</a>&ensp;
-                        <button class="btn icon btn-primary"><i data-feather="download"></i> Unduh</button>
+                        <button class="btn icon btn-info" id="refresh"><i class="mdi mdi-refresh"></i></button>
                     </div>
                 </div>
                 <div class="card-body px-3">
                     <div class="table-responsive">
-                        <table class='table mb-0' id="table">
+                        <table class='table w-100 mb-0' id="table">
                             <thead>
                                 <tr>
                                     <th class="text-center">No</th>
@@ -184,23 +184,6 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                {% for population in populations %}
-                                    <tr>
-                                        <td class="text-center">{{forloop.counter}}</td>
-                                        <td>{{population.r503}}</td>
-                                        <td>{{population.r502}}</td>
-                                        <td class="text-center">{{population.r508|age}}</td>
-                                        <td>{{population.get_r518_display}}</td>
-                                        <td>{{population.get_r504_display}} (Kel. {{population.family_id.r107}})</td>
-                                        <td>
-                                            {{population.get_r505_display}}
-                                        </td>
-                                        <td class="text-center">
-                                            <a href="{% url 'app:mnj_population_edit' %}?id={{population.pk}}" class="btn btn-primary icon"><i data-feather="edit"></i></a>
-                                            <button class="btn btn-danger btn-delete icon" data-id="{{population.id}}"><i data-feather="trash"></i></button>
-                                        </td>
-                                    </tr>
-                                {% endfor %}
                             </tbody>
                         </table>
                     </div>
@@ -215,6 +198,62 @@
 
 {% block js-extender %}
 <script>
+    var table = $("#table").DataTable({
+        pageLength: 5,
+        processing: true,
+        serverSide: true,
+        bInfo : false,
+        bLengthChange: false,
+        ajax: {
+            "url": "{% url 'app:mnj_population_fetch_data' %}",
+            "headers": {
+                "X-Requested-With": "XMLHttpRequest",
+                "X-CSRFToken": '{{csrf_token}}',
+            },
+            "type": "POST",
+        },
+        columns :[
+            {"data": 'no'},
+            {"data": 'r503'},
+            {"data" : 'r502'},
+            {"data" : 'r508'},
+            {"data" : 'r518'},
+            {"data" : 'r504'},
+            {"data" : 'r505'},
+            {"data" : 'actions'},
+        ],
+        order: [[0, 'asc']],
+        columnDefs: [
+            {
+                'targets': [7],
+                'orderable': false,          
+            },
+            {
+                "targets": [0, 2, 3, 7],
+                "className": "text-center",
+           },
+        ],
+        language: {
+            search: '<span style="font-size:14px">Temukan data penduduk</span>',
+            searchPlaceholder: ".....",
+            paginate: {
+                previous: "<i class='mdi mdi-chevron-left'>",
+                next: "<i class='mdi mdi-chevron-right'>",
+            },
+        },
+        drawCallback: function () {
+            $(".dataTables_paginate > .pagination").addClass("pagination-primary");
+            $(".dataTables_paginate > .pagination > .paginate_button > .page-link").addClass("rounded");
+        },
+    });
+</script>
+
+<script>
+
+    $('#refresh').on('click', function(){
+        table.draw();
+    })
+
     $('#id_provinsi').on('change', function(){
         get_region_adm('prov', $(this).val(), '#id_kabkot')
     })

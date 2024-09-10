@@ -26,7 +26,23 @@ class RegionSLSModels(models.Model):
 
     def __str__(self):
         return f"{self.reg_sls_name}, Desa/Kel. {self.reg_code.reg_name}"
+    
+class OfficerModels(models.Model):
 
+    class Meta:
+        verbose_name = 'Daftar Petugas'
+        verbose_name_plural = 'Daftar Petugas'
+    
+    roles = (
+        ('1', 'Petugas Pendataan'),
+        ('2', 'Petugas Pemeriksaan'),
+    )
+
+    name = models.CharField(max_length=128, blank=False, null=False, verbose_name="Nama Petugas")
+    role = models.CharField(max_length=1, blank=False, null=False, choices=roles, verbose_name="Role Petugas")
+
+    def __str__(self):
+        return f"{self.id}. {self.name} ({self.role})"
 
 class FamiliesModels(models.Model):
 
@@ -202,6 +218,7 @@ class PopulationsModels(models.Model):
         ('6', 'Orangtua/mertua'),
         ('7', 'Lainnya'),
     )
+    
     r504 = models.CharField(max_length=1, blank=False, null=False, choices=r504_choices, verbose_name="Hubungan dengan KK")
 
     r505_choices = (

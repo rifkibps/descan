@@ -206,14 +206,13 @@
                         }
                     }else if (level == 'deskel'){
                         for (let i = 0; i < result.data.length; i++) {
-                            opt += '<option value="'+result.data[i].id+'">['+result.data[i].reg_sls_code+'] &ensp;'+result.data[i].reg_sls_name+'</option>'
+                            opt += '<option value="'+result.data[i].id+'" data-code="'+result.data[i].reg_sls_code+'">['+result.data[i].reg_sls_code+'] &ensp;'+result.data[i].reg_sls_name+'</option>'
                         }
                     }else{
                         for (let i = 0; i < result.data.length; i++) {
-                            opt += '<option value="'+result.data[i].reg_code+'">['+result.data[i].reg_code+'] &ensp;'+result.data[i].reg_name+'</option>'
+                            opt += '<option value="'+result.data[i].reg_code+'" data-code="'+result.data[i].reg_code+'">['+result.data[i].reg_code+'] &ensp;'+result.data[i].reg_name+'</option>'
                         }
                     }
-    
                     $(target).html(opt)
                 },
                 error: (error) => {

@@ -662,7 +662,6 @@
                 
                 var errors = response["responseJSON"]["error"]
                 
-                console.log(errors)
                 for (const [key, value] of Object.entries(errors)) {
                     var msgs = '<ul>'
                     value.forEach(function (item, index) {

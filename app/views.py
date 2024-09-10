@@ -1,8 +1,12 @@
+from django.urls import reverse_lazy
 from django.shortcuts import render
 from django.views import View
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.core.serializers.json import DjangoJSONEncoder
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
+
 from . import models, helpers, forms
-from django.http import JsonResponse
+from django.http import JsonResponse, HttpResponse
 from pprint import pprint
 from django.db.models import Q, Count, Sum, Avg
 from django.db.models.functions import Length
@@ -155,25 +159,27 @@ class TabulationsFamiliesClassView(LoginRequiredMixin, View):
     
     def get(self, request):
 
-        families = models.FamiliesModels.objects.count()
-        families_electricity = models.FamiliesModels.objects.filter(r307a__in =['1', '2']).count()
-        welfare_recips = helpers.count_of_welfare_recips().count()
-        sanition_family = models.FamiliesModels.objects.filter(r309a = '1').count()
+        # families = models.FamiliesModels.objects.count()
+        # families_electricity = models.FamiliesModels.objects.filter(r307a__in =['1', '2']).count()
+        # welfare_recips = helpers.count_of_welfare_recips().count()
+        # sanition_family = models.FamiliesModels.objects.filter(r309a = '1').count()
 
-        education_levels = models.PopulationsModels.r415.field.choices
-        home_ownership_state = models.FamiliesModels.r301a.field.choices
+        # education_levels = models.PopulationsModels.r415.field.choices
+        # home_ownership_state = models.FamiliesModels.r301a.field.choices
 
         tabulations = helpers.get_tab_families()
         context = {
             'title' : 'Tabulasi Data Keluarga',
-            'families' : families,
-            'families_electricity' : families_electricity,
-            'sanition_family' : sanition_family,
-            'welfare_recips' : welfare_recips,
-            'education_levels' : education_levels,
-            'home_ownership_state' : home_ownership_state,
-            'tabulations' : tabulations
+            # 'families' : families,
+            # 'families_electricity' : families_electricity,
+            # 'sanition_family' : sanition_family,
+            # 'welfare_recips' : welfare_recips,
+            # 'education_levels' : education_levels,
+            # 'home_ownership_state' : home_ownership_state,
+            # 'tabulations' : tabulations
+            'province_regions' : models.RegionAdministrativeModels.objects.annotate(text_len=Length('reg_code')).filter(text_len=2).order_by('reg_code')
         }
+
         return render(request, 'app/tabulasi/tabulasi-keluarga.html', context)
 
 class TabulationsFamiliesFetchClassView(LoginRequiredMixin, View):
@@ -837,7 +843,6 @@ class TabulationsFamiliesFetchClassView(LoginRequiredMixin, View):
                     return JsonResponse({"status": 'success', 'content' : data_tabs }, status=200)
         return JsonResponse({'status': 'Invalid request'}, status=400)
 
-
 class TabulationsPopulationsClassView(LoginRequiredMixin, View):
     
     def get(self, request):
@@ -868,7 +873,6 @@ class TabulationsPopulationsClassView(LoginRequiredMixin, View):
             # 'tabulations' : tabulations
         }
         return render(request, 'app/tabulasi/tabulasi-penduduk.html', context)
-
 
 class TabulationsPopulationsFetchClassView(LoginRequiredMixin, View):
 
@@ -980,25 +984,179 @@ class TabulationsPopulationsFetchClassView(LoginRequiredMixin, View):
 
         return JsonResponse({'status': 'Invalid request'}, status=400)
 
-
 class ManajemenFamiliesClassView(LoginRequiredMixin, View):
     
     def get(self, request):
 
+        pencacah = models.OfficerModels.objects.filter(role = '1').all()
+        pemeriksa = models.OfficerModels.objects.filter(role = '2').all()
+        hasil = models.FamiliesModels.r206.field.choices
         families = models.FamiliesModels.objects.all()
-        education_levels = models.PopulationsModels.r518.field.choices
-        home_ownership_state = models.FamiliesModels.r301.field.choices
+
+        filters = [
+            [1, 'Pendidikan Kepala Rumah Tangga'],
+            [2, 'Status Penguasaan Bangunan Tempat Tinggal'],
+            [3, 'Status Lahan Tempat Tinggal'],
+            [4, 'Jenis Lantai Terluas'],
+            [5, 'Jenis Dinding Terluas'],
+            [6, 'Keberadaan Jendela'],
+            [7, 'Jenis Atap Terluas'],
+            [8, 'Sumber Penerangan Utama'],
+            [9, 'Tempat Pembuangan Sampah'],
+            [10, 'Sumber Air Minum Utama']
+        ]
         
         context = {
             'title' : 'Manajemen Keluarga',
             'families' : families,
-            'education_levels' : education_levels,
-            'home_ownership_state' : home_ownership_state,
+            'pencacah' : pencacah,
+            'pemeriksa' : pemeriksa,
+            'hasil' : hasil,
+            'filters' : filters,
             'province_regions' : models.RegionAdministrativeModels.objects.annotate(text_len=Length('reg_code')).filter(text_len=2).order_by('reg_code')
    
         }
 
         return render(request, 'app/master/master-keluarga.html', context)
+
+class ManajemenFamiliesFetchTableClassView(LoginRequiredMixin, View):
+
+    def post(self, request):
+        
+        data = self._datatables(request)
+        return HttpResponse(json.dumps(data, cls=DjangoJSONEncoder), content_type='application/json')
+		
+    def _datatables(self, request):
+
+        # Define default column for ordering first request
+        def_col = 'r107' 
+
+        datatables = request.POST
+
+        # Get Draw
+        draw = int(datatables.get('draw'))
+        start = int(datatables.get('start'))
+        search = datatables.get('search[value]')
+
+        order_idx = int(datatables.get('order[0][column]')) # Default 1st index for
+        order_dir = datatables.get('order[0][dir]') # Descending or Ascending
+        order_col = 'columns[' + str(order_idx) + '][data]'
+        order_col_name = datatables.get(order_col)
+
+        if 'no' in order_col_name:
+            order_col_name = def_col
+
+        if (order_dir == "desc"):
+            order_col_name =  str('-' + order_col_name)
+
+        model = models.FamiliesModels.objects     
+
+        id_def_data = list(model.order_by(def_col).values_list('id'))
+        id_def_data = [list((idx+1, ) + id_def_data[idx]) for idx in range(len(id_def_data))]
+        
+        records_total = model.count()
+        records_filtered = records_total
+        
+        if datatables.get('region'):
+            model = model.filter(r104__reg_code__icontains = datatables.get('region'))
+
+        if datatables.get('region_sls'):
+            model = model.filter(r105__reg_sls_code__icontains = datatables.get('region_sls'))
+        
+        if datatables.get('r201'):
+            model = model.filter(r201 = datatables.get('r201'))
+
+        if datatables.get('r204'):
+            model = model.filter(r204 = datatables.get('r204'))
+
+        if datatables.get('r206'):
+            model = model.filter(r206 = datatables.get('r206'))
+
+        if datatables.get('filter'):
+            
+            req, val = datatables.get('filter').split('_')
+
+            if req == '1':
+                model = models.FamiliesModels.objects.filter(families_members__r504 = '1', families_members__r518 = val)
+            elif req == '2':
+                model = model.filter(r301 = val)
+            elif req == '3':
+                model = model.filter(r302 = val)
+            elif req == '4':
+                model = model.filter(r303 = val)
+            elif req == '5':
+                model = model.filter(r304 = val)
+            elif req == '6':
+                model = model.filter(r305 = val)
+            elif req == '7':
+                model = model.filter(r306 = val)
+            elif req == '8':
+                model = model.filter(r307 = val)
+            elif req == '9':
+                model = model.filter(r308 = val)
+            else:
+                model = model.filter(r310 = val)
+
+
+        model = model.exclude(
+                Q(r104=None) |
+                Q(r105=None) |
+                Q(r107=None) |
+                Q(r109=None)
+        )
+
+        if search:
+            model = models.FamiliesModels.objects.filter(
+                Q(r104__reg_name__icontains=search) |
+                Q(r105__reg_sls_code__icontains=search) |
+                Q(r105__reg_sls_name__icontains=search) |
+                Q(r107__icontains=search)|
+                Q(r109__icontains=search)
+            ).exclude(
+                Q(r104=None) |
+                Q(r105=None) |
+                Q(r107=None) |
+                Q(r109=None)
+            )
+
+            records_total = model.count()
+            records_filtered = records_total
+        
+        model = model.order_by(order_col_name)
+            
+        # Conf Paginator
+        length = int(datatables.get('length')) if int(datatables.get('length')) > 0 else len(model)
+        page_number = int(start / length + 1)
+        paginator = Paginator(model, length)
+
+        try:
+            object_list = paginator.page(page_number).object_list
+        except PageNotAnInteger:
+            object_list = paginator.page(1).object_list
+        except EmptyPage:
+            object_list = paginator.page(1).object_list
+
+        data = []
+
+        for obj in object_list:
+            data.append(
+            {
+                'no': [x for x in id_def_data if obj.id == x[1]][0][0],
+                'r104__reg_name' : f'{obj.r104.reg_name} / ({obj.r105.reg_sls_code}) {obj.r105.reg_sls_name}',
+                'r107': obj.r107,
+                'r109': obj.r109,
+                'r203' : obj.r203.strftime('%d-%m-%Y'),
+                'created_at' : obj.created_at.strftime('%d-%m-%Y'),
+                'actions': f'<a href="{reverse_lazy("app:mnj_families_edit")}?id={obj.id}" target="_blank" class="btn btn-sm icon btn-edit p-0" data-id="{obj.id}"><i class="mdi mdi-account-edit"></i></a>\
+                <button class="btn btn-sm icon btn-delete p-0" data-id="{obj.id}"><i class="mdi mdi-trash-can-outline"></i></button>'
+            })
+
+        return {    
+            'draw': draw,
+            'recordsTotal': records_total,
+            'recordsFiltered': records_filtered,
+            'data': data,
+        }
 
 class ManajemenFamiliesEditClassView(LoginRequiredMixin, View):
     
@@ -1028,6 +1186,7 @@ class ManajemenFamiliesEditClassView(LoginRequiredMixin, View):
         return redirect('app:mnj_families')
     
     def post(self, request):
+
         is_ajax = request.headers.get('X-Requested-With') == 'XMLHttpRequest'
         if is_ajax:
             if request.method == 'POST':
@@ -1191,6 +1350,44 @@ class RegionFetchDataClassView(LoginRequiredMixin, View):
                     return JsonResponse({"data": list(regency_regs)}, status=200)
             return JsonResponse({'status': 'Invalid request'}, status=400)
 
+class FilterFamiliyRequestClassView(LoginRequiredMixin, View):
+        
+        def post(self, request):
+            is_ajax = request.headers.get('X-Requested-With') == 'XMLHttpRequest'
+            if is_ajax:
+                if request.method == 'POST':
+                    req = int(request.POST.get('req'))
+                    
+                    if req == 1:
+                        opts = models.PopulationsModels.r518.field.choices
+                    elif req == 2:
+                        opts = models.FamiliesModels.r301.field.choices
+                    elif req == 3:
+                        opts = models.FamiliesModels.r302.field.choices
+                    elif req == 4:
+                        opts = models.FamiliesModels.r303.field.choices
+                    elif req == 5:
+                        opts = models.FamiliesModels.r304.field.choices
+                    elif req == 6:
+                        opts = models.FamiliesModels.r305.field.choices
+                    elif req == 7:
+                        opts = models.FamiliesModels.r306.field.choices
+                    elif req == 8:
+                        opts = models.FamiliesModels.r307.field.choices
+                    elif req == 9:
+                        opts = models.FamiliesModels.r308.field.choices
+                    else:
+                        opts = models.FamiliesModels.r310.field.choices
+
+                    html = '<option value="">----</option>'
+                    for opt in opts:
+                        html += f'<option value="{opt[0]}">{opt[1]}</option>'
+
+                    return JsonResponse({"data": html}, status=200)
+                
+            return JsonResponse({'status': 'Invalid request'}, status=400)
+        
+
 class ManajemenPopulationsClassView(LoginRequiredMixin, View): 
         
     def get(self, request):
@@ -1330,3 +1527,110 @@ class ManajemenPopulationsDeleteClassView(LoginRequiredMixin, View):
                 return JsonResponse({'status' : 'success', 'message': f'Data <b>{old_data}</b> berhasil dihapus'})
 
         return JsonResponse({'status': 'Invalid request'}, status=400)
+
+
+
+class ManajemenPopulationFetchTableClassView(LoginRequiredMixin, View):
+
+    def post(self, request):
+        
+        data = self._datatables(request)
+        return HttpResponse(json.dumps(data, cls=DjangoJSONEncoder), content_type='application/json')
+		
+    def _datatables(self, request):
+
+        # Define default column for ordering first request
+        def_col = 'r503' 
+
+        datatables = request.POST
+
+        # Get Draw
+        draw = int(datatables.get('draw'))
+        start = int(datatables.get('start'))
+        search = datatables.get('search[value]')
+
+        order_idx = int(datatables.get('order[0][column]')) # Default 1st index for
+        order_dir = datatables.get('order[0][dir]') # Descending or Ascending
+        order_col = 'columns[' + str(order_idx) + '][data]'
+        order_col_name = datatables.get(order_col)
+
+        if 'no' in order_col_name:
+            order_col_name = def_col
+
+        if (order_dir == "desc"):
+            order_col_name =  str('-' + order_col_name)
+
+        model = models.PopulationsModels.objects     
+        model = model.exclude(
+                Q(r503=None) |
+                Q(r502=None) |
+                Q(r508=None) |
+                Q(r518=None) |
+                Q(r504=None) |
+                Q(r505=None)
+        )
+
+        id_def_data = list(model.order_by(def_col).values_list('id'))
+        id_def_data = [list((idx+1, ) + id_def_data[idx]) for idx in range(len(id_def_data))]
+        
+        records_total = model.count()
+        records_filtered = records_total
+        
+        if search:
+            model = models.PopulationsModels.objects.filter(
+                Q(r503__icontains=search) |
+                Q(r502__icontains=search) |
+                Q(r508__icontains=search) |
+                Q(r518__icontains=search)|
+                Q(r504__icontains=search) |
+                Q(r505__icontains=search)
+            ).exclude(
+                Q(r503=None) |
+                Q(r502=None) |
+                Q(r508=None) |
+                Q(r518=None) |
+                Q(r504=None) |
+                Q(r505=None)
+            )
+
+            records_total = model.count()
+            records_filtered = records_total
+        
+        model = model.order_by(order_col_name)
+            
+        # Conf Paginator
+        length = int(datatables.get('length')) if int(datatables.get('length')) > 0 else len(model)
+        page_number = int(start / length + 1)
+        paginator = Paginator(model, length)
+
+        try:
+            object_list = paginator.page(page_number).object_list
+        except PageNotAnInteger:
+            object_list = paginator.page(1).object_list
+        except EmptyPage:
+            object_list = paginator.page(1).object_list
+
+        data = []
+
+        for obj in object_list:
+             
+            data.append(
+            {
+                'no': [x for x in id_def_data if obj.id == x[1]][0][0],
+                'r503' : obj.r503,
+                'r502': obj.r502,
+                'r508': helpers.year_calculator(obj.r508),
+                'r518' : obj.get_r518_display(),
+                'r504' : obj.get_r504_display(),
+                'r505' : obj.get_r505_display(),
+                'actions': f'<a href="{reverse_lazy("app:mnj_population_edit")}?id={obj.id}" target="_blank" class="btn btn-sm icon btn-edit p-0" data-id="{obj.id}"><i class="mdi mdi-account-edit"></i></a>\
+                <button class="btn btn-sm icon btn-delete p-0" data-id="{obj.id}"><i class="mdi mdi-trash-can-outline"></i></button>'
+            })
+
+        return {    
+            'draw': draw,
+            'recordsTotal': records_total,
+            'recordsFiltered': records_filtered,
+            'data': data,
+        }
+
