@@ -63,13 +63,14 @@ class FamiliesModels(models.Model):
         ('2', 'Tidak Terisi Lengkap'),
     )
 
-    r201 = models.CharField(max_length=128, blank=False, null=False, verbose_name="Nama Pencacah")
+    # r201 = models.CharField(max_length=128, blank=False, null=False, verbose_name="Nama Pencacah")
+    r201 = models.ForeignKey(OfficerModels, on_delete=models.RESTRICT, blank=False, null=False, related_name='petugas_pencacah', verbose_name='Nama Pencacah')
     r202 = models.DateField(blank=False, null=False, verbose_name="Tgl Kunjungan Pertama")
     r203 = models.DateField(blank=False, null=False, verbose_name="Tgl Kunjungan Terakhir")
-    r204 = models.CharField(max_length=128, blank=False, null=False, verbose_name="Nama Pemeriksa")
+    # r204 = models.CharField(max_length=128, blank=False, null=False, verbose_name="Nama Pemeriksa")
+    r204 = models.ForeignKey(OfficerModels, on_delete=models.RESTRICT, blank=False, null=False, related_name='petugas_pemeriksa', verbose_name='Nama Pemeriksa')
     r205 = models.DateField(blank=False, null=False, verbose_name="Tanggal Pemeriksaan")
     r206 = models.CharField(max_length=1, blank=False, null=False, choices=r206_choices, verbose_name="Hasil Pencacahan")
-
 
     r301_choices = (
         ('1', 'Milik Sendiri'),

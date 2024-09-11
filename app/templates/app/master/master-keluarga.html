@@ -133,7 +133,7 @@
                         </div>
                     </div>
                     <div class="row">
-                        <div class="col-5">Hasil Pencacahan</div>
+                        <div class="col-5">Hasil Pendataan</div>
                         <div class="col-7">
                             <div class="form-group" >
                                 <select class="form-select filter-family" id="r206">
@@ -179,7 +179,7 @@
                 <div class="card-header d-flex justify-content-between align-items-center">
                     <h4 class="card-title">Daftar Keluarga</h4>
                     <div class="d-flex ">
-                        <a href="{% url 'app:mnj_families_add' %}" class="btn icon btn-primary mx-1"><i data-feather="user-plus"></i> Tambah Keluarga</a> 
+                        <a href="{% url 'app:mnj_families_add' %}" class="btn icon btn-primary mx-1"><i data-feather="user-plus"></i>&ensp;Tambah Keluarga</a> 
                         <button class="btn icon btn-info" id="refresh"><i class="mdi mdi-refresh"></i></button>
                     </div>
                 </div>
@@ -291,14 +291,17 @@
         $('.filter-family').each(function(i, obj) {
             $(this).val('')
         });
+        table.draw()
     })
 
     $('#clear-filter-regs').on('click', function(){
         $('.filter-region').each(function(i, obj) {
             $(this).val('')
         });
+        region = ''
+        region_sls = ''
+        table.draw()
     })
-
 
     $('#id_provinsi').on('change', function(){
         $('#id_kabkot').val('')

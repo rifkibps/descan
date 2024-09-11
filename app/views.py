@@ -991,7 +991,6 @@ class ManajemenFamiliesClassView(LoginRequiredMixin, View):
         pencacah = models.OfficerModels.objects.filter(role = '1').all()
         pemeriksa = models.OfficerModels.objects.filter(role = '2').all()
         hasil = models.FamiliesModels.r206.field.choices
-        families = models.FamiliesModels.objects.all()
 
         filters = [
             [1, 'Pendidikan Kepala Rumah Tangga'],
@@ -1008,7 +1007,6 @@ class ManajemenFamiliesClassView(LoginRequiredMixin, View):
         
         context = {
             'title' : 'Manajemen Keluarga',
-            'families' : families,
             'pencacah' : pencacah,
             'pemeriksa' : pemeriksa,
             'hasil' : hasil,
@@ -1049,7 +1047,7 @@ class ManajemenFamiliesFetchTableClassView(LoginRequiredMixin, View):
         if (order_dir == "desc"):
             order_col_name =  str('-' + order_col_name)
 
-        model = models.FamiliesModels.objects     
+        model = models.FamiliesModels.objects
 
         id_def_data = list(model.order_by(def_col).values_list('id'))
         id_def_data = [list((idx+1, ) + id_def_data[idx]) for idx in range(len(id_def_data))]
@@ -1073,9 +1071,7 @@ class ManajemenFamiliesFetchTableClassView(LoginRequiredMixin, View):
             model = model.filter(r206 = datatables.get('r206'))
 
         if datatables.get('filter'):
-            
             req, val = datatables.get('filter').split('_')
-
             if req == '1':
                 model = models.FamiliesModels.objects.filter(families_members__r504 = '1', families_members__r518 = val)
             elif req == '2':
@@ -1097,16 +1093,8 @@ class ManajemenFamiliesFetchTableClassView(LoginRequiredMixin, View):
             else:
                 model = model.filter(r310 = val)
 
-
-        model = model.exclude(
-                Q(r104=None) |
-                Q(r105=None) |
-                Q(r107=None) |
-                Q(r109=None)
-        )
-
         if search:
-            model = models.FamiliesModels.objects.filter(
+            model = model.filter(
                 Q(r104__reg_name__icontains=search) |
                 Q(r105__reg_sls_code__icontains=search) |
                 Q(r105__reg_sls_name__icontains=search) |
@@ -1174,9 +1162,13 @@ class ManajemenFamiliesEditClassView(LoginRequiredMixin, View):
                     forms_art.append(form)
                     id.append(dt.id)
 
+                pencacah = models.OfficerModels.objects.filter(role = '1').all()
+                pemeriksa = models.OfficerModels.objects.filter(role = '2').all()
                 context = {
                     'title' : 'Edit Data Keluarga',
                     'regions' : regions,
+                    'pencacah' : pencacah,
+                    'pemeriksa' : pemeriksa,
                     'pk' : request.GET.get('id'),
                     'form' : forms.FamiliesForm(instance=model),
                     'forms_art' : zip(id, forms_art),
@@ -1255,9 +1247,13 @@ class ManajemenFamiliesEditClassView(LoginRequiredMixin, View):
 class ManajemenFamiliesAddClassView(LoginRequiredMixin, View):
 
     def get(self, request):
+        pencacah = models.OfficerModels.objects.filter(role = '1').all()
+        pemeriksa = models.OfficerModels.objects.filter(role = '2').all()
         context = {
             'title' : 'Tambah Data Keluarga',
             'form' : forms.FamiliesForm(),
+            'pencacah' : pencacah,
+            'pemeriksa' : pemeriksa,
             'form_penduduk' : forms.PopulationsForm(),
             'province_regions' : models.RegionAdministrativeModels.objects.annotate(text_len=Length('reg_code')).filter(text_len=2).order_by('reg_code')
         }
@@ -1388,16 +1384,75 @@ class FilterFamiliyRequestClassView(LoginRequiredMixin, View):
             return JsonResponse({'status': 'Invalid request'}, status=400)
         
 
+class FilterPopulationRequestClassView(LoginRequiredMixin, View):
+        
+    def post(self, request):
+        is_ajax = request.headers.get('X-Requested-With') == 'XMLHttpRequest'
+        if is_ajax:
+            if request.method == 'POST':
+                req = int(request.POST.get('req'))
+                if req == 1:
+                    opts = models.PopulationsModels.r506.field.choices
+                elif req == 2:
+                    opts = models.PopulationsModels.r504.field.choices
+                elif req == 3:
+                    opts = models.PopulationsModels.r505.field.choices
+                elif req == 4:
+                    opts = models.PopulationsModels.r517.field.choices
+                elif req == 5:
+                    opts = models.PopulationsModels.r518.field.choices
+                elif req == 6:
+                    opts = models.PopulationsModels.r510.field.choices
+                elif req == 7:
+                    opts = models.PopulationsModels.r511.field.choices
+                elif req == 8:
+                    opts = models.PopulationsModels.r512.field.choices
+                elif req == 9:
+                    opts = models.PopulationsModels.r513.field.choices
+                elif req == 10:
+                    opts = models.PopulationsModels.r519.field.choices
+                else:
+                    opts = models.PopulationsModels.r520a.field.choices
+                    
+                html = '<option value="">----</option>'
+                for opt in opts:
+                    html += f'<option value="{opt[0]}">{opt[1]}</option>'
+
+                return JsonResponse({"data": html}, status=200)
+            
+        return JsonResponse({'status': 'Invalid request'}, status=400)
+
 class ManajemenPopulationsClassView(LoginRequiredMixin, View): 
         
     def get(self, request):
+        pencacah = models.OfficerModels.objects.filter(role = '1').all()
+        pemeriksa = models.OfficerModels.objects.filter(role = '2').all()
+        hasil = models.FamiliesModels.r206.field.choices
+
+        filters = [
+            [1, 'Jenis Kelamin'],
+            [2, 'Hubungan dengan Kepala Rumah Tangga'],
+            [3, 'Keberadaan Anggota Keluarga'],
+            [4, 'Partisipasi Sekolah'],
+            [5, 'Pendidikan Terakhir'],
+            [6, 'Status Pernikahan'],
+            [7, 'Agama'],
+            [8, 'Suku'],
+            [9, 'Kegiatan Utama ART'],
+            [10, 'Kepemikikan Jaminan Kesehatan'],
+            [11, 'Keterangan Disabilitas']
+        ]
         
-        populations = models.PopulationsModels.objects.all()
         context = {
             'title' : 'Manajemen Penduduk',
-            'populations' : populations,
+            'pencacah' : pencacah,
+            'pemeriksa' : pemeriksa,
+            'hasil' : hasil,
+            'filters' : filters,
             'province_regions' : models.RegionAdministrativeModels.objects.annotate(text_len=Length('reg_code')).filter(text_len=2).order_by('reg_code')
+   
         }
+       
         return render(request, 'app/master/master-penduduk.html', context)
 
 class ManajemenPopulationsAddClassView(LoginRequiredMixin, View):
@@ -1501,8 +1556,6 @@ class ManajemenPopulationsEditClassView(LoginRequiredMixin, View):
 
         return JsonResponse({'status': 'Invalid request'}, status=400)
     
-
-
 class ManajemenPopulationsFetchNumClassView(LoginRequiredMixin, View):
 
     def post(self, request):
@@ -1538,7 +1591,7 @@ class ManajemenPopulationFetchTableClassView(LoginRequiredMixin, View):
         return HttpResponse(json.dumps(data, cls=DjangoJSONEncoder), content_type='application/json')
 		
     def _datatables(self, request):
-
+        
         # Define default column for ordering first request
         def_col = 'r503' 
 
@@ -1560,15 +1613,7 @@ class ManajemenPopulationFetchTableClassView(LoginRequiredMixin, View):
         if (order_dir == "desc"):
             order_col_name =  str('-' + order_col_name)
 
-        model = models.PopulationsModels.objects     
-        model = model.exclude(
-                Q(r503=None) |
-                Q(r502=None) |
-                Q(r508=None) |
-                Q(r518=None) |
-                Q(r504=None) |
-                Q(r505=None)
-        )
+        model = models.PopulationsModels.objects
 
         id_def_data = list(model.order_by(def_col).values_list('id'))
         id_def_data = [list((idx+1, ) + id_def_data[idx]) for idx in range(len(id_def_data))]
@@ -1576,21 +1621,64 @@ class ManajemenPopulationFetchTableClassView(LoginRequiredMixin, View):
         records_total = model.count()
         records_filtered = records_total
         
+        if datatables.get('region'):
+            model = model.filter(family_id__r104__reg_code__icontains = datatables.get('region'))
+
+        if datatables.get('region_sls'):
+            model = model.filter(family_id__r105__reg_sls_code__icontains = datatables.get('region_sls'))
+
+        if datatables.get('r201'):
+            model = model.filter(family_id__r201 = datatables.get('r201'))
+
+        if datatables.get('r204'):
+            model = model.filter(family_id__r204 = datatables.get('r204'))
+
+        if datatables.get('r206'):
+            model = model.filter(family_id__r206 = datatables.get('r206'))
+
+        if datatables.get('filter'):
+            req, val = datatables.get('filter').split('_')
+
+            if req == '1':
+                model = model.filter(r506 = val)
+            elif req == '2':
+                model = model.filter(r504 = val)
+            elif req == '3':
+                model = model.filter(r505 = val)
+            elif req == '4':
+                model = model.filter(r517 = val)
+            elif req == '5':
+                model = model.filter(r518 = val)
+            elif req == '6':
+                model = model.filter(r510 = val)
+            elif req == '7':
+                model = model.filter(r511 = val)
+            elif req == '8':
+                model = model.filter(r512 = val)
+            elif req == '9':
+                model = model.filter(r513 = val)
+            elif req == '10':
+                model = model.filter(r519 = val)
+            else:
+                model = model.filter(
+                    Q(r520a = val) |
+                    Q(r520b = val) |
+                    Q(r520c = val) |
+                    Q(r520d = val) |
+                    Q(r520e = val) |
+                    Q(r520f = val) |
+                    Q(r520g = val) |
+                    Q(r520h = val)
+                )
+
         if search:
-            model = models.PopulationsModels.objects.filter(
+            model = model.filter(
                 Q(r503__icontains=search) |
                 Q(r502__icontains=search) |
                 Q(r508__icontains=search) |
                 Q(r518__icontains=search)|
                 Q(r504__icontains=search) |
                 Q(r505__icontains=search)
-            ).exclude(
-                Q(r503=None) |
-                Q(r502=None) |
-                Q(r508=None) |
-                Q(r518=None) |
-                Q(r504=None) |
-                Q(r505=None)
             )
 
             records_total = model.count()

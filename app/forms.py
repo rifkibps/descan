@@ -22,13 +22,6 @@ class FamiliesForm(forms.ModelForm):
         form_data = self.cleaned_data 
         data_not_cleaned = self.data
 
-        if form_data.get('r202') is not None and form_data.get('r203') is not None and form_data.get('r205') is not None:
-            if helpers.comparing_date(str(form_data['r202']), str(form_data['r203'])) is False:
-                self._errors['r203'] = self.error_class(['Tgl kunjungan pertama tidak boleh lebih besar dari tgl kunjungan terakhir'])
-
-            if helpers.comparing_date(str(form_data['r203']), str(form_data['r205'])) is False:
-                self._errors['r205'] = self.error_class(['Tgl kunjungan akhir tidak boleh lebih besar dari tgl pemeriksaan'])
-
         if form_data.get('r108') is not None:
             # Validasi NIK
             if form_data['r108'].isnumeric() == False or len(form_data['r108']) != 16:
@@ -46,6 +39,21 @@ class FamiliesForm(forms.ModelForm):
             form_data['r109'] = int(form_data['r109'])
             if form_data['r109'] < 1:
                 self._errors['r109'] = self.error_class(['Jumlah ART harus lebih dari 0.'])
+
+        if form_data.get('r202') is not None and form_data.get('r203') is not None and form_data.get('r205') is not None:
+            if helpers.comparing_date(str(form_data['r202']), str(form_data['r203'])) is False:
+                self._errors['r203'] = self.error_class(['Tgl kunjungan pertama tidak boleh lebih besar dari tgl kunjungan terakhir'])
+
+            if helpers.comparing_date(str(form_data['r203']), str(form_data['r205'])) is False:
+                self._errors['r205'] = self.error_class(['Tgl kunjungan akhir tidak boleh lebih besar dari tgl pemeriksaan'])
+
+        if form_data.get('r201') is not None:
+            if form_data.get('r201').role != '1':
+                self._errors['r201'] = self.error_class(['Data petugas lapangan tidak terdaftar pada database'])
+
+        if form_data.get('r204') is not None:
+            if form_data.get('r204').role != '2':
+                self._errors['r204'] = self.error_class(['Data petugas pemeriksa tidak terdaftar pada database'])
 
         if form_data.get('r301') is not None :
             if form_data.get('r301') == '1':

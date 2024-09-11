@@ -225,7 +225,12 @@
                 <div class="col-6 col-offset-1">
                     <div class="form-group">
                         <div class="position-relative">
-                            {% render_field form.r201 id=form.r201.id_for_label class="form-control px-3 form-family"  %}
+                            <select name="{{ form.r201.name }}" id="{{ form.r201.id_for_label }}" class="form-select px-3 form-family" required>
+                                <option value="" selected="selected">---------</option>
+                                {% for dt in pencacah %}
+                                <option value="{{dt.pk}}" {% if form.r201.value == dt.pk %} selected="selected"{% endif %}>{{dt.name}}</option>
+                                {% endfor %}
+                            </select>
                             <div class="invalid-feedback" id="msg-{{ form.r201.id_for_label }}">
                             </div>
                         </div>
@@ -270,7 +275,12 @@
                 <div class="col-6 col-offset-1">
                     <div class="form-group">
                         <div class="position-relative">
-                            {% render_field form.r204 id=form.r204.id_for_label class="form-control px-3 form-family"  %}
+                            <select name="{{ form.r204.name }}" id="{{ form.r204.id_for_label }}" class="form-select px-3 form-family" required>
+                                <option value="" selected="selected">---------</option>
+                                {% for dt in pemeriksa %}
+                                <option value="{{dt.pk}}" {% if form.r204.value == dt.pk %} selected="selected"{% endif %}>{{dt.name}}</option>
+                                {% endfor %}
+                            </select>
                             <div class="invalid-feedback" id="msg-{{ form.r204.id_for_label }}">
                             </div>
                         </div>
