@@ -1,6 +1,6 @@
 from django.db import models
-from django.core.validators import MinValueValidator, MaxValueValidator, MinLengthValidator
-
+from django.core.validators import MinLengthValidator
+from datetime import datetime
 # Create your models here.
 
 class RegionAdministrativeModels(models.Model):
@@ -350,5 +350,9 @@ class PopulationsModels(models.Model):
     created_at = models.DateField(auto_now_add=True, editable=False)
     updated_at = models.DateField(auto_now=True, editable=False)
 
+    @property
+    def age(self):
+        return int((datetime.now().date() - self.r508).days / 365.25)
+    
     def __str__(self):
       return f"{self.pk}. {self.r502} | {self.r503}"

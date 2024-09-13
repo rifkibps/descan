@@ -1,8 +1,6 @@
 from . import models
-from django.db.models import Q
-from django.db.models import Q, Count, Sum
+from django.db.models import Q, Count
 from pprint import pprint
-from django.utils import timezone
 from datetime import datetime
 from django.db.models.functions import Length
 
@@ -11,12 +9,6 @@ def check_sorted(list_):
     for idx, dt in zip(range(len(list_)), list_):
         if idx+1 != dt:
             return False
-
-def year_calculator(date):
-    today = timezone.now()
-    age = today.year - date.year - ((today.month, today.day) < (date.month, date.day))
-
-    return age
 
 def comparing_date(date_first, date_last, format ='%Y-%m-%d'):
     # Konversi string ke objek datetime
@@ -120,7 +112,6 @@ def get_modus_family_chars():
             count=Count('r415')).order_by('-count').first()
     return model
 
-
 def generate_table(header, body):
     
     thead = '<thead><tr>'
@@ -217,19 +208,15 @@ def count_of_welfare_recips():
 
     return model
 
-def labor_participation():
-    
-    labor_force = models.PopulationsModels.objects.filter(
-        Q(r407__gte = 15) & Q(r407__lte = 64) 
-    )
+def labor_participation(model):
+    labors = []   
+    labors_work = []
+    for dt in model:
+        if dt.age > 15 :
+            labors.append(dt)
 
-    laber_force_work = labor_force.filter(
-        (Q(r416a = 1) & ~Q(r416b = 0)) |
-        (Q(r420a = 1) & ~Q(r422_23 = 0))
-    )
+        if dt.r513 in ['4', '5']:
+            labors_work.append(dt)
 
-    labor_participation = round(laber_force_work.count() / labor_force.count() * 100, 2)
-
+    labor_participation = round(len(labors_work) / len(labors) * 100)
     return labor_participation
-
-     
