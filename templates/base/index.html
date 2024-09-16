@@ -166,7 +166,7 @@
 
             var data = {}
             var opt = '<option value="" selected="selected">---------</option>'
-    
+            
             if (level == 'prov'){
                 data['province_id'] = val
                 $('#id_kabkot').html(opt)
@@ -199,7 +199,6 @@
                     "X-CSRFToken": '{{csrf_token}}',
                 },
                 success: (result) => {
-    
                     if (level == 'kec'){
                         for (let i = 0; i < result.data.length; i++) {
                             opt += '<option value="'+result.data[i].id+'" data-code="'+result.data[i].reg_code+'">['+result.data[i].reg_code+'] &ensp;'+result.data[i].reg_name+'</option>'

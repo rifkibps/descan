@@ -80,7 +80,7 @@ class FamiliesModels(models.Model):
         ('5', 'Dinas'),
         ('6', 'Lainnya'),
     )
-    r301 = models.CharField(max_length=1, blank=False, null=False, choices=r301_choices, verbose_name="Status penguasan bangunan tempat tinggal yang ditempati")
+    r301 = models.CharField(max_length=1, blank=False, null=False, choices=r301_choices, verbose_name="Status penguasaan bangunan tempat tinggal yang ditempati")
 
     r302_choices = (
         ('1', 'Milik Sendiri'),

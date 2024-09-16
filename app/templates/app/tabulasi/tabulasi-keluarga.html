@@ -29,18 +29,18 @@
     <div class="row mb-5">
         <div class="col-md-12">
             <div class="card">
-                <div class="card-header d-flex justify-content-between align-items-center">
-                    <h4 class="card-title">Filter Wilayah</h4>
+                <div class="card-header">
+                    <h4 class="card-title">Pilih Tabulasi Keluarga</h4>
                 </div>
                 <div class="card-body px-4 pb-4">
                     <div class="row">
                         <div class="col-3">Provinsi</div>
                         <div class="col-9">
                             <div class="form-group">
-                                <select class="form-select" id="id_provinsi">
+                                <select class="form-select" id="id_provinsi" onchange="pushAdmFilter(this)">
                                     <option value="" selected="selected">---------</option>
                                     {% for prov_reg in province_regions %}
-                                        <option value="{{prov_reg.reg_code}}">[{{prov_reg.reg_code}}]&ensp;{{prov_reg.reg_name}}</option>
+                                        <option value="{{prov_reg.reg_code}}" data-code="{{prov_reg.reg_code}}">[{{prov_reg.reg_code}}]&ensp;{{prov_reg.reg_name}}</option>
                                     {% endfor %}
                                 </select>
                             </div>
@@ -50,7 +50,7 @@
                         <div class="col-3">Kabupaten/Kota</div>
                         <div class="col-9">
                             <div class="form-group" >
-                                <select class="form-select" id="id_kabkot">
+                                <select class="form-select" id="id_kabkot" onchange="pushAdmFilter(this)">
                                     <option value="" selected="selected">---------</option>
                                 </select>
                             </div>
@@ -60,7 +60,7 @@
                         <div class="col-3">Kecamatan</div>
                         <div class="col-9">
                             <div class="form-group" >
-                                <select class="form-select" id="id_kecamatan">
+                                <select class="form-select" id="id_kecamatan" onchange="pushAdmFilter(this)">
                                     <option value="" selected="selected">---------</option>
                                 </select>
                             </div>
@@ -70,7 +70,7 @@
                         <div class="col-3">Desa/Kelurahan</div>
                         <div class="col-9">
                             <div class="form-group" >
-                                <select class="form-select" id="id_desa">
+                                <select class="form-select" id="id_desa" onchange="pushAdmFilter(this)">
                                     <option value="" selected="selected">---------</option>
                                 </select>
                             </div>
@@ -86,72 +86,28 @@
                             </div>
                         </div>
                     </div>
+                    <div class="row mb-3">
+                        <div class="col-3">Pilih Tabulasi Keluarga <strong class="text-danger">*</strong></div>
+                        <div class="col-9">
+                            <div class="form-group" >
+                                <select class="form-select" id="tabulation_req">
+                                    {% for dt in tabulations %}
+                                    <option value="{{dt.val}}">{{dt.text}}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="d-flex justify-content-end">
+                        <button class="btn btn-danger" onclick="resetData()">Reset Data</button>&ensp;
+                        <button class="btn btn-primary" onclick="tabulationPush(this)">Tabulasi Data</button>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
     
-    <div class="row mb-5">
-        <div class="col-12 col-md-3">
-            <div class="card bg-primary">
-                <div class="card-body p-0">
-                    <div class="d-flex flex-column">
-                        <div class="px-3 py-3" style="height:170px !important">
-                            <h4 class="text-white">Jumlah Keluarga</h4>
-                            <br>
-                            <div class="card-body px-0 d-flex justify-content-start align-items-center">
-                                <h1 class="text-white">{{families}} <span style="font-size:30px">Keluarga</span></h1> 
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="col-12 col-md-3">
-            <div class="card bg-primary">
-                <div class="card-body p-0">
-                    <div class="d-flex flex-column">
-                        <div class='px-3 py-3' style="height:170px !important">
-                            <h4 class='text-white'>Jumlah Keluarga Penerima Bantuan</h4>
-                            <div class="card-body px-0 d-flex justify-content-start">
-                                <h1 class="text-white">{{welfare_recips}} <span style="font-size:30px">Keluarga</span></h1> 
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="col-12 col-md-3">
-            <div class="card bg-primary">
-                <div class="card-body p-0">
-                    <div class="d-flex flex-column">
-                        <div class='px-3 py-3' style="height:170px !important">
-                            <h4 class='text-white'>Jumlah Keluarga dengan Sumber Penerangan Listrik PLN</h4>
-                            <div class="card-body px-0 d-flex justify-content-start">
-                                <h1 class="text-white">{{families_electricity}} <span style="font-size:30px">Keluarga</span></h1> 
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="col-12 col-md-3">
-            <div class="card bg-primary">
-                <div class="card-body p-0">
-                    <div class="d-flex flex-column">
-                        <div class='px-3 py-3' style="height:170px !important">
-                            <h4 class='text-white'>Jumlah Keluarga dengan Fasilitas Sanitasi sendiri</h4>
-                            <div class="card-body px-0 d-flex justify-content-start">
-                                <h1 class="text-white">{{sanition_family}} <span style="font-size:30px">Keluarga</span></h1> 
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <div class="row mb-4" id="tabulation-card" style="display:none">
+    <div class="row mb-4" id="tabulation-card" style="display:none" >
         <div class="col-md-12">
             <div class="card">
                 <div class="card-header d-flex justify-content-between align-items-center">
@@ -160,15 +116,10 @@
                         <i data-feather="download"></i>
                     </div>
                 </div>
-                <div class="card-body px-3 pb-0">
+                <div class="card-body px-3 mb-4">
                     <div class="table-responsive">
-                        <table class='table mb-0' id="tabulations-table">
+                        <table class="table table-hover mb-0 w-100" id="tabulations-table">
                             <thead>
-                                <tr>
-                                    <th>No</th>
-                                    <th>Bahan Bakar/Energi Utama untuk Memasak</th>
-                                    <th>Jumlah</th>
-                                </tr>
                             </thead>
                             <tbody>
                             </tbody>
@@ -187,25 +138,49 @@
 <script src="{% static 'app-design/assets/vendors/choices.js/choices.min.js' %}"></script>
 
 <script>
+    var adm_code = ''
+
     $('#id_provinsi').on('change', function(){
+        $('#id_kabkot').val('')
+        $('#id_kecamatan').val('')
+        $('#id_desa').val('')
+        $('#id_sls').val('')
         get_region_adm('prov', $(this).val(), '#id_kabkot')
     })
 
     $('#id_kabkot').on('change', function(){
+        $('#id_kecamatan').val('')
+        $('#id_desa').val('')
+        $('#id_sls').val('')
         get_region_adm('kabkot', $(this).val(), '#id_kecamatan')
     })
 
     $('#id_kecamatan').on('change', function(){
+        $('#id_desa').val('')
+        $('#id_sls').val('')
         get_region_adm('kec', $(this).val(), '#id_desa')
     })
 
     $('#id_desa').on('change', function(){
+        $('#id_sls').val('')
         get_region_adm('deskel', $('option:selected', this).attr('data-code'), '#id_sls')
     })
 
+    function pushAdmFilter(e){
+        adm_code = $('option:selected', e).attr('data-code')
+        return adm_code
+    }
+
+    function resetData(){
+        $('.form-select').each(function(i, obj) {
+            $(this).val('')
+        });
+        return $('#tabulation-card').hide()
+    }
+
     function tabulationPush(e){
-        var title = $(e).text()
-        var val = $(e).val()
+        var title = $('#tabulation_req').text()
+        var val = $('#tabulation_req').val()
         if (val.length == 0){
             return $('#tabulation-card').hide()
         }
@@ -216,12 +191,15 @@
             dataType: "json",
             data : {
                 'tab_request' : val,
+                'adm_code' : adm_code,
+                'sls_code' : $('#id_sls').val()
             },
             headers: {
                 "X-Requested-With": "XMLHttpRequest",
                 "X-CSRFToken": '{{csrf_token}}',
             },
             success: (data) => {
+                console.log(data)
                 if (data.status == 'success'){
                     $('#tabulations-table').html(data.content.content_table)
                     $('#tabulation-title').html(data.content.title)

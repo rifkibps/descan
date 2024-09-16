@@ -3,6 +3,36 @@ from django.db.models import Q, Count
 from pprint import pprint
 from datetime import datetime
 from django.db.models.functions import Length
+import numpy as np
+
+def splitting_list(dt_list, n_component):
+
+    if len(dt_list) < n_component:
+        n_component = 2
+
+    # Tentukan batas-batas interval
+    bins_group = []
+    bins = list(np.linspace(min(dt_list), max(dt_list), n_component+1, dtype=int))
+    for idx in range(len(bins)):
+        if idx < len(bins)-1 :
+            bins_group.append((idx+1, int(bins[idx]), int(bins[idx+1])))
+
+    groups = {}
+    for num in dt_list:
+        for ord, batas_bawah, batas_atas in bins_group:
+            if batas_bawah <= num <= batas_atas:
+                rentang_str = f"{ord}_{batas_bawah} - {batas_atas}"
+                groups.setdefault(rentang_str, []).append(num)
+
+    list_tuples = list(groups.items())
+    groups = dict(sorted(list_tuples))
+
+    groups_sorted = []
+    for key, val in groups.items():
+        groups_sorted.append((key.split('_')[1], len(val)))
+
+    return groups_sorted
+
 
 def check_sorted(list_):
     
@@ -130,49 +160,22 @@ def generate_table(header, body):
 
     return f'{thead} {tbody}'
 
-
 def get_tab_families():
 
     opts = [
-        {'val' : None, 'text' : '----'},
-        {'val' : 1, 'text' : 'Jumlah Keluarga Menurut Pendidikan Tertinggi KRT'},
-        {'val' : 2, 'text' : 'Jumlah Keluarga Menurut Status Kepemilikan Bangunan Tempat Tinggal'},
-        {'val' : 3, 'text' : 'Jumlah Keluarga Menurut Bukti kepemilikan Tanah Bangunan Tempat Tinggal'},
-        {'val' : 4, 'text' : 'Jumlah Keluarga Menurut Luas Lantai Bangunan Tempat Tinggal'},
-        {'val' : 5, 'text' : 'Jumlah Keluarga Menurut Jenis Lantai Terluas'},
-        {'val' : 6, 'text' : 'Jumlah Keluarga Menurut Jenis Dinding Terluas'},
-        {'val' : 7, 'text' : 'Jumlah Keluarga Menurut Jenis Atap Terluas'},
-        {'val' : 8, 'text' : 'Jumlah Keluarga Menurut Sumber Air Minum Utama'},
-        {'val' : 9, 'text' : 'Jumlah Keluarga Menurut Jarak Sumber Air Minum Utama ke Tempat Penampungan Limbah'},
-        {'val' : 10, 'text' : 'Jumlah Keluarga Menurut Sumber Penerangan Utama'},
-        {'val' : 11, 'text' : 'Jumlah Keluarga Menurut Daya yang Terpasang'},
-        {'val' : 12, 'text' : 'Jumlah Keluarga Menurut Bahan Bakar/Energi Utama untuk Memasak'},
-        {'val' : 13, 'text' : 'Jumlah Keluarga Menurut Kepemilikan dan Penggunaan Fasilitas Tempat Buang Air Besar'},
-        {'val' : 14, 'text' : 'Jumlah Keluarga Menurut Jenis Kloset'},
-        {'val' : 15, 'text' : 'Jumlah Keluarga Menurut Tempat Pembuangan Akhir Tinja'},
-        {'val' : 16, 'text' : 'Jumlah Keluarga Menurut Penerima Program Bantuan Sosial Sembako/ BPNT'},
-        {'val' : 17, 'text' : 'Jumlah Keluarga Menurut Penerima Program Keluarga Harapan (PKH)'},
-        {'val' : 18, 'text' : 'Jumlah Keluarga Menurut Penerima Program Bantuan Langsung Tunai (BLT) Desa'},
-        {'val' : 19, 'text' : 'Jumlah Keluarga Menurut Penerima Program Subsidi Listrik (Gratis/Pemotongan Biaya)'},
-        {'val' : 20, 'text' : 'Jumlah Keluarga Menurut Penerima Program Bantuan Pemerintah Daerah'},
-        {'val' : 21, 'text' : 'Jumlah Keluarga Menurut Penerima Program Bantuan Subsidi Pupuk'},
-        {'val' : 22, 'text' : 'Jumlah Keluarga Menurut Penerima Program Subsidi LPG'},
-
-        {'val' : 23, 'text' : 'Jumlah Keluarga Menurut Kepemilikan Tabung gas 5,5 kg atau lebih'},
-        {'val' : 24, 'text' : 'Jumlah Keluarga Menurut Kepemilikan Lemari Es/Kulkas'},
-        {'val' : 25, 'text' : 'Jumlah Keluarga Menurut Kepemilikan Air Conditioner (AC)'},
-        {'val' : 26, 'text' : 'Jumlah Keluarga Menurut Kepemilikan Pemanas Air (Water Heater)'},
-        {'val' : 27, 'text' : 'Jumlah Keluarga Menurut Kepemilikan Telepon Rumah (PSTN)'},
-        {'val' : 28, 'text' : 'Jumlah Keluarga Menurut Kepemilikan Televisi Layar Datar (Min. 30 Inci)'},
-        {'val' : 29, 'text' : 'Jumlah Keluarga Menurut Kepemilikan Emas/Perhiasan (Min. 10 gram)'},
-        {'val' : 30, 'text' : 'Jumlah Keluarga Menurut Kepemilikan Komputer/Laptop/Tablet'},
-        {'val' : 31, 'text' : 'Jumlah Keluarga Menurut Kepemilikan Sepeda Motor'},
-        {'val' : 32, 'text' : 'Jumlah Keluarga Menurut Kepemilikan Mobil'},
-
-        {'val' : 33, 'text' : 'Jumlah Keluarga Menurut Kepemilikan Aset Lahan (selain yang ditempati)'},
-        {'val' : 34, 'text' : 'Jumlah Keluarga Menurut Kepemilikan Aset Rumah/Bangunan di Tempat Lain'},
-        {'val' : 35, 'text' : 'Jumlah Keluarga Menurut Kepemilikan Hewan Ternak'},
-        {'val' : 36, 'text' : 'Jumlah Keluarga Menurut Kepemilikan Rekening Aktif'}
+        {'val' : '', 'text' : '---------'},
+        {'val' : 1, 'text' : 'Jumlah Keluarga Berdasarkan Status Penguasaan Bangunan Tempat Tinggal'},
+        {'val' : 2, 'text' : 'Jumlah Keluarga Berdasarkan Status Kepemilikan Lahan Tempat Tinggal'},
+        {'val' : 3, 'text' : 'Jumlah Keluarga Berdasarkan Jenis Lantai Bangunan Terluas'},
+        {'val' : 4, 'text' : 'Jumlah Keluarga Berdasarkan Jenis Dinding Bangunan Terluas'},
+        {'val' : 5, 'text' : 'Jumlah Keluarga Berdasarkan Jenis Atap Bangunan Terluas'},
+        {'val' : 6, 'text' : 'Jumlah Keluarga Berdasarkan Ketersedian ventilasi udara (jendela)'},
+        {'val' : 7, 'text' : 'Jumlah Keluarga Berdasarkan Sumber Penerangan Utama'},
+        {'val' : 8, 'text' : 'Jumlah Keluarga Berdasarkan Ketersedian Tempat Pembuangan Sampah'},
+        {'val' : 9, 'text' : 'Jumlah Keluarga Berdasarkan Sumber Air Minum Utama'},
+        {'val' : 10, 'text' : 'Jumlah Keluarga Berdasarkan Kepemilikan Tanah/Lahan Pertanian'},
+        {'val' : 11, 'text' : 'Jumlah Keluarga Berdasarkan Luas Lahan Pertanian'},
+        {'val' : 12, 'text' : 'Jumlah Keluarga Berdasarkan Kepemilikan Hewan Ternak'}
     ]
 
     return opts
