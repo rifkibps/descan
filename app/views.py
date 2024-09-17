@@ -13,158 +13,27 @@ from django.db.models.functions import Length
 import json
 from django.shortcuts import get_object_or_404, redirect
 
+
+
 # Create your views here.
 class DashboardClassView(LoginRequiredMixin, View):
     def get(self, request):
-        families = models.FamiliesModels.objects.all().count()
-        populations = models.PopulationsModels.objects.filter(r505__in = ['1', '4'])
-        pop_counter = populations.count()
-        disability = populations.filter(
-            Q(r520a = '1') |
-            Q(r520b = '1') |
-            Q(r520c = '1') |
-            Q(r520d = '1') |
-            Q(r520e = '1') |
-            Q(r520f = '1') |
-            Q(r520g = '1') |
-            Q(r520h = '1') 
-        ).count()
-        labor_percentage = helpers.labor_participation(populations.all())
+
+        
+        dashboard_population = helpers.get_dashboard_population()
+        dashboard_family = helpers.get_dashboard_family()
 
         context = {
             'title' : 'Halaman Dashboard',
-            'families' : families,
-            'populations' : pop_counter,
-            'disability' : disability,
-            'labor_percentage' : labor_percentage,
+            # 'families' : families,
+            # 'populations' : pop_counter,
+            # 'disability' : disability,
+            # 'labor_percentage' : labor_percentage,
             # 'welfare_recips' : welfare_recips,
             # 'dashboard' : dashboard,
-            # 'dashboard_table' : dashboard_table
+            'dashboard_population' : dashboard_population,
+            'dashboard_family' : dashboard_family
         }
-
-        # welfare_recips = helpers.count_of_welfare_recips().count()
-        
-        # dashboard = models.FamiliesModels.objects.aggregate(
-        #             r501a =Count('r501a', filter=Q(r501a='1')),
-        #             r501b =Count('r501b', filter=Q(r501b='1')),
-        #             r501c =Count('r501c', filter=Q(r501c='1')),
-        #             r501d =Count('r501d', filter=Q(r501d='1')),
-        #             r501e =Count('r501e', filter=Q(r501e='1')),
-        #             r501f =Count('r501f', filter=Q(r501f='1')),
-        #             r501g =Count('r501g', filter=Q(r501g='1')),
-        #         )
-        
-        # for key, val in dashboard.items():
-        #     dashboard[key] = round(val/families*100)
-
-
-        # #r415
-        # r415 = models.PopulationsModels.r415.field.choices
-        # model_r415 = models.PopulationsModels.objects.filter(r409 = '1').values('r415').annotate(count=Count('r415')).order_by('-count').first()
-        # model_r415['name'] = next((d[1] for d in r415 if d[0] == model_r415['r415'])) if model_r415['count'] != 0 else '-'
-
-
-        # #r301a
-        # r301a = models.FamiliesModels.r301a.field.choices
-        # model_r301a = models.FamiliesModels.objects.values('r301a').annotate(count=Count('r301a')).order_by('-count').first()
-        # model_r301a['name'] = next((d[1] for d in r301a if d[0] == model_r301a['r301a'])) if model_r301a['count'] != 0 else '-'
-
-        # #r302
-        # model_r302 = models.FamiliesModels.objects.aggregate(avg=Avg('r302'))
-
-        # #r303
-        # r303 = models.FamiliesModels.r303.field.choices
-        # model_r303 = models.FamiliesModels.objects.values('r303').annotate(count=Count('r303')).order_by('-count').first()
-        # model_r303['name'] = next((d[1] for d in r303 if d[0] == model_r303['r303'])) if model_r303['count'] != 0 else '-'
-
-        
-
-        # #r304
-        # r304 = models.FamiliesModels.r304.field.choices
-        # model_r304 = models.FamiliesModels.objects.values('r304').annotate(count=Count('r304')).order_by('-count').first()
-        # model_r304['name'] = next((d[1] for d in r304 if d[0] == model_r304['r304'])) if model_r304['count'] != 0 else '-'
-
-        
-
-        # #r305
-        # r305 = models.FamiliesModels.r305.field.choices
-        # model_r305 = models.FamiliesModels.objects.values('r305').annotate(count=Count('r305')).order_by('-count').first()
-        # model_r305['name'] = next((d[1] for d in r305 if d[0] == model_r305['r305'])) if model_r305['count'] != 0 else '-'
-        
-        # #r306a
-        # r306a = models.FamiliesModels.r306a.field.choices
-        # model_r306a = models.FamiliesModels.objects.values('r306a').annotate(count=Count('r306a')).order_by('-count').first()
-        # model_r306a['name'] = next((d[1] for d in r306a if d[0] == model_r306a['r306a'])) if model_r306a['count'] != 0 else '-'
-
-        # #r307a
-        # r307a = models.FamiliesModels.r307a.field.choices
-        # model_r307a = models.FamiliesModels.objects.values('r307a').annotate(count=Count('r307a')).order_by('-count').first()
-        # model_r307a['name'] = next((d[1] for d in r307a if d[0] == model_r307a['r307a'])) if model_r307a['count'] != 0 else '-'
-
-        # #r307b
-        # r307b = models.FamiliesModels.r307b.field.choices
-        # model_r307b = models.FamiliesModels.objects.values('r307b').annotate(count=Count('r307b')).order_by('-count').first()
-        # model_r307b['name'] = next((d[1] for d in r307b if d[0] == model_r307b['r307b'])) if model_r307b['count'] != 0 else '-'
-
-        # #r308
-        # r308 = models.FamiliesModels.r308.field.choices
-        # model_r308 = models.FamiliesModels.objects.values('r308').annotate(count=Count('r308')).order_by('-count').first()
-        # model_r308['name'] = next((d[1] for d in r308 if d[0] == model_r308['r308'])) if model_r308['count'] != 0 else '-'
-
-        # dashboard_table = [
-        #     {
-        #         'indicator' : 'Sebagian besar Pendidikan Tertinggi KRT di Desa Banggai',
-        #         'value' : f'{model_r301a["name"]}',
-        #         'count' : f'{model_r301a["count"]}'
-        #     },
-        #     {
-        #         'indicator' : 'Sebagian besar Status Kepemilikan Bangunan Tempat Tinggal di Desa Banggai',
-        #         'value' : f'{model_r415["name"]}',
-        #         'count' : f'{model_r415["count"]}'
-        #     },
-        #     {
-        #         'indicator' : 'Rata-rata Luas Lantai Bangunan Tempat Tinggal di Desa Banggai',
-        #         'value' : f'{model_r302["avg"]} M2',
-        #         'count' : '-'
-        #     },
-        #     {
-        #         'indicator' : 'Sebagian besar Jenis Lantai Bangunan Tempat Tinggal Terluas di Desa Banggai',
-        #         'value' : f'{model_r303["name"]}',
-        #         'count' : f'{model_r303["count"]}'
-        #     },
-        #     {
-        #         'indicator' : 'Sebagian besar Jenis Dinding Tempat Tinggal Terluas Keluarga di Desa Banggai',
-        #         'value' : f'{model_r304["name"]}',
-        #         'count' : f'{model_r304["count"]}'
-        #     },
-        #     {
-        #         'indicator' : 'Sebagian besar Jenis Atap Tempat Tinggal Terluas Keluarga di Desa Banggai',
-        #         'value' : f'{model_r305["name"]}',
-        #         'count' : f'{model_r305["count"]}'
-        #     },
-        #     {
-        #         'indicator' : 'Sebagian besar Sumber Air Minum Utama Keluarga di Desa Banggai',
-        #         'value' : f'{model_r306a["name"]}',
-        #         'count' : f'{model_r306a["count"]}'
-        #     },
-        #     {
-        #         'indicator' : 'Sebagian besar Sumber Penerangan Utama di Desa Banggai',
-        #         'value' : f'{model_r307a["name"]}',
-        #         'count' : f'{model_r307a["count"]}'
-        #     },
-        #     {
-        #         'indicator' : 'Sebagian besar Daya Listrik yang Terpasang di Desa Banggai',
-        #         'value' : f'{model_r307b["name"]}',
-        #         'count' : f'{model_r307b["count"]}'
-        #     },
-        #     {
-        #         'indicator' : 'Sebagian besar Bahan Bakar untuk Memasak di Desa Banggai',
-        #         'value' : f'{model_r308["name"]}',
-        #         'count' : f'{model_r308["count"]}'
-        #     },
-        # ]
-  
-
 
 
         return render(request, 'app/dashboard/dashboard.html', context)
