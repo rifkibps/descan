@@ -31,196 +31,80 @@
 <section class="section">
 
     <div class="row mb-5">
-        <div class="col-md-6">
+        <div class="col-md-12">
             <div class="card">
-                <div class="card-header d-flex justify-content-between align-items-center">
-                    <h4 class="card-title">Filter Wilayah</h4>
-                    <div class="d-flex ">
-                        <i data-feather="download"></i>
-                    </div>
+                <div class="card-header">
+                    <h4 class="card-title">Pilih Tabulasi Penduduk</h4>
                 </div>
                 <div class="card-body px-4 pb-4">
                     <div class="row">
-                        <div class="col-3">Filter Provinsi</div>
+                        <div class="col-3">Provinsi</div>
                         <div class="col-9">
-                            <div class="form-group" style="width:400px!important">
-                                <select class="choices form-select" >
-                                    <option value="romboid">Sulawesi Tenggara</option>
-                                </select>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-3">Filter Kabupaten/Kota</div>
-                        <div class="col-9">
-                            <div class="form-group" style="width:400px!important">
-                                <select class="choices form-select" >
-                                    <option value="romboid">Kabupaten Muna</option>
-                                </select>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-3">Filter Kecamatan</div>
-                        <div class="col-9">
-                            <div class="form-group" style="width:400px!important">
-                                <select class="choices form-select" >
-                                    <option value="romboid">Duruka</option>
-                                </select>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-3">Filter Desa/Kelurahan</div>
-                        <div class="col-9">
-                            <div class="form-group" style="width:400px!important">
-                                <select class="choices form-select">
-                                    <option value="romboid">Banggai</option>
-                                </select>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-3">Filter SLS/Non SLS</div>
-                        <div class="col-9">
-                            <div class="form-group" style="width:400px!important">
-                                <select class="choices form-select">
-                                    <option value="romboid">RT 001 RW 001</option>
-                                </select>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="col-md-6">
-            <div class="card">
-                <div class="card-header d-flex justify-content-between align-items-center">
-                    <h4 class="card-title">Filter Karakteristik Keluarga</h4>
-                    <div class="d-flex ">
-                        <i data-feather="download"></i>
-                    </div>
-                </div>
-                <div class="card-body px-4 pb-4">
-                    <div class="row">
-                        <div class="col-5">Pendidikan KRT</div>
-                        <div class="col-7">
-                            <div class="form-group" style="width:400px!important">
-                                <select class="choices form-select">
-                                    <option>----</option>
-                                    {% for edu_level in education_levels %}
-                                        <option value="{{edu_level.0}}">{{edu_level.1}}</option>
+                            <div class="form-group">
+                                <select class="form-select" id="id_provinsi" onchange="pushAdmFilter(this)">
+                                    <option value="" selected="selected">---------</option>
+                                    {% for prov_reg in province_regions %}
+                                        <option value="{{prov_reg.reg_code}}" data-code="{{prov_reg.reg_code}}">[{{prov_reg.reg_code}}]&ensp;{{prov_reg.reg_name}}</option>
                                     {% endfor %}
                                 </select>
                             </div>
                         </div>
                     </div>
                     <div class="row">
-                        <div class="col-5">Status Kepemilikan Bangunan</div>
-                        <div class="col-7">
-                            <div class="form-group" style="width:400px!important">
-                                <select class="choices form-select" >
-                                    <option>----</option>
-                                    {% for state in home_ownership_state %}
-                                        <option value="{{state.0}}">{{state.1}}</option>
+                        <div class="col-3">Kabupaten/Kota</div>
+                        <div class="col-9">
+                            <div class="form-group" >
+                                <select class="form-select" id="id_kabkot" onchange="pushAdmFilter(this)">
+                                    <option value="" selected="selected">---------</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-3">Kecamatan</div>
+                        <div class="col-9">
+                            <div class="form-group" >
+                                <select class="form-select" id="id_kecamatan" onchange="pushAdmFilter(this)">
+                                    <option value="" selected="selected">---------</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-3">Desa/Kelurahan</div>
+                        <div class="col-9">
+                            <div class="form-group" >
+                                <select class="form-select" id="id_desa" onchange="pushAdmFilter(this)">
+                                    <option value="" selected="selected">---------</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-3">SLS/Non SLS</div>
+                        <div class="col-9">
+                            <div class="form-group" >
+                                <select class="form-select" id="id_sls">
+                                    <option value="" selected="selected">---------</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col-3">Pilih Tabulasi Penduduk <strong class="text-danger">*</strong></div>
+                        <div class="col-9">
+                            <div class="form-group" >
+                                <select class="form-select" id="tabulation_req">
+                                    {% for dt in tabulations %}
+                                    <option value="{{dt.val}}">{{dt.text}}</option>
                                     {% endfor %}
                                 </select>
                             </div>
                         </div>
                     </div>
-                    <div class="row">
-                        <div class="col-5">Kepemilikan Aset</div>
-                        <div class="col-7">
-                            <div class="form-group" style="width:400px!important">
-                                <select class="choices form-select" >
-                                    <option value="romboid">Rumah</option>
-                                </select>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-5">Penerima Program Bantuan</div>
-                        <div class="col-7">
-                            <div class="form-group" style="width:400px!important">
-                                <select class="choices form-select" >
-                                    <option value="romboid">BLT</option>
-                                </select>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-5">Pilih Tabulasi</div>
-                        <div class="col-7">
-                            <div class="form-group" style="width:400px!important">
-                                <select class="choices form-select" onchange="tabulationPush(this)">
-                                    {% for tabulation in tabulations %}
-                                        <option value="{{tabulation.val}}">{{tabulation.text}}</option>
-                                    {% endfor %}
-                                </select>
-                            </div>
-                        </div>
-                    </div>
-                   
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <div class="row mb-5">
-        <div class="col-12 col-md-3">
-            <div class="card bg-primary">
-                <div class="card-body p-0">
-                    <div class="d-flex flex-column">
-                        <div class='px-3 py-3' style="height:170px !important">
-                            <h4 class='text-white'>Jumlah Penduduk</h4>
-                            <br>
-                            <div class="card-body px-0 d-flex justify-content-start">
-                                <h2 class="text-white">{{populations}} <span style="font-size:25px">Penduduk</span></h2>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="col-12 col-md-3">
-            <div class="card bg-primary">
-                <div class="card-body p-0">
-                    <div class="d-flex flex-column">
-                        <div class="px-3 py-3" style="height:170px !important">
-                            <h4 class="text-white">Jumlah Penduduk Bekerja/Berusaha</h4>
-                            <div class="card-body px-0 d-flex justify-content-start">
-                                <h2 class="text-white">{{labor_force}} <span style="font-size:25px">Penduduk</span></h2>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div class="col-12 col-md-3">
-            <div class="card bg-primary">
-                <div class="card-body p-0">
-                    <div class="d-flex flex-column">
-                        <div class='px-3 py-3' style="height:170px !important">
-                            <h4 class='text-white'>Jumlah Penduduk dengan Kepemilikan Jaminan Kesehatan</h4>
-                            <div class="card-body px-0 d-flex justify-content-start">
-                                <h2 class="text-white">{{jamkes}} <span style="font-size:25px">Penduduk</span></h2> 
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="col-12 col-md-3">
-            <div class="card bg-primary">
-                <div class="card-body p-0">
-                    <div class="d-flex flex-column">
-                        <div class='px-3 py-3' style="height:170px !important">
-                            <h4 class='text-white'>Jumlah Penduduk dengan Keluhan Kesehatan Kronis</h4>
-                            <div class="card-body px-0 d-flex justify-content-start">
-                                <h2 class="text-white">{{penyakit_kronis}} <span style="font-size:25px">Penduduk</span></h2> 
-                            </div>
-                        </div>
+                    <div class="d-flex justify-content-end">
+                        <button class="btn btn-danger" onclick="resetData()">Reset Data</button>&ensp;
+                        <button class="btn btn-primary" onclick="tabulationPush(this)">Tabulasi Data</button>
                     </div>
                 </div>
             </div>
@@ -236,10 +120,9 @@
                         <i data-feather="download"></i>
                     </div>
                 </div>
-                <div class="card-body px-3 pb-0">
+                <div class="card-body px-3 mb-4">
                     <div class="table-responsive">
-                        <table class='table mb-0' id="tabulations-table">
-                           
+                        <table class="table table-hover mb-0 w-100" id="tabulations-table">
                         </table>
                     </div>
                 </div>
@@ -255,9 +138,49 @@
 <script src="{% static 'app-design/assets/vendors/choices.js/choices.min.js' %}"></script>
 
 <script>
+    var adm_code = ''
+
+    $('#id_provinsi').on('change', function(){
+        $('#id_kabkot').val('')
+        $('#id_kecamatan').val('')
+        $('#id_desa').val('')
+        $('#id_sls').val('')
+        get_region_adm('prov', $(this).val(), '#id_kabkot')
+    })
+
+    $('#id_kabkot').on('change', function(){
+        $('#id_kecamatan').val('')
+        $('#id_desa').val('')
+        $('#id_sls').val('')
+        get_region_adm('kabkot', $(this).val(), '#id_kecamatan')
+    })
+
+    $('#id_kecamatan').on('change', function(){
+        $('#id_desa').val('')
+        $('#id_sls').val('')
+        get_region_adm('kec', $(this).val(), '#id_desa')
+    })
+
+    $('#id_desa').on('change', function(){
+        $('#id_sls').val('')
+        get_region_adm('deskel', $('option:selected', this).attr('data-code'), '#id_sls')
+    })
+
+    function pushAdmFilter(e){
+        adm_code = $('option:selected', e).attr('data-code')
+        return adm_code
+    }
+
+    function resetData(){
+        $('.form-select').each(function(i, obj) {
+            $(this).val('')
+        });
+        return $('#tabulation-card').hide()
+    }
+
     function tabulationPush(e){
-        var title = $(e).text()
-        var val = $(e).val()
+        var title = $('#tabulation_req').text()
+        var val = $('#tabulation_req').val()
         if (val.length == 0){
             return $('#tabulation-card').hide()
         }
@@ -266,8 +189,10 @@
             url: '{% url "app:tab_populations_fetch" %}',
             type: "POST",
             dataType: "json",
-            data : {
+            data :  {
                 'tab_request' : val,
+                'adm_code' : adm_code,
+                'sls_code' : $('#id_sls').val()
             },
             headers: {
                 "X-Requested-With": "XMLHttpRequest",
@@ -281,7 +206,7 @@
                 }
             },
             error: (error) => {
-                
+                cosole.log(error)
             }
         });
 

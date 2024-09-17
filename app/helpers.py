@@ -179,20 +179,23 @@ def get_tab_families():
     ]
 
     return opts
+
+
 def get_tab_populations():
     opts = [
-        {'val' : None, 'text' : '----'},
-        {'val' : 1, 'text' : 'Jumlah Penduduk Menurut Jenis Kelamin dan Kelompok Umur' },
-        {'val' : 2, 'text' : 'Jumlah Penduduk Menurut Status Perkawinan' },
-        {'val' : 3, 'text' : 'Jumlah Penduduk Menurut Status Bekerja' },
-        {'val' : 4, 'text' : 'Rata-rata Jam Kerja Menurut Kelompok Umur' },
-        {'val' : 5, 'text' : 'Rata-rata Jam Kerja Menurut Jenis Kelamin' },
-        {'val' : 6, 'text' : 'Jumlah Penduduk >15 Tahun yang Bekerja Selama Seminggu yang lalu Menurut Status Pekerjaan Utama' },
-        {'val' : 7, 'text' : 'Jumlah penduduk menurut kepemilikan usaha sendiri/bersama' },
-        {'val' : 8, 'text' : 'Rata-rata Jumlah Pekerja yang Dibayar pada Usaha Utama' },
-        {'val' : 9, 'text' : 'Rata-rata Jumlah Pekerja yang Tidak Dibayar pada Usaha Utama' },
-        {'val' : 10, 'text' : 'Pengelompokan Omzet Usaha Utama Perbulan' },
-        {'val' : 11, 'text' : 'Jumlah Penduduk Menurut Keluhan Kesehatan Kronis/Menahun' },
+        {'val' : '', 'text' : '---------'},
+        {'val' : 1, 'text' : 'Jumlah Penduduk Menurut Hubungan dengan KK' },
+        {'val' : 2, 'text' : 'Jumlah Penduduk Menurut Keberadan Anggota Rumah Tangga' },
+        {'val' : 3, 'text' : 'Jumlah Penduduk Menurut Jenis Kelamin' },
+        {'val' : 4, 'text' : 'Jumlah Penduduk Menurut Status Perkawinan' },
+        {'val' : 5, 'text' : 'Jumlah Penduduk Menurut Agama' },
+        {'val' : 6, 'text' : 'Jumlah Penduduk Menurut Suku' },
+        {'val' : 7, 'text' : 'Jumlah Penduduk Menurut Kegiatan Utama' },
+        {'val' : 8, 'text' : 'Jumlah Penduduk Menurut Lapangan Usaha' },
+        {'val' : 9, 'text' : 'Jumlah Penduduk Menurut Partisipasi Sekolah' },
+        {'val' : 10, 'text' : 'Jumlah Penduduk Menurut Pendidikan Tinggi yang Ditamatkan' },
+        {'val' : 11, 'text' : 'Jumlah Penduduk Menurut Jaminan Kesehatan' },
+        {'val' : 12, 'text' : 'Jumlah Penduduk Menurut Keterangan Disabilitas' }
     ]
 
     return opts

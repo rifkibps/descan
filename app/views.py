@@ -173,23 +173,9 @@ class TabulationsFamiliesClassView(LoginRequiredMixin, View):
     
     def get(self, request):
 
-        # families = models.FamiliesModels.objects.count()
-        # families_electricity = models.FamiliesModels.objects.filter(r307a__in =['1', '2']).count()
-        # welfare_recips = helpers.count_of_welfare_recips().count()
-        # sanition_family = models.FamiliesModels.objects.filter(r309a = '1').count()
-
-        # education_levels = models.PopulationsModels.r415.field.choices
-        # home_ownership_state = models.FamiliesModels.r301a.field.choices
-
         tabulations = helpers.get_tab_families()
         context = {
             'title' : 'Tabulasi Data Keluarga',
-            # 'families' : families,
-            # 'families_electricity' : families_electricity,
-            # 'sanition_family' : sanition_family,
-            # 'welfare_recips' : welfare_recips,
-            # 'education_levels' : education_levels,
-            # 'home_ownership_state' : home_ownership_state,
             'tabulations' : tabulations,
             'province_regions' : models.RegionAdministrativeModels.objects.annotate(text_len=Length('reg_code')).filter(text_len=2).order_by('reg_code')
         }
@@ -243,6 +229,7 @@ class TabulationsFamiliesFetchClassView(LoginRequiredMixin, View):
                         data
                     )
                     return JsonResponse({"status": 'success', 'content' : data_tabs }, status=200)
+                
                 elif tab_request == 2:
                     model = model.aggregate(
                         section1 = Count('r302', filter=Q(r302='1')),
@@ -485,31 +472,13 @@ class TabulationsFamiliesFetchClassView(LoginRequiredMixin, View):
 class TabulationsPopulationsClassView(LoginRequiredMixin, View):
     
     def get(self, request):
-
         populations = models.PopulationsModels.objects.all().count()
-        # labor_force = models.PopulationsModels.objects.filter(
-        #     Q(r407__gte = 15) & Q(r407__lte = 64) 
-        # ).filter(
-        #     (Q(r416a = 1) & ~Q(r416b = 0)) |
-        #     (Q(r420a = 1) & ~Q(r422_23 = 0))
-        # ).count()
-
-        # jamkes = models.PopulationsModels.objects.filter(r431a__in = ['1', '2', '4', '8']).count()
-        # penyakit_kronis = models.PopulationsModels.objects.filter(~Q(r430 = '01')).count()
-
-        education_levels = models.PopulationsModels.r518.field.choices
-        home_ownership_state = models.FamiliesModels.r301.field.choices
-
-        # tabulations = helpers.get_tab_populations()
+        tabulations = helpers.get_tab_populations()
         context = {
             'title' : 'Tabulasi Data Penduduk',
             'populations' : populations,
-            # 'labor_force' : labor_force,
-            # 'jamkes' : jamkes,
-            # 'penyakit_kronis': penyakit_kronis,
-            'education_levels' : education_levels,
-            'home_ownership_state' : home_ownership_state,
-            # 'tabulations' : tabulations
+            'tabulations' : tabulations,
+            'province_regions' : models.RegionAdministrativeModels.objects.annotate(text_len=Length('reg_code')).filter(text_len=2).order_by('reg_code')
         }
         return render(request, 'app/tabulasi/tabulasi-penduduk.html', context)
 
@@ -519,108 +488,294 @@ class TabulationsPopulationsFetchClassView(LoginRequiredMixin, View):
         is_ajax = request.headers.get('X-Requested-With') == 'XMLHttpRequest'
         if is_ajax:
             if request.method == 'POST':
+
+                tab_request = request.POST.get('tab_request')
+                if tab_request is None:
+                    return JsonResponse({"status": 'failed'}, status=400)
+                
+                tab_request = int(tab_request)
+                adm_code = request.POST.get('adm_code')
+                sls_code = request.POST.get('sls_code')
+
                 tabs = helpers.get_tab_populations()
-                tab_request = int(request.POST.get('tab_request'))
-                check_tab = next((d['text'] for (index, d) in enumerate(tabs) if d['val'] == tab_request), None)
+                check_tab = next((d['text'] for (index, d) in enumerate(tabs) if d['val'] == int(tab_request)), None)
                 if check_tab is None:
                     return JsonResponse({"status": 'failed'}, status=400)
                 
+                model = models.PopulationsModels.objects
+                if adm_code:
+                    model = model.filter(family_id__r104__reg_code__icontains = adm_code)
+                if sls_code:
+                    model = model.filter(family_id__r105__reg_sls_code__icontains = sls_code)
+
                 data_tabs = {}
                 if tab_request == 1:
-                    pass
+                    model = model.aggregate(
+                        section1 = Count('r504', filter=Q(r504='1')),
+                        section2 = Count('r504', filter=Q(r504='2')),
+                        section3 = Count('r504', filter=Q(r504='3')),
+                        section4 = Count('r504', filter=Q(r504='4')),
+                        section5 = Count('r504', filter=Q(r504='5')),
+                        section6 = Count('r504', filter=Q(r504='6')),
+                        section7 = Count('r504', filter=Q(r504='7'))
+                    )
+                    model = list(model.values())
+
+                    r504 = models.PopulationsModels.r504.field.choices
+                    data = [[(idx+1, 'text-center'), (dt[1], 'text-left'), (model[idx], 'text-center')] for idx, dt in enumerate(r504)]
+                        
+                    data_tabs['title'] = check_tab
+                    data_tabs['content_table'] = helpers.generate_table(
+                        [{'name':'No', 'class' : 'text-center'}, {'name':'Hubungan dengan Kepala Keluarga', 'class' : ''}, {'name':'Jumlah Penduduk', 'class' : 'text-center'}],
+                        data
+                    )
+                    return JsonResponse({"status": 'success', 'content' : data_tabs }, status=200)
+                
                 elif tab_request == 2:
-                    r408 = models.PopulationsModels.r408.field.choices
-                    model = models.PopulationsModels.objects.aggregate(
-                        section1 =Count('r408', filter=Q(r408='1')),
-                        section2 =Count('r408', filter=Q(r408='2')),
-                        section3 =Count('r408', filter=Q(r408='3')),
-                        section4 =Count('r408', filter=Q(r408='4')),
+                    model = model.aggregate(
+                        section1 = Count('r505', filter=Q(r505='1')),
+                        section2 = Count('r505', filter=Q(r505='2')),
+                        section3 = Count('r505', filter=Q(r505='3')),
+                        section4 = Count('r505', filter=Q(r505='4')),
+                        section5 = Count('r505', filter=Q(r505='5'))
                     )
                     model = list(model.values())
-                    data = [[(idx+1, 'text-center'), (dt[1], 'text-left'), (model[idx], 'text-center')] for idx, dt in enumerate(r408)]
-                    
+
+                    r505 = models.PopulationsModels.r505.field.choices
+                    data = [[(idx+1, 'text-center'), (dt[1], 'text-left'), (model[idx], 'text-center')] for idx, dt in enumerate(r505)]
+                        
                     data_tabs['title'] = check_tab
                     data_tabs['content_table'] = helpers.generate_table(
-                        [{'name':'No', 'class' : 'text-center'}, {'name':'Status Perkawinan', 'class' : ''}, {'name':'Jumlah Keluarga', 'class' : 'text-center'}],
+                        [{'name':'No', 'class' : 'text-center'}, {'name':'Keberadaan Anggota Rumah Tangga', 'class' : ''}, {'name':'Jumlah Penduduk', 'class' : 'text-center'}],
                         data
                     )
-
                     return JsonResponse({"status": 'success', 'content' : data_tabs }, status=200)
+                
                 elif tab_request == 3:
-                    r416a = models.PopulationsModels.r416a.field.choices
-                    model = models.PopulationsModels.objects.aggregate(
-                        section1 =Count('r416a', filter=Q(r416a='1')),
-                        section2 =Count('r416a', filter=Q(r416a='2'))
+                    model = model.aggregate(
+                        section1 = Count('r506', filter=Q(r506='1')),
+                        section2 = Count('r506', filter=Q(r506='2'))
                     )
                     model = list(model.values())
-                    data = [[(idx+1, 'text-center'), (dt[1], 'text-left'), (model[idx], 'text-center')] for idx, dt in enumerate(r416a)]
-                    
-                    data_tabs['title'] = check_tab
-                    data_tabs['content_table'] = helpers.generate_table(
-                        [{'name':'No', 'class' : 'text-center'}, {'name':'Status Bekerja', 'class' : ''}, {'name':'Jumlah Keluarga', 'class' : 'text-center'}],
-                        data
-                    )
 
-                    return JsonResponse({"status": 'success', 'content' : data_tabs }, status=200)
-                elif tab_request == 7:
-                    r420a = models.PopulationsModels.r420a.field.choices
-                    model = models.PopulationsModels.objects.aggregate(
-                        section1 =Count('r420a', filter=Q(r420a='1')),
-                        section2 =Count('r420a', filter=Q(r420a='2'))
-                    )
-                    model = list(model.values())
-                    data = [[(idx+1, 'text-center'), (dt[1], 'text-left'), (model[idx], 'text-center')] for idx, dt in enumerate(r420a)]
-                    
+                    r506 = models.PopulationsModels.r506.field.choices
+                    data = [[(idx+1, 'text-center'), (dt[1], 'text-left'), (model[idx], 'text-center')] for idx, dt in enumerate(r506)]
+                        
                     data_tabs['title'] = check_tab
                     data_tabs['content_table'] = helpers.generate_table(
-                        [{'name':'No', 'class' : 'text-center'}, {'name':'Status Berusaha', 'class' : ''}, {'name':'Jumlah Keluarga', 'class' : 'text-center'}],
+                        [{'name':'No', 'class' : 'text-center'}, {'name':'Jenis Kelamin ART', 'class' : ''}, {'name':'Jumlah Penduduk', 'class' : 'text-center'}],
                         data
                     )
                     return JsonResponse({"status": 'success', 'content' : data_tabs }, status=200)
+                
                 elif tab_request == 4:
-                    pass
-                elif tab_request == 5:
-                    pass
-                elif tab_request == 6:
-                   pass
-                elif tab_request == 8:
-                    pass
-                elif tab_request == 9:
-                    pass
-                elif tab_request == 10:
-                   pass
-                elif tab_request == 11:
-                    r430 = models.PopulationsModels.r430.field.choices
-                    model = models.PopulationsModels.objects.aggregate(
-                        section1 =Count('r430', filter=Q(r430='1')),
-                        section2 =Count('r430', filter=Q(r430='2')),
-                        section3 =Count('r430', filter=Q(r430='3')),
-                        section4 =Count('r430', filter=Q(r430='4')),
-                        section5 =Count('r430', filter=Q(r430='5')),
-                        section6 =Count('r430', filter=Q(r430='6')),
-                        section7 =Count('r430', filter=Q(r430='7')),
-                        section8 =Count('r430', filter=Q(r430='8')),
-                        section9 =Count('r430', filter=Q(r430='9')),
-                        section10 =Count('r430', filter=Q(r430='10')),
-                        section11 =Count('r430', filter=Q(r430='11')),
-                        section12 =Count('r430', filter=Q(r430='12')),
-                        section13 =Count('r430', filter=Q(r430='13')),
-                        section14 =Count('r430', filter=Q(r430='14')),
-                        section15 =Count('r430', filter=Q(r430='15')),
-                        section16 =Count('r430', filter=Q(r430='16')),
-                        section17 =Count('r430', filter=Q(r430='17')),
-                        section18 =Count('r430', filter=Q(r430='18')),
+                    model = model.aggregate(
+                        section1 = Count('r510', filter=Q(r510='1')),
+                        section2 = Count('r510', filter=Q(r510='2')),
+                        section3 = Count('r510', filter=Q(r510='3')),
+                        section4 = Count('r510', filter=Q(r510='4'))
                     )
                     model = list(model.values())
-                    data = [[(idx+1, 'text-center'), (dt[1], 'text-left'), (model[idx], 'text-center')] for idx, dt in enumerate(r430)]
 
+                    r510 = models.PopulationsModels.r510.field.choices
+                    data = [[(idx+1, 'text-center'), (dt[1], 'text-left'), (model[idx], 'text-center')] for idx, dt in enumerate(r510)]
+                        
                     data_tabs['title'] = check_tab
                     data_tabs['content_table'] = helpers.generate_table(
-                        [{'name':'No', 'class' : 'text-center'}, {'name':'Keluhan Kesehatan Kronis/Menahun', 'class' : ''}, {'name':'Jumlah Keluarga', 'class' : 'text-center'}],
+                        [{'name':'No', 'class' : 'text-center'}, {'name':'Status Perkawinan ART', 'class' : ''}, {'name':'Jumlah Penduduk', 'class' : 'text-center'}],
+                        data
+                    )
+                    return JsonResponse({"status": 'success', 'content' : data_tabs }, status=200)
+                
+                elif tab_request == 5:
+                    model = model.aggregate(
+                        section1 = Count('r511', filter=Q(r511='1')),
+                        section2 = Count('r511', filter=Q(r511='2')),
+                        section3 = Count('r511', filter=Q(r511='3')),
+                        section4 = Count('r511', filter=Q(r511='4')),
+                        section5 = Count('r511', filter=Q(r511='5')),
+                        section6 = Count('r511', filter=Q(r511='6'))
+                    )
+                    model = list(model.values())
+
+                    r511 = models.PopulationsModels.r511.field.choices
+                    data = [[(idx+1, 'text-center'), (dt[1], 'text-left'), (model[idx], 'text-center')] for idx, dt in enumerate(r511)]
+                        
+                    data_tabs['title'] = check_tab
+                    data_tabs['content_table'] = helpers.generate_table(
+                        [{'name':'No', 'class' : 'text-center'}, {'name':'Agama', 'class' : ''}, {'name':'Jumlah Penduduk', 'class' : 'text-center'}],
+                        data
+                    )
+                    return JsonResponse({"status": 'success', 'content' : data_tabs }, status=200)
+                
+                elif tab_request == 6:
+                    model = model.aggregate(
+                        section1 = Count('r512', filter=Q(r512='1')),
+                        section2 = Count('r512', filter=Q(r512='2')),
+                    )
+                    model = list(model.values())
+
+                    r512 = models.PopulationsModels.r512.field.choices
+                    data = [[(idx+1, 'text-center'), (dt[1], 'text-left'), (model[idx], 'text-center')] for idx, dt in enumerate(r512)]
+                        
+                    data_tabs['title'] = check_tab
+                    data_tabs['content_table'] = helpers.generate_table(
+                        [{'name':'No', 'class' : 'text-center'}, {'name':'Suku', 'class' : ''}, {'name':'Jumlah Penduduk', 'class' : 'text-center'}],
+                        data
+                    )
+                    return JsonResponse({"status": 'success', 'content' : data_tabs }, status=200)
+                
+                elif tab_request == 7:
+                    model = model.aggregate(
+                        section1 = Count('r513', filter=Q(r513='1')),
+                        section2 = Count('r513', filter=Q(r513='2')),
+                        section3 = Count('r513', filter=Q(r513='3')),
+                        section4 = Count('r513', filter=Q(r513='4')),
+                        section5 = Count('r513', filter=Q(r513='5'))
+                    )
+                    model = list(model.values())
+
+                    r513 = models.PopulationsModels.r513.field.choices
+                    data = [[(idx+1, 'text-center'), (dt[1], 'text-left'), (model[idx], 'text-center')] for idx, dt in enumerate(r513)]
+                        
+                    data_tabs['title'] = check_tab
+                    data_tabs['content_table'] = helpers.generate_table(
+                        [{'name':'No', 'class' : 'text-center'}, {'name':'Kegiatan Utama ART', 'class' : ''}, {'name':'Jumlah Penduduk', 'class' : 'text-center'}],
+                        data
+                    )
+                    return JsonResponse({"status": 'success', 'content' : data_tabs }, status=200)
+                
+                elif tab_request == 8:
+                    model = model.aggregate(
+                        section1 = Count('r515', filter=Q(r515='01')),
+                        section2 = Count('r515', filter=Q(r515='02')),
+                        section3 = Count('r515', filter=Q(r515='03')),
+                        section4 = Count('r515', filter=Q(r515='04')),
+                        section5 = Count('r515', filter=Q(r515='05')),
+                        section6 = Count('r515', filter=Q(r515='06')),
+                        section7 = Count('r515', filter=Q(r515='07')),
+                        section8 = Count('r515', filter=Q(r515='08')),
+                        section9 = Count('r515', filter=Q(r515='09')),
+                        section10 = Count('r515', filter=Q(r515='10')),
+
+                        section11 = Count('r515', filter=Q(r515='11')),
+                        section12 = Count('r515', filter=Q(r515='12')),
+                        section13 = Count('r515', filter=Q(r515='13')),
+                        section14 = Count('r515', filter=Q(r515='14')),
+                        section15 = Count('r515', filter=Q(r515='15')),
+                        section16 = Count('r515', filter=Q(r515='16')),
+                        section17 = Count('r515', filter=Q(r515='17')),
+                        section18 = Count('r515', filter=Q(r515='18')),
+                        section19 = Count('r515', filter=Q(r515='19')),
+                        section20 = Count('r515', filter=Q(r515='20')),
+
+                        section21 = Count('r515', filter=Q(r515='21')),
+                        section22 = Count('r515', filter=Q(r515='22')),
+                        section23 = Count('r515', filter=Q(r515='23')),
+                        section24 = Count('r515', filter=Q(r515='24')),
+                        section25 = Count('r515', filter=Q(r515='25')),
+                        section26 = Count('r515', filter=Q(r515='26')),
+                    )
+                    model = list(model.values())
+
+                    r515 = models.PopulationsModels.r515.field.choices
+                    data = [[(idx+1, 'text-center'), (dt[1], 'text-left'), (model[idx], 'text-center')] for idx, dt in enumerate(r515)]
+                        
+                    data_tabs['title'] = check_tab
+                    data_tabs['content_table'] = helpers.generate_table(
+                        [{'name':'No', 'class' : 'text-center'}, {'name':'Lapangan Usaha', 'class' : ''}, {'name':'Jumlah Penduduk', 'class' : 'text-center'}],
+                        data
+                    )
+                    return JsonResponse({"status": 'success', 'content' : data_tabs }, status=200)
+                
+                elif tab_request == 9:
+                    model = model.aggregate(
+                        section1 = Count('r517', filter=Q(r517='1')),
+                        section2 = Count('r517', filter=Q(r517='2')),
+                        section3 = Count('r517', filter=Q(r517='3'))
+                    )
+                    model = list(model.values())
+
+                    r517 = models.PopulationsModels.r517.field.choices
+                    data = [[(idx+1, 'text-center'), (dt[1], 'text-left'), (model[idx], 'text-center')] for idx, dt in enumerate(r517)]
+                        
+                    data_tabs['title'] = check_tab
+                    data_tabs['content_table'] = helpers.generate_table(
+                        [{'name':'No', 'class' : 'text-center'}, {'name':'Status Partisipasi Sekolah', 'class' : ''}, {'name':'Jumlah Penduduk', 'class' : 'text-center'}],
+                        data
+                    )
+                    return JsonResponse({"status": 'success', 'content' : data_tabs }, status=200)
+                
+                elif tab_request == 10:
+                    model = model.aggregate(
+                        section1 = Count('r518', filter=Q(r518='1')),
+                        section2 = Count('r518', filter=Q(r518='2')),
+                        section3 = Count('r518', filter=Q(r518='3')),
+                        section4 = Count('r518', filter=Q(r518='4')),
+                        section5 = Count('r518', filter=Q(r518='5')),
+                        section6 = Count('r518', filter=Q(r518='6'))
+                    )
+                    model = list(model.values())
+
+                    r518 = models.PopulationsModels.r518.field.choices
+                    data = [[(idx+1, 'text-center'), (dt[1], 'text-left'), (model[idx], 'text-center')] for idx, dt in enumerate(r518)]
+                        
+                    data_tabs['title'] = check_tab
+                    data_tabs['content_table'] = helpers.generate_table(
+                        [{'name':'No', 'class' : 'text-center'}, {'name':'Jenjang Pendidikan yang Ditamatkan', 'class' : ''}, {'name':'Jumlah Penduduk', 'class' : 'text-center'}],
                         data
                     )
                     return JsonResponse({"status": 'success', 'content' : data_tabs }, status=200)
 
+                elif tab_request == 11:
+                    model = model.aggregate(
+                        section1 = Count('r519', filter=Q(r519='0')),
+                        section2 = Count('r519', filter=Q(r519='1')),
+                        section3 = Count('r519', filter=Q(r519='2')),
+                        section4 = Count('r519', filter=Q(r519='3')),
+                    )
+                    model = list(model.values())
+
+                    r519 = models.PopulationsModels.r519.field.choices
+                    data = [[(idx+1, 'text-center'), (dt[1], 'text-left'), (model[idx], 'text-center')] for idx, dt in enumerate(r519)]
+                        
+                    data_tabs['title'] = check_tab
+                    data_tabs['content_table'] = helpers.generate_table(
+                        [{'name':'No', 'class' : 'text-center'}, {'name':'Jaminan Kesehatan', 'class' : ''}, {'name':'Jumlah Penduduk', 'class' : 'text-center'}],
+                        data
+                    )
+                    return JsonResponse({"status": 'success', 'content' : data_tabs }, status=200)
+                
+                elif tab_request == 12:
+                    model = model.aggregate(
+                        section1 = Count('r520a', filter=Q(r520a='1')),
+                        section2 = Count('r520b', filter=Q(r520b='1')),
+                        section3 = Count('r520c', filter=Q(r520c='1')),
+                        section4 = Count('r520d', filter=Q(r520d='1')),
+                        section5 = Count('r520e', filter=Q(r520e='1')),
+                        section6 = Count('r520f', filter=Q(r520f='1')),
+                        section7 = Count('r520g', filter=Q(r520g='1')),
+                        section8 = Count('r520h', filter=Q(r520h='1'))
+                    )
+                    model = list(model.values())
+                    data = [
+                        [(1, 'text-center'), ('Tunanetra/Buta', 'text-left'), (model[0], 'text-center')],
+                        [(2, 'text-center'), ('Tunarungu/Tuli', 'text-left'), (model[1], 'text-center')],
+                        [(3, 'text-center'), ('Tunawicara/Bisu', 'text-left'), (model[2], 'text-center')],
+                        [(4, 'text-center'), ('Tunarungu-Wicara/Tuli-Bisu', 'text-left'), (model[3], 'text-center')],
+                        [(5, 'text-center'), ('Tunadaksa/Cacat Tubuh', 'text-left'), (model[4], 'text-center')],
+                        [(6, 'text-center'), ('Tunagrahita', 'text-left'), (model[5], 'text-center')],
+                        [(7, 'text-center'), ('Tunalaras', 'text-left'), (model[6], 'text-center')],
+                        [(8, 'text-center'), ('Cacat Ganda', 'text-left'), (model[7], 'text-center')],
+                    ]
+
+                    data_tabs['title'] = check_tab
+                    data_tabs['content_table'] = helpers.generate_table(
+                        [{'name':'No', 'class' : 'text-center'}, {'name':'Keterangan Disabilitas', 'class' : ''}, {'name':'Jumlah Penduduk', 'class' : 'text-center'}],
+                        data
+                    )
+                    return JsonResponse({"status": 'success', 'content' : data_tabs }, status=200)
+                
         return JsonResponse({'status': 'Invalid request'}, status=400)
 
 class ManajemenFamiliesClassView(LoginRequiredMixin, View):
