@@ -18,23 +18,15 @@ from django.shortcuts import get_object_or_404, redirect
 # Create your views here.
 class DashboardClassView(LoginRequiredMixin, View):
     def get(self, request):
-
         
         dashboard_population = helpers.get_dashboard_population()
         dashboard_family = helpers.get_dashboard_family()
-
+        
         context = {
             'title' : 'Halaman Dashboard',
-            # 'families' : families,
-            # 'populations' : pop_counter,
-            # 'disability' : disability,
-            # 'labor_percentage' : labor_percentage,
-            # 'welfare_recips' : welfare_recips,
-            # 'dashboard' : dashboard,
             'dashboard_population' : dashboard_population,
             'dashboard_family' : dashboard_family
         }
-
 
         return render(request, 'app/dashboard/dashboard.html', context)
 

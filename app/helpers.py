@@ -101,7 +101,6 @@ def get_dashboard_family():
 
     return dashboard_data
 
-
 def get_dashboard_population():
     populations = models.PopulationsModels.objects.all().count()
         
