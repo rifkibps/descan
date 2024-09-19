@@ -42,7 +42,7 @@ class OfficerModels(models.Model):
     role = models.CharField(max_length=1, blank=False, null=False, choices=roles, verbose_name="Role Petugas")
 
     def __str__(self):
-        return f"{self.id}. {self.name} ({self.role})"
+        return f"{self.id}. {self.name} ({self.get_role_display()})"
 
 class FamiliesModels(models.Model):
 

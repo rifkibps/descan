@@ -9,7 +9,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{{title}}</title>
     <link rel="stylesheet" href="{% static 'app-design/assets/css/bootstrap.css'%}">
-    <link rel="shortcut icon" href="assets/images/favicon.svg" type="image/x-icon">
+    <link rel="shortcut icon" href="{% static 'customs/assets/images/descan.png' %}" type="image/x-icon">
     <link rel="stylesheet" href="{% static 'app-design/assets/css/app.css'%} ">
 </head>
 
@@ -42,7 +42,7 @@
                                 <div class="form-group position-relative has-icon-left">
                                     <label for="{{ form.username.id_for_label }}">Username</label>
                                     <div class="position-relative">
-                                        {% render_field form.username class="form-control px-3" type="text" id="{{ form.username.id_for_label }}" required="required" placeholder="Enter username" %}
+                                        {% render_field form.username class="form-control px-5" type="text" id="{{ form.username.id_for_label }}" required="required" placeholder="Enter username" %}
                                         <div class="form-control-icon">
                                             <i data-feather="user"></i>
                                         </div>
@@ -54,7 +54,7 @@
                                         <label for="{{ form.username.id_for_password }}">Password</label>
                                     </div>
                                     <div class="position-relative">
-                                        {% render_field form.password class="form-control px-3" id="password" placeholder="Enter your password" %}
+                                        {% render_field form.password class="form-control px-5" id="password" placeholder="Enter your password" %}
                                         <div class="form-control-icon">
                                             <i data-feather="lock"></i>
                                         </div>
@@ -70,9 +70,9 @@
             </div>
         </div>
     </div>
-    <script src="{% static 'app-design/assets/js/main.js' %}"></script>
     <script src="{% static 'app-design/assets/js/app.js' %}"></script>
     <script src="{% static 'app-design/assets/js/feather-icons/feather.min.js' %}"></script>
+    <script src="{% static 'app-design/assets/js/main.js' %}"></script>
 </body>
 
 </html>
