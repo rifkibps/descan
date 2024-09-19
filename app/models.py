@@ -72,6 +72,8 @@ class FamiliesModels(models.Model):
     r205 = models.DateField(blank=False, null=False, verbose_name="Tanggal Pemeriksaan")
     r206 = models.CharField(max_length=1, blank=False, null=False, choices=r206_choices, verbose_name="Hasil Pencacahan")
 
+
+
     r301_choices = (
         ('1', 'Milik Sendiri'),
         ('2', 'Kontrak/Sewa'),
