@@ -9,7 +9,6 @@ from statistics import mean
 from operator import itemgetter
 
 
-
 def get_dashboard_family():
     families = models.FamiliesModels.objects.all().count()
 
@@ -423,5 +422,5 @@ def labor_participation(model):
         if dt.r513 in ['4', '5']:
             labors_work.append(dt)
 
-    labor_participation = round(len(labors_work) / len(labors) * 100)
+    labor_participation = round(len(labors_work) / len(labors) * 100) if len(labors_work) != 0 else 0
     return labor_participation

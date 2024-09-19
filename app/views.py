@@ -19,13 +19,31 @@ from django.shortcuts import get_object_or_404, redirect
 class DashboardClassView(LoginRequiredMixin, View):
     def get(self, request):
         
+        families = models.FamiliesModels.objects.count()
+        populations = models.PopulationsModels.objects.count()
+        disability = models.PopulationsModels.objects.filter(
+            Q(r520a = '1') |
+            Q(r520b = '1') |
+            Q(r520c = '1') |
+            Q(r520d = '1') |
+            Q(r520e = '1') |
+            Q(r520f = '1') |
+            Q(r520g = '1') |
+            Q(r520h = '1')
+        ).count()
+
+        labor_percentage = helpers.labor_participation(models.PopulationsModels.objects.filter(r505__in = ['1', '4']))
         dashboard_population = helpers.get_dashboard_population()
         dashboard_family = helpers.get_dashboard_family()
         
         context = {
             'title' : 'Halaman Dashboard',
             'dashboard_population' : dashboard_population,
-            'dashboard_family' : dashboard_family
+            'dashboard_family' : dashboard_family,
+            'families' : families,
+            'populations' : populations,
+            'disability' : disability,
+            'labor_percentage' : labor_percentage
         }
 
         return render(request, 'app/dashboard/dashboard.html', context)
