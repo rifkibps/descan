@@ -800,6 +800,8 @@ class ManajemenFamiliesFetchTableClassView(LoginRequiredMixin, View):
         data = []
 
         for obj in object_list:
+            class_state = f'bg-success' if obj.r206 == '1' else 'bg-danger'
+
             data.append(
             {
                 'no': [x for x in id_def_data if obj.id == x[1]][0][0],
@@ -808,6 +810,7 @@ class ManajemenFamiliesFetchTableClassView(LoginRequiredMixin, View):
                 'r109': obj.r109,
                 'r203' : obj.r203.strftime('%d-%m-%Y'),
                 'created_at' : obj.created_at.strftime('%d-%m-%Y'),
+                'r206' : f'<span class="badge {class_state}">{obj.get_r206_display()}</span>',
                 'actions': f'<a href="{reverse_lazy("app:mnj_families_edit")}?id={obj.id}" target="_blank" class="btn btn-sm icon btn-edit p-0" data-id="{obj.id}"><i class="mdi mdi-account-edit"></i></a>\
                 <button class="btn btn-sm icon btn-delete p-0" onclick="delete_keluarga({obj.id})" data-id="{obj.id}"><i class="mdi mdi-trash-can-outline"></i></button>'
             })
@@ -862,10 +865,18 @@ class ManajemenFamiliesEditClassView(LoginRequiredMixin, View):
                 data_art = json.loads(request.POST.get('form_art'))
                 art_form_colls = [int(dt) for dt in data_art[0]['art_id'] if len(dt) > 0]
 
-                art_remove = list(set(art_colls) - set(art_form_colls))
 
                 data_art = helpers.transform_data(data_art)
                 forms_errors = dict()
+
+                art_remove = list(set(art_colls) - set(art_form_colls))
+                data_remove = []
+                for id in art_remove:
+                    data = get_object_or_404(models.PopulationsModels, pk=id)
+                    if data.r504 == '1':
+                        forms_errors['general_errors'] = [f'ART dengan nama {data.r503} tidak dapat dihapus karena berstatus sebagai kepala keluarga.']
+                    else:
+                        data_remove.append(data)
 
                 for fl in ['provinsi', 'kabkot', 'kecamatan']:
                     if fl in data_families.keys():
@@ -920,6 +931,7 @@ class ManajemenFamiliesEditClassView(LoginRequiredMixin, View):
 class ManajemenFamiliesAddClassView(LoginRequiredMixin, View):
 
     def get(self, request):
+
         pencacah = models.OfficerModels.objects.filter(role = '1').all()
         pemeriksa = models.OfficerModels.objects.filter(role = '2').all()
         context = {
@@ -1259,26 +1271,19 @@ class ManajemenPopulationsDeleteClassView(LoginRequiredMixin, View):
 
                     model = get_object_or_404(models.PopulationsModels, pk = int(request.POST.get('pk')))
                     name = model.r503
-                    
-                    if model.r504 != '1':
 
-                        if model.family_id.r109 > 1:
-
-                            model_family = models.FamiliesModels.objects.filter(pk = model.family_id.pk).first()
-                            model_family.r109 = model_family.r109 - 1
-                            model.delete()
-                            model_family.save()
-                            return JsonResponse({'status' : 'success', 'message': f'Keluarga atas nama "{name}" berhasil dihapus.'})
+                    if model.r504 != '1' and model.family_id.r109 > 1:
+                        model_family = models.FamiliesModels.objects.filter(pk = model.family_id.pk).first()
+                        model_family.r109 = model_family.r109 - 1
+                        model.delete()
+                        model_family.save()
+                        return JsonResponse({'status' : 'success', 'message': f'Keluarga atas nama "{name}" berhasil dihapus.'})
                         
-                        return JsonResponse({'status': 'failed', 'message': 'Keluarga dengan jumlah ART 1 tidak dapat dihapus'})
-                    
-                    return JsonResponse({'status': 'failed', 'message': 'ART dengan status kepala keluarga tidak dapat dihapus'})
+                    return JsonResponse({'status': 'failed', 'message': 'ART dengan status kepala keluarga tidak dapat dihapus'}, status=400)
                 except:
-                    return JsonResponse({'status': 'failed', 'message': 'Terjadi kesalahan saat menghapus data penduduk'})
+                    return JsonResponse({'status': 'failed', 'message': 'Terjadi kesalahan saat menghapus data penduduk'}, status=400)
 
-
-
-        return JsonResponse({'status': 'Invalid request'}, status=400)
+        return JsonResponse({'status': 'failed', 'message' : 'Invalid request'}, status=400)
 
 
 

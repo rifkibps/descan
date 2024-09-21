@@ -326,7 +326,6 @@
 
     <div class="row mb-4">
         <div class="col-12">
-
             <div class="row">
                 <div class="col-4">
                     <label for="{{ form.r301.id_for_label }}">{{ form.r301.label }}</label>
@@ -459,6 +458,21 @@
 
             <div class="row">
                 <div class="col-4">
+                    <label for="{{ form.r309b.id_for_label }}">{{ form.r309b.label }}</label>
+                </div>
+                <div class="col-6 col-offset-2">
+                    <div class="form-group">
+                        <div class="position-relative">
+                            {% render_field form.r309b class="form-select px-3 form-family" id=form.r309b.id_for_label %}
+                            <div class="invalid-feedback" id="msg-{{ form.r309b.id_for_label }}">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-4">
                     <label for="{{ form.r310.id_for_label }}">{{ form.r310.label }}</label>
                 </div>
                 <div class="col-6 col-offset-2">
@@ -496,7 +510,7 @@
                             </div>
                         </div>
                     </div>
-                    <div class="row d-none">
+                    <div class="row {% if form.r401a.value != '1' %}d-none{% endif %}">
                         <div class="col-5">
                             <label for="{{ form.r401b.id_for_label }}">{{ form.r401b.label }} (M2)</label>
                         </div>
@@ -505,6 +519,20 @@
                                 <div class="position-relative">
                                     {% render_field form.r401b class="form-control px-3 form-family" id=form.r401b.id_for_label %}
                                     <div class="invalid-feedback" id="msg-{{ form.r401b.id_for_label }}">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row {% if form.r401a.value != '1' %}d-none{% endif %}">
+                        <div class="col-5">
+                            <label for="{{ form.r401c.id_for_label }}">{{ form.r401c.label }} (M2)</label>
+                        </div>
+                        <div class="col-6 col-offset-1">
+                            <div class="form-group">
+                                <div class="position-relative">
+                                    {% render_field form.r401c class="form-select px-3 form-family" id=form.r401c.id_for_label %}
+                                    <div class="invalid-feedback" id="msg-{{ form.r401c.id_for_label }}">
                                     </div>
                                 </div>
                             </div>
@@ -592,13 +620,30 @@
                     </div>
                 </div>
             </div>
-
         </div>
     </div>
 
     <div class="row mb-4">
         <div class="col-12">
-            <h4>Bab V. Keterangan Anggota Keluarga</h4>
+            <h4>Blok V. Catatan</h4>
+        </div>
+    </div>
+
+    <div class="row mb-5">
+        <div class="col-12">
+            <div class="form-group">
+                <div class="position-relative">
+                    {% render_field form.catatan class="form-control px-3 form-family" id=form.catatan.id_for_label placeholder="Catatan ..." %}
+                    <div class="invalid-feedback" id="msg-{{ form.catatan.id_for_label }}">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row mb-4">
+        <div class="col-12">
+            <h4>Blok VI. Keterangan Anggota Keluarga</h4>
         </div>
     </div>
 
@@ -1068,8 +1113,8 @@
 
     <div class="row my-3">
         <div class="col-12">
-            <a href="{% url 'app:mnj_families' %}" class="btn btn-danger btn-sm">Batal</a>
-            <button class="btn btn-primary btn-sm" onclick="checkSubmit()">Tambah Data</button>
+            <a href="{% url 'app:mnj_families' %}" class="btn btn-danger btn-sm">Batal</a>&ensp;
+            <button class="btn btn-primary btn-sm" onclick="checkSubmit()">Update Data</button>
         </div>
     </div>
 
@@ -1513,7 +1558,7 @@
     function removeRow(e){
 
         if ($('.no_art').length == 1){
-            return alert('Minimal keluarga harus memiliki satu anggota keluarga')
+            return alert('Keluarga harus memiliki memiliki satu anggota keluarga')
         }
         var current_row = $(e).parent().parent().parent()
         current_row.remove();
@@ -1540,14 +1585,17 @@
     })
 
     $('#{{form.r401a.id_for_label}}').on('change', function(){
-        var target = $('#{{ form.r401b.id_for_label }}')
-        if ($(this).val() == 1){
-            target.attr('required', 'required')
-            target.parent().parent().parent().parent().removeClass('d-none')
-        }else{
-            target.removeAttr('required')
-            target.parent().parent().parent().parent().addClass('d-none')
-        }
+        var target = [$('#{{ form.r401b.id_for_label }}'), $('#{{ form.r401c.id_for_label }}')]
+
+        target.forEach((obj) => {
+            if ($(this).val() == 1){
+                $(obj).attr('required', 'required')
+                $(obj).parent().parent().parent().parent().removeClass('d-none')
+            }else{
+                $(obj).removeAttr('required')
+                $(obj).parent().parent().parent().parent().addClass('d-none')
+            }
+        });
     })
 
     $('#{{form.r301.id_for_label}}').on('change', function(){
@@ -1732,9 +1780,14 @@
             },
             error: (response) => {
                 $('#message-respons').html('')
-                push_notif('Terjadi kesalahan saat menyimpan data', 'alert-danger', "#message-respons")
 
+                var general_msg = 'Terjadi kesalahan saat menyimpan data'
                 var errors = response["responseJSON"]["error"]
+                if (errors.general_errors) {
+                    general_msg +=  '<br> <ul><li>' + errors.general_errors + '</li></ul>'
+                }
+
+                push_notif(general_msg, 'alert-danger', "#message-respons")
                 for (const [key, value] of Object.entries(errors)) {
                     var msgs = '<ul>'
                     value.forEach(function (item, index) {

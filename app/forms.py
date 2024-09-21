@@ -65,8 +65,12 @@ class FamiliesForm(forms.ModelForm):
         if form_data.get('r401a') is not None and form_data.get('r401a') == '1':
             if form_data.get('r401b') is None or form_data.get('r401b') < 1:
                 self._errors['r401b'] = self.error_class(['Jika memiliki tanah/lahan pertanian, maka luas lahan yang dimiliki harus terisi.'])
+
+            if form_data.get('r401c') is None:
+                self._errors['r401c'] = self.error_class(['Jika memiliki tanah/lahan pertanian, maka jenis tanaman terluas harus terisi.'])
         else:
             form_data['r401b'] = None
+            form_data['r401c'] = None
 
         if form_data.get('r402a') is not None and form_data.get('r402a') < 0:
             self._errors['r402a'] = self.error_class(['Jumlah kepemilikan hewan ternak Sapi tidak boleh kurang dari 0.'])
@@ -83,6 +87,10 @@ class FamiliesForm(forms.ModelForm):
         if form_data.get('r402e') is not None and form_data.get('r402e') < 0:
             self._errors['r402e'] = self.error_class(['Jumlah kepemilikan hewan ternak Kambing/Domba tidak boleh kurang dari 0.'])
 
+        if form_data.get('r206') is not None and form_data.get('r206') == '2':
+            if form_data.get('catatan') is None or len(form_data.get('catatan')) == 0:
+                self._errors['catatan'] = self.error_class(['Untuk hasil pencacahan yang tidak terisi lengkap, maka catatan harus terisi.'])
+                
         self.cleaned_data = form_data
         return self.cleaned_data
 

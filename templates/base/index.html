@@ -13,6 +13,7 @@
     <link rel="stylesheet" href="{% static 'app-design/assets/css/app.css'%} ">
     <link href="{% static 'app-design/assets/css/vendor/dataTables.bootstrap5.css' %}" rel="stylesheet" type="text/css"/>
     <link rel="stylesheet" href="{% static 'app-design/assets/vendors/choices.js/choices.min.css' %}" />
+    <link href="{% static 'app-design/assets/css/icons.min.css' %}" rel="stylesheet" type="text/css"/>
 
     <style>
         #table thead th {
@@ -90,7 +91,7 @@
                                 <div class="avatar me-1">
                                     <img src="{% static 'app-design/assets/images/avatar/avatar-s-1.png' %}" alt="" srcset="">
                                 </div>
-                                <div class="d-none d-md-block d-lg-inline-block">Hi, {{request.user.get_full_name}}</div>
+                                <div class="d-none d-md-block d-lg-inline-block">Hi, {{request.user.username}}</div>
                             </a>
                             <div class="dropdown-menu dropdown-menu-end">
                                 <a class="dropdown-item" href="#"><i data-feather="user"></i> Account</a>
@@ -131,11 +132,8 @@
     <script src="{% static 'app-design/assets/js/vendor/jquery.dataTables.min.js' %}"></script>
     <script src="{% static 'app-design/assets/js/vendor/dataTables.bootstrap5.js' %}"></script>
     <script src="{% static 'app-design/assets/js/vendor/dataTables.responsive.min.js' %}"></script>
-    <link
-    href="{% static 'app-design/assets/css/icons.min.css' %}"
-    rel="stylesheet"
-    type="text/css"
-    />
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
     <script>
         // Get current page and set current in nav
         $(".sidebar-menu .menu >li").each(function() {
@@ -148,6 +146,13 @@
         
     </script>
     <script>
+
+        var swalWithBootstrapButtons = Swal.mixin({
+            customClass: {
+              confirmButton: 'btn btn-primary'},
+            buttonsStyling: true
+        })
+
         function push_notif(msg, state, target){
             var html = `
             <div class="row my-3">
@@ -199,7 +204,7 @@
                     "X-CSRFToken": '{{csrf_token}}',
                 },
                 success: (result) => {
-                    if (level == 'kec'){
+                                                                                                                                                                                                                                                                                                                                  if (level == 'kec'){
                         for (let i = 0; i < result.data.length; i++) {
                             opt += '<option value="'+result.data[i].id+'" data-code="'+result.data[i].reg_code+'">['+result.data[i].reg_code+'] &ensp;'+result.data[i].reg_name+'</option>'
                         }
@@ -221,16 +226,6 @@
     
             return
         }
-    </script>
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    <script>
-        var valsId = []
-
-        var swalWithBootstrapButtons = Swal.mixin({
-            customClass: {
-            confirmButton: 'btn btn-primary'},
-            buttonsStyling: true
-        })
     </script>
     {% block js-extender %}
     {% endblock js-extender %}

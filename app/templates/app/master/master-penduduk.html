@@ -416,7 +416,7 @@
                         return table.draw()
                     },
                     error: (response) => {
-                        push_notif(response.message, 'alert-danger', "#message-respons")
+                        push_notif(response.responseJSON.message, 'alert-danger', "#message-respons")
                     }
                 });
             }
