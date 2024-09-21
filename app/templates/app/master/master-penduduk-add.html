@@ -676,8 +676,8 @@
             success: (response) => {
                 $('#message-respons').html('')
                 push_notif(response.status, 'alert-success', "#message-respons") 
+                $('#population_add').trigger("reset");
                 clear_form()
-                $("#population_add")[0].reset();
             },
             error: (response) => {
                 $('#message-respons').html('')

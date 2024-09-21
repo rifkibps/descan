@@ -809,7 +809,7 @@ class ManajemenFamiliesFetchTableClassView(LoginRequiredMixin, View):
                 'r203' : obj.r203.strftime('%d-%m-%Y'),
                 'created_at' : obj.created_at.strftime('%d-%m-%Y'),
                 'actions': f'<a href="{reverse_lazy("app:mnj_families_edit")}?id={obj.id}" target="_blank" class="btn btn-sm icon btn-edit p-0" data-id="{obj.id}"><i class="mdi mdi-account-edit"></i></a>\
-                <button class="btn btn-sm icon btn-delete p-0" data-id="{obj.id}"><i class="mdi mdi-trash-can-outline"></i></button>'
+                <button class="btn btn-sm icon btn-delete p-0" onclick="delete_keluarga({obj.id})" data-id="{obj.id}"><i class="mdi mdi-trash-can-outline"></i></button>'
             })
 
         return {    
@@ -994,6 +994,7 @@ class ManajemenFamiliesDeleteClassView(LoginRequiredMixin, View):
                     data = get_object_or_404(models.FamiliesModels, pk=request.POST.get('pk'))
                     old_dt = data.r107
                     data.delete()
+                    
                     return JsonResponse({'status' : 'success', 'message': f'Keluarga atas nama "{old_dt}" berhasil dihapus.'})
                 except:
                     return JsonResponse({'status': 'failed', 'message': 'Data tidak tersedia'})
@@ -1164,7 +1165,10 @@ class ManajemenPopulationsAddClassView(LoginRequiredMixin, View):
                         forms_errors['r504'] = ['Keluarga hanya bisa memiliki 1 kepala keluarga (terdapat ART lain berstatus kepala keluarga)']
                         return JsonResponse({"status": 'failed', "error": forms_errors}, status=400)
 
+                model_family = models.FamiliesModels.objects.filter(pk=data_art[0]['family_id']).first()
+                model_family.r109 = model_family.r109 + 1
                 form_art.save()
+                model_family.save()
                 return JsonResponse({"status": f'Data ART {data_art[0]["r503"]} berhasil ditambahkan'}, status=200)
 
         return JsonResponse({'status': 'Invalid request'}, status=400)
@@ -1247,10 +1251,32 @@ class ManajemenPopulationsDeleteClassView(LoginRequiredMixin, View):
         is_ajax = request.headers.get('X-Requested-With') == 'XMLHttpRequest'
         if is_ajax:
             if request.method == 'POST':
-                model = get_object_or_404(models.PopulationsModels, pk = int(request.POST.get('pk')))
-                old_data = model.r503
-                model.delete()
-                return JsonResponse({'status' : 'success', 'message': f'Data <b>{old_data}</b> berhasil dihapus'})
+                try:
+                    # Jika kepala keluarga, maka tidak boleh dihapus
+                    # Update jumlah ART pada families jika data terhapus
+                    # KK tidak boleh terhapus
+                    # ART = 1 tidak boleh terhapus
+
+                    model = get_object_or_404(models.PopulationsModels, pk = int(request.POST.get('pk')))
+                    name = model.r503
+                    
+                    if model.r504 != '1':
+
+                        if model.family_id.r109 > 1:
+
+                            model_family = models.FamiliesModels.objects.filter(pk = model.family_id.pk).first()
+                            model_family.r109 = model_family.r109 - 1
+                            model.delete()
+                            model_family.save()
+                            return JsonResponse({'status' : 'success', 'message': f'Keluarga atas nama "{name}" berhasil dihapus.'})
+                        
+                        return JsonResponse({'status': 'failed', 'message': 'Keluarga dengan jumlah ART 1 tidak dapat dihapus'})
+                    
+                    return JsonResponse({'status': 'failed', 'message': 'ART dengan status kepala keluarga tidak dapat dihapus'})
+                except:
+                    return JsonResponse({'status': 'failed', 'message': 'Terjadi kesalahan saat menghapus data penduduk'})
+
+
 
         return JsonResponse({'status': 'Invalid request'}, status=400)
 
@@ -1385,7 +1411,7 @@ class ManajemenPopulationFetchTableClassView(LoginRequiredMixin, View):
                 'r504' : obj.get_r504_display(),
                 'r505' : obj.get_r505_display(),
                 'actions': f'<a href="{reverse_lazy("app:mnj_population_edit")}?id={obj.id}" target="_blank" class="btn btn-sm icon btn-edit p-0" data-id="{obj.id}"><i class="mdi mdi-account-edit"></i></a>\
-                <button class="btn btn-sm icon btn-delete p-0" data-id="{obj.id}"><i class="mdi mdi-trash-can-outline"></i></button>'
+                <button class="btn btn-sm icon btn-delete p-0" onclick="delete_penduduk({obj.id})" data-id="{obj.id}"><i class="mdi mdi-trash-can-outline"></i></button>'
             })
 
         return {    

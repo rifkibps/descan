@@ -36,7 +36,7 @@
 <div id="message-respons">
 </div>
 
-<form action="" method="post" class="needs-validation" novalidate>
+<form action="" method="post" id="form-family" class="needs-validation" novalidate>
     {% csrf_token %}
     <div class="row mb-4">
         <div class="col-12">
@@ -1169,6 +1169,7 @@
     }
 
     function clear_form(){
+        
         $('.invalid-feedback').each(function(i, obj) {
            $(this).html('')
         });
@@ -1210,7 +1211,7 @@
     
     function checkSubmit(){
 
-        clear_form()
+        
         $('#message-respons').html('')
     
         var art_form_data = clean_inline_form(
@@ -1267,6 +1268,7 @@
             success: (response) => {
                 $('#message-respons').html('')
                 push_notif(response.status, 'alert-success', "#message-respons") 
+                $('#form-family').trigger("reset");
                 clear_form()
             },
             error: (response) => {
@@ -1305,48 +1307,7 @@
 
     $("form").submit(function (e) {
         e.preventDefault();
-        {% comment %} var art_form_data = clean_inline_form(
-            ['r401','r402','r403','r404','r405','r406','r407','r408','r409','r411','r412','r415','r416a','r416b','r417','r418','r420a','r421','r422_23','r425','r427','r430','r431a','r431f']
-        )
-        
-        var form_data = {}
-        $('.form-family').each(function(i, obj) {
-            form_data[$(this).attr('name')] = $(this).val()
-        });
-
-        var formData = new FormData();
-        formData.append("form_families", JSON.stringify(form_data));
-        formData.append("form_art", JSON.stringify(art_form_data));
-
-        $.ajax({
-            url: '{% url "app:mnj_families_add" %}',
-            type: "POST",
-            dataType: "json",
-            data : formData,
-            headers: {
-                "X-Requested-With": "XMLHttpRequest",
-                "X-CSRFToken": '{{csrf_token}}',
-            },
-            success: (result) => {
-                console.log(error)
-            },
-            error: (error) => {
-                var errors = response["responseJSON"]["error"]
-                for (const [key, value] of Object.entries(errors)) {
-                    var msgs = '<ul>'
-                    value.forEach(function (item, index) {
-                    
-                        msgs += '<li>'+item+'</li>'
-                        });
-                    
-                    msgs += '</ul>'
-                    $('#id_'+ key).addClass('is-invalid');
-                    $('#msg-id_'+key).html(msgs)
-                }    
-            }
-        }); {% endcomment %}
-        
-      });
+    });
 
 </script>
 {% endblock js-extender %}

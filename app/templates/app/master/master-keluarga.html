@@ -378,28 +378,44 @@
 
     })
 
-    $('.btn-delete').on('click', function(e){
-        var val = $(this).attr('data-id')
-
-        $.ajax({
-            url: '{% url "app:mnj_families_del" %}',
-            type: "POST", 
-            dataType: "json",
-            data : {'pk' : val},
-            headers: {
-                "X-Requested-With": "XMLHttpRequest",
-                "X-CSRFToken": '{{csrf_token}}',
-            },
-            success: (response) => {
-                $("#message-respons").html('')
-                push_notif(response.message, 'alert-success', "#message-respons")
-            },
-            error: (response) => {
-                $("#message-respons").html('')
-                push_notif(response.message, 'alert-danger', "#message-respons")
+    function delete_keluarga(val){
+        swalWithBootstrapButtons.fire({
+            title: 'Are you sure?',
+            text: "Apakah anda yakin ingin menghapus data?",
+            icon: 'question',
+            showCancelButton: true,
+            confirmButtonText: 'Yes, delete it!',
+            cancelButtonText: 'No, cancel!',
+            reverseButtons: false
+          }).then((result) => {
+            if (result.isConfirmed) {
+                $.ajax({
+                    url: '{% url "app:mnj_families_del" %}',
+                    type: "POST", 
+                    dataType: "json",
+                    data : {'pk' : val},
+                    headers: {
+                        "X-Requested-With": "XMLHttpRequest",
+                        "X-CSRFToken": '{{csrf_token}}',
+                    },
+                    success: (response) => {
+                        $("#message-respons").html('')
+                        push_notif(response.message, 'alert-success', "#message-respons")
+                        swalWithBootstrapButtons.fire({
+                            title: "Berhasil",
+                            text: "Data berhasil dihapus",
+                            icon: "success"
+                          });
+                        return table.draw()
+                    },
+                    error: (response) => {
+                        $("#message-respons").html('')
+                        push_notif(response.message, 'alert-danger', "#message-respons")
+                    }
+                });
             }
-        });
-    })
+        })
+    }
 
 </script>
 {% endblock js-extender %}
