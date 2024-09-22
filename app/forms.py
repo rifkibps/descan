@@ -169,6 +169,8 @@ class PopulationsForm(forms.ModelForm):
                     else:
                         form_data['r518'] = None
                 
+
+                
                 if form_data.get('r519') is None:
                     self._errors['r519'] = self.error_class(['Jika ART tinggal bersama/keluarga baru, maka isian jaminan kesehatan harus terisi'])
 
