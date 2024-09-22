@@ -197,6 +197,7 @@ class FamiliesModels(models.Model):
         ('3', 'Sayuran'),
         ('4', 'Jati'),
         ('5', 'Jambu Mete'),
+        ('6', 'Lainnya'),
     )
     r401c = models.CharField(max_length=1, blank=True, null=True, choices=r401c_choices, verbose_name="Jenis tanaman terluas")
 

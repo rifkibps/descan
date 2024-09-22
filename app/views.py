@@ -865,7 +865,6 @@ class ManajemenFamiliesEditClassView(LoginRequiredMixin, View):
                 data_art = json.loads(request.POST.get('form_art'))
                 art_form_colls = [int(dt) for dt in data_art[0]['art_id'] if len(dt) > 0]
 
-
                 data_art = helpers.transform_data(data_art)
                 forms_errors = dict()
 
@@ -904,6 +903,7 @@ class ManajemenFamiliesEditClassView(LoginRequiredMixin, View):
                     else:
                         forms_validated.append(form_art)
 
+                
                 if len(forms_errors) > 0:
                     return JsonResponse({"status": 'failed', "error": forms_errors}, status=400)
 
@@ -972,6 +972,8 @@ class ManajemenFamiliesAddClassView(LoginRequiredMixin, View):
                             if key != 'family_id':
                                 forms_errors[f'form_art_{key}_{idx+1}'] = val
 
+                pprint(forms_errors)
+                
                 if len(forms_errors) > 0:
                     return JsonResponse({"status": 'failed', "error": forms_errors}, status=400)
 

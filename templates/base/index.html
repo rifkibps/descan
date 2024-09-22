@@ -226,6 +226,20 @@
     
             return
         }
+
+        function age(age) {
+            // Ambil nilai tanggal lahir dari input
+            const tanggalLahir = new Date(age);
+            const hariIni = new Date();
+          
+            let selisihMilidetik = hariIni - tanggalLahir;
+          
+            const satuTahun = 31536000000; // Milidetik dalam satu tahun
+            const umur = Math.floor(selisihMilidetik / satuTahun);
+          
+            return umur
+          }
+
     </script>
     {% block js-extender %}
     {% endblock js-extender %}

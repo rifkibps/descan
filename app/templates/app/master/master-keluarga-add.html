@@ -800,7 +800,7 @@
                             <div class="col-6 col-offset-1">
                                 <div class="form-group">
                                     <div class="position-relative">
-                                        {% render_field form_penduduk.r508 class="form-control px-3" id="form_art_r508_`+ num +`" data-num="`+ num +`" type="date" %}
+                                        {% render_field form_penduduk.r508 class="form-control px-3" id="form_art_r508_`+ num +`" data-num="`+ num +`" type="date" onchange="showR513_r518(this)" %}
                                         <div class="invalid-feedback" id="msg-form_art_r508_`+ num +`">
                                         </div>
                                     </div>
@@ -850,7 +850,7 @@
                             </div>
                         </div>
                         <br>
-                        <h5 class="mb-4 field-hide-`+ num +` d-none">Keterangan Ketenagakerjaan <br>(ART Usia 5 tahun ke atas)</h5>
+                        <h5 class="mb-4 field-hide-`+ num +` d-none">Keterangan Ketenagakerjaan <br>(Usia 5 tahun ke atas)</h5>
                         <div class="row d-none">
                             <div class="col-5">
                                 <label for="form_art_r513_`+ num +`">{{ form_penduduk.r513.label }}</label>
@@ -858,7 +858,7 @@
                             <div class="col-6 col-offset-1">
                                 <div class="form-group">
                                     <div class="position-relative">
-                                        {% render_field form_penduduk.r513 class="form-select px-3 field-art-`+ num +`" id="form_art_r513_`+ num +`" data-num="`+ num +`"  onchange="showField514_516(this)" %}
+                                        {% render_field form_penduduk.r513 class="form-select px-3 field-art-`+ num +`" id="form_art_r513_`+ num +`" data-num="`+ num +`"  onchange="showField514_516(this)" disabled="disabled" %}
                                         <div class="invalid-feedback" id="msg-form_art_r513_`+ num +`">
                                         </div>
                                     </div>
@@ -908,7 +908,7 @@
                             </div>
                         </div>
                         <br>
-                        <h5 class="mb-4 field-hide-`+ num +` d-none">Keterangan Pendidikan <br>(ART Usia 5 tahun ke atas)</h5>
+                        <h5 class="mb-4 field-hide-`+ num +` d-none">Keterangan Pendidikan <br>(Usia 5 tahun ke atas)</h5>
                         <div class="row  d-none">
                             <div class="col-5">
                                 <label for="form_art_r517_`+ num +`">{{ form_penduduk.r517.label }}</label>
@@ -916,7 +916,7 @@
                             <div class="col-6 col-offset-1">
                                 <div class="form-group">
                                     <div class="position-relative">
-                                        {% render_field form_penduduk.r517 class="form-select px-3 field-art-`+ num +`" id="form_art_r517_`+ num +`" data-num="`+ num +`" onchange="showField518(this)" %}
+                                        {% render_field form_penduduk.r517 class="form-select px-3 field-art-`+ num +`" id="form_art_r517_`+ num +`" data-num="`+ num +`" onchange="showField518(this)" disabled="disabled"%}
                                         <div class="invalid-feedback" id="msg-form_art_r517_`+ num +`">
                                         </div>
                                     </div>
@@ -1121,6 +1121,12 @@
     $('#id_kecamatan').on('change', function(){
         get_region_adm('kec', $(this).val(), '#id_r104')
     })
+    
+    $(document).on('change', '.form-control, .form-select', function() {
+        if ($(this).hasClass('is-invalid')){
+            $(this).removeClass('is-invalid')
+        }
+    });
 
     $('#id_r104').on('change', function(){
         get_region_adm('deskel', $('option:selected', this).attr('data-code'), '#id_r105')
@@ -1131,22 +1137,14 @@
 
         target.forEach((obj) => {
             if ($(this).val() == 1){
-                $(obj).attr('required', 'required')
-                $(obj).parent().parent().parent().parent().removeClass('d-none')
+                obj.attr('required', 'required')
+                obj.parent().parent().parent().parent().removeClass('d-none')
             }else{
-                $(obj).removeAttr('required')
-                $(obj).parent().parent().parent().parent().addClass('d-none')
+                obj.val('')
+                obj.removeAttr('required')
+                obj.parent().parent().parent().parent().addClass('d-none')
             }
         });
-
-
-        if ($(this).val() == 1){
-            target.attr('required', 'required')
-            target.parent().parent().parent().parent().removeClass('d-none')
-        }else{
-            target.removeAttr('required')
-            target.parent().parent().parent().parent().addClass('d-none')
-        }
     })
 
     $('#{{form.r301.id_for_label}}').on('change', function(){
@@ -1155,21 +1153,57 @@
             target.attr('required', 'required')
             target.parent().parent().parent().parent().removeClass('d-none')
         }else{
+            target.val('')
             target.removeAttr('required')
             target.parent().parent().parent().parent().addClass('d-none')
         }
     })
 
+    function showR513_r518(e){
+        var val = $(e).val()
+        var attr_num = parseInt($(e).attr('data-num'))
+
+        var target = [$('#form_art_r513_'+attr_num), $('#form_art_r517_'+attr_num)]
+        var target_child = [$('#form_art_r514_' + attr_num), $('#form_art_r515_' + attr_num), $('#form_art_r516_' + attr_num), $('#form_art_r518_' + attr_num)]
+        var age_year = age(val)
+
+        if (age_year >= 5){
+            target.forEach((obj) => {
+                obj.removeAttr('disabled')
+                obj.removeClass('is_invalid')
+                obj.next().html('')
+            });
+        }else{
+            target.forEach((obj) => {
+                console.log(obj, obj.hasClass('is_invalid'))
+                obj.val('')
+                obj.attr('disabled', 'disabled')
+                obj.trigger("change");
+                obj.next().html('')
+            });
+            target_child.forEach((obj) => {
+                obj.val('')
+                obj.removeAttr('required')
+                obj.parent().parent().parent().parent().addClass('d-none')
+                obj.trigger("change");
+                obj.next().html('')
+            });
+        }
+    }
+
     function showField518(e){
         var val = parseInt($(e).val())
         var attr_num = parseInt($(e).attr('data-num'))
         var target = $('#form_art_r518_' + attr_num)
-        
+        target.removeClass('is-invalid')
+        target.next().html('')
+
         if ([2, 3].includes(val)){
             target.attr('required', 'required')
             target.parent().parent().parent().parent().removeClass('d-none')
         }else{
             target.removeAttr('required')
+            target.val('')
             target.parent().parent().parent().parent().addClass('d-none')
         }
     }
@@ -1180,17 +1214,20 @@
         var attr_num = parseInt($(e).attr('data-num'))
 
         var target = [$('#form_art_r514_'+attr_num), $('#form_art_r515_'+attr_num), $('#form_art_r516_'+attr_num)]
-        if (val == 5){
-            target.forEach((obj) => {
-                $(obj).attr('required', 'required')
-                $(obj).parent().parent().parent().parent().removeClass('d-none')
-            });
-        }else{
-            target.forEach((obj) => {
-                $(obj).removeAttr('required')
-                $(obj).parent().parent().parent().parent().addClass('d-none')
-            });
-        }
+
+        target.forEach((obj) => {
+            obj.removeClass('is-invalid')
+            obj.next().html('')
+
+            if (val == 5){
+                obj.attr('required', 'required')
+                obj.parent().parent().parent().parent().removeClass('d-none')
+            }else{
+                obj.val('')
+                obj.removeAttr('required')
+                obj.parent().parent().parent().parent().addClass('d-none')
+            }
+        });
     }
 
     function showField505(e){
@@ -1205,6 +1242,7 @@
             });
 
             $('.field-art-' + attr_num).each(function(i, obj) {
+
                 if (!exception_fields.includes($(this).attr('id'))){
                     $(this).attr('required', 'required')
                     $(this).parent().parent().parent().parent().removeClass('d-none')
@@ -1217,10 +1255,9 @@
             });
 
             $('.field-art-' + attr_num).each(function(i, obj) {
-                if (!exception_fields.includes($(this).attr('id'))){
-                    $(this).removeAttr('required', 'required')
-                    $(this).parent().parent().parent().parent().addClass('d-none')
-                }
+                $(this).val('')
+                $(this).removeAttr('required', 'required')
+                $(this).parent().parent().parent().parent().addClass('d-none')
             });
         }
 
@@ -1231,7 +1268,10 @@
         $('.invalid-feedback').each(function(i, obj) {
            $(this).html('')
         });
-        $('.form-control, .form-select').each(function(i, obj) {
+        $('.form-select').each(function(i, obj) {
+            $(this).removeClass('is_invalid')
+        });
+        $('.form-control').each(function(i, obj) {
             $(this).removeClass('is_invalid')
         });
     }
@@ -1268,8 +1308,7 @@
     }
     
     function checkSubmit(){
-
-        
+        clear_form()
         $('#message-respons').html('')
     
         var art_form_data = clean_inline_form(
@@ -1326,6 +1365,7 @@
             success: (response) => {
                 $('#message-respons').html('')
                 push_notif(response.status, 'alert-success', "#message-respons") 
+                
                 $('#form-family').trigger("reset");
                 clear_form()
             },
@@ -1357,11 +1397,7 @@
         }, 10);
     }
 
-    $(document).on('change', '.form-control, .form-select', function() {
-        if ($(this).hasClass('is-invalid')){
-            $(this).removeClass('is-invalid')
-        }
-    });
+    
 
     $("form").submit(function (e) {
         e.preventDefault();

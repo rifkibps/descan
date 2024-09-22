@@ -1619,6 +1619,7 @@
             target.parent().parent().parent().parent().removeClass('d-none')
         }else{
             target.removeAttr('required')
+            target.val('')
             target.parent().parent().parent().parent().addClass('d-none')
         }
     }
@@ -1636,6 +1637,7 @@
             });
         }else{
             target.forEach((obj) => {
+                $(obj).val('')
                 $(obj).removeAttr('required')
                 $(obj).parent().parent().parent().parent().addClass('d-none')
             });
@@ -1666,10 +1668,9 @@
             });
 
             $('.field-art-' + attr_num).each(function(i, obj) {
-                if (!exception_fields.includes($(this).attr('id'))){
-                    $(this).removeAttr('required', 'required')
-                    $(this).parent().parent().parent().parent().addClass('d-none')
-                }
+                $(this).removeAttr('required', 'required')
+                $(this).val('')
+                $(this).parent().parent().parent().parent().addClass('d-none')
             });
         }
 

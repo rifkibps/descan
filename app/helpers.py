@@ -7,7 +7,7 @@ from django.db.models import Avg, Sum
 import numpy as np
 from statistics import mean
 from operator import itemgetter
-
+from django.utils import timezone
 
 def get_dashboard_family():
     families = models.FamiliesModels.objects.all().count()
@@ -299,6 +299,13 @@ def combine_validations(data_families, data_art):
 
     return form_errors
 
+
+def age(date):
+
+    today = timezone.now()
+    age = today.year - date.year - ((today.month, today.day) < (date.month, date.day))
+
+    return age
 
 def get_region_code(r104, r105):
 
