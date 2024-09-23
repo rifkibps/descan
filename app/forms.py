@@ -22,11 +22,12 @@ class FamiliesForm(forms.ModelForm):
             else:
                 check_kk = models.FamiliesModels.objects.filter(r108=form_data['r108'])
                 if check_kk.exists():
-                    if data_not_cleaned.get('id') is not None:
-                        if check_kk.first().pk != int(data_not_cleaned.get('id')):
+                    if check_kk.first().r108 != '9999999999999999':
+                        if data_not_cleaned.get('id') is not None:
+                            if check_kk.first().pk != int(data_not_cleaned.get('id')):
+                                self._errors['r108'] = self.error_class(['No KK telah terdaftar pada database'])
+                        else:
                             self._errors['r108'] = self.error_class(['No KK telah terdaftar pada database'])
-                    else:
-                        self._errors['r108'] = self.error_class(['No KK telah terdaftar pada database'])
 
         if form_data.get('r109') is not None:
             form_data['r109'] = int(form_data['r109'])
@@ -122,11 +123,12 @@ class PopulationsForm(forms.ModelForm):
             else:
                 check_nik = models.PopulationsModels.objects.filter(r502=form_data['r502'])
                 if check_nik.exists():
-                    if data_not_cleaned.get('art_id') is not None:
-                        if check_nik.first().pk != int(data_not_cleaned.get('art_id')):
+                    if check_nik.first().r502 != '9999999999999999':
+                        if data_not_cleaned.get('art_id') is not None:
+                            if check_nik.first().pk != int(data_not_cleaned.get('art_id')):
+                                self._errors['r502'] = self.error_class(['NIK telah terdaftar pada database'])
+                        else:
                             self._errors['r502'] = self.error_class(['NIK telah terdaftar pada database'])
-                    else:
-                        self._errors['r502'] = self.error_class(['NIK telah terdaftar pada database'])
 
         if form_data.get('r503') is not None:
             form_data['r503'] = form_data['r503'].upper()
