@@ -648,7 +648,7 @@
     </div>
 
     <div class="art-section">
-        {% for id, form_art in forms_art %}
+        {% for id, age, form_art in forms_art %}
             {% with r505=form_art.r505.value %}
             <div class="art-form-fields mb-5">
                 <div class="row">
@@ -790,7 +790,7 @@
                                 <div class="form-group">
                                     <div class="position-relative">
                                         {% with id="form_art_r508_"|join:forloop.counter %}
-                                            {% render_field form_art.r508 class="form-control px-3" id=id data-num=forloop.counter %}
+                                            {% render_field form_art.r508 class="form-control px-3" id=id data-num=forloop.counter type="date" onchange="showR513_r518(this)" %}
                                         {% endwith %}
                                         <div class="invalid-feedback" id="msg-form_art_r508_{{forloop.counter}}">
                                         </div>
@@ -848,7 +848,7 @@
                         </div>
                         <br>
 
-                        <h5 class="mb-4 field-hide-{{forloop.counter}} {% if r505 not in '1,4' %}d-none{% endif %}">Keterangan Ketenagakerjaan <br>(ART Usia 5 tahun ke atas)</h5>
+                        <h5 class="mb-4 field-hide-{{forloop.counter}} {% if r505 not in '1,4' %}d-none{% endif %}">Keterangan Ketenagakerjaan <br>(Usia 5 tahun ke atas)</h5>
                         <div class="row {% if r505 not in '1,4' %}d-none{% endif %}">
                             <div class="col-5">
                                 <label for="form_art_r513_{{forloop.counter}}">{{ form_art.r513.label }}</label>
@@ -857,7 +857,11 @@
                                 <div class="form-group">
                                     <div class="position-relative">
                                         {% with id="form_art_r513_"|join:forloop.counter class="form-select px-3 field-art-"|join:forloop.counter %}
-                                            {% render_field form_art.r513 class=class id=id data-num=forloop.counter  onchange="showField514_516(this)" %}
+                                            {% if age >= 5 %}
+                                                {% render_field form_art.r513 class=class id=id data-num=forloop.counter onchange="showField514_516(this)" %}
+                                            {% else %}
+                                                {% render_field form_art.r513 class=class id=id data-num=forloop.counter onchange="showField514_516(this)" disabled="disabled" %}
+                                            {% endif %}
                                         {% endwith %}
                                         <div class="invalid-feedback" id="msg-form_art_r513_{{forloop.counter}}">
                                         </div>
@@ -914,7 +918,7 @@
                             </div>
                         </div>
                         <br>
-                        <h5 class="mb-4 field-hide-{{forloop.counter}} {% if r505 not in '1,4' %}d-none{% endif %}">Keterangan Pendidikan <br>(ART Usia 5 tahun ke atas)</h5>
+                        <h5 class="mb-4 field-hide-{{forloop.counter}} {% if r505 not in '1,4' %}d-none{% endif %}">Keterangan Pendidikan <br>(Usia 5 tahun ke atas)</h5>
                         <div class="row {% if r505 not in '1,4' %}d-none{% endif %}">
                             <div class="col-5">
                                 <label for="form_art_r517_{{forloop.counter}}">{{ form_art.r517.label }}</label>
@@ -923,7 +927,11 @@
                                 <div class="form-group">
                                     <div class="position-relative">
                                         {% with id="form_art_r517_"|join:forloop.counter class="form-select px-3 field-art-"|join:forloop.counter %}
-                                            {% render_field form_art.r517 class=class id=id data-num=forloop.counter onchange="showField518(this)" %}
+                                            {% if age >= 5 %}
+                                                {% render_field form_art.r517 class=class id=id data-num=forloop.counter onchange="showField518(this)" %}
+                                            {% else %}
+                                                {% render_field form_art.r517 class=class id=id data-num=forloop.counter onchange="showField518(this)" disabled="disabled" %}
+                                            {% endif %}
                                         {% endwith %}
                                         <div class="invalid-feedback" id="msg-form_art_r517_{{forloop.counter}}">
                                         </div>
@@ -931,10 +939,12 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="row {% if r505 not in '1,4' or form_art.r517.value not in '2,3' %}d-none{% endif %}">
+                        
+                        <div class="row {% if r505 in '1,4' and form_art.r517.value in '2,3' %}{% else %}d-none{% endif %}">
                             <div class="col-5">
                                 <label for="form_art_r518_{{forloop.counter}}">{{ form_art.r518.label }}</label>
                             </div>
+                            
                             <div class="col-6 col-offset-1">
                                 <div class="form-group">
                                     <div class="position-relative">
@@ -1260,7 +1270,7 @@
                             <div class="col-6 col-offset-1">
                                 <div class="form-group">
                                     <div class="position-relative">
-                                        {% render_field form_penduduk.r508 class="form-control px-3" id="form_art_r508_`+ num +`" data-num="`+ num +`" type="date" %}
+                                        {% render_field form_penduduk.r508 class="form-control px-3" id="form_art_r508_`+ num +`" data-num="`+ num +`" type="date" onchange="showR513_r518(this)" %}
                                         <div class="invalid-feedback" id="msg-form_art_r508_`+ num +`">
                                         </div>
                                     </div>
@@ -1310,7 +1320,7 @@
                             </div>
                         </div>
                         <br>
-                        <h5 class="mb-4 field-hide-`+ num +` d-none">Keterangan Ketenagakerjaan</h5>
+                        <h5 class="mb-4 field-hide-`+ num +` d-none">Keterangan Ketenagakerjaan <br>(Usia 5 tahun ke atas)</h5>
                         <div class="row d-none">
                             <div class="col-5">
                                 <label for="form_art_r513_`+ num +`">{{ form_penduduk.r513.label }}</label>
@@ -1318,7 +1328,7 @@
                             <div class="col-6 col-offset-1">
                                 <div class="form-group">
                                     <div class="position-relative">
-                                        {% render_field form_penduduk.r513 class="form-select px-3 field-art-`+ num +`" id="form_art_r513_`+ num +`" data-num="`+ num +`"  onchange="showField514_516(this)" %}
+                                        {% render_field form_penduduk.r513 class="form-select px-3 field-art-`+ num +`" id="form_art_r513_`+ num +`" data-num="`+ num +`"  onchange="showField514_516(this)" disabled="disabled" %}
                                         <div class="invalid-feedback" id="msg-form_art_r513_`+ num +`">
                                         </div>
                                     </div>
@@ -1368,7 +1378,7 @@
                             </div>
                         </div>
                         <br>
-                        <h5 class="mb-4 field-hide-`+ num +` d-none">Keterangan Pendidikan</h5>
+                        <h5 class="mb-4 field-hide-`+ num +` d-none">Keterangan Pendidikan <br>(Usia 5 tahun ke atas)</h5>
                         <div class="row  d-none">
                             <div class="col-5">
                                 <label for="form_art_r517_`+ num +`">{{ form_penduduk.r517.label }}</label>
@@ -1376,7 +1386,7 @@
                             <div class="col-6 col-offset-1">
                                 <div class="form-group">
                                     <div class="position-relative">
-                                        {% render_field form_penduduk.r517 class="form-select px-3 field-art-`+ num +`" id="form_art_r517_`+ num +`" data-num="`+ num +`" onchange="showField518(this)" %}
+                                        {% render_field form_penduduk.r517 class="form-select px-3 field-art-`+ num +`" id="form_art_r517_`+ num +`" data-num="`+ num +`" onchange="showField518(this)" disabled="disabled" %}
                                         <div class="invalid-feedback" id="msg-form_art_r517_`+ num +`">
                                         </div>
                                     </div>
@@ -1568,6 +1578,12 @@
         });
     }
 
+    $(document).on('change', '.form-control, .form-select', function() {
+        if ($(this).hasClass('is-invalid')){
+            $(this).removeClass('is-invalid')
+        }
+    });
+    
     $('#id_provinsi').on('change', function(){
         get_region_adm('prov', $(this).val(), '#id_kabkot')
     })
@@ -1589,11 +1605,11 @@
 
         target.forEach((obj) => {
             if ($(this).val() == 1){
-                $(obj).attr('required', 'required')
-                $(obj).parent().parent().parent().parent().removeClass('d-none')
+               obj.attr('required', 'required')
+               obj.parent().parent().parent().parent().removeClass('d-none')
             }else{
-                $(obj).removeAttr('required')
-                $(obj).parent().parent().parent().parent().addClass('d-none')
+               obj.removeAttr('required')
+               obj.parent().parent().parent().parent().addClass('d-none')
             }
         });
     })
@@ -1609,10 +1625,43 @@
         }
     })
 
+    function showR513_r518(e){
+        var val = $(e).val()
+        var attr_num = parseInt($(e).attr('data-num'))
+
+        var target = [$('#form_art_r513_'+attr_num), $('#form_art_r517_'+attr_num)]
+        var target_child = [$('#form_art_r514_' + attr_num), $('#form_art_r515_' + attr_num), $('#form_art_r516_' + attr_num), $('#form_art_r518_' + attr_num)]
+        var age_year = age(val)
+
+        if (age_year >= 5){
+            target.forEach((obj) => {
+                obj.removeAttr('disabled')
+                obj.removeClass('is_invalid')
+                obj.next().html('')
+            });
+        }else{
+            target.forEach((obj) => {
+                obj.val('')
+                obj.attr('disabled', 'disabled')
+                obj.trigger("change");
+                obj.next().html('')
+            });
+            target_child.forEach((obj) => {
+                obj.val('')
+                obj.removeAttr('required')
+                obj.parent().parent().parent().parent().addClass('d-none')
+                obj.trigger("change");
+                obj.next().html('')
+            });
+        }
+    }
+
     function showField518(e){
         var val = parseInt($(e).val())
         var attr_num = parseInt($(e).attr('data-num'))
         var target = $('#form_art_r518_' + attr_num)
+        target.removeClass('is-invalid')
+        target.next().html('')
         
         if ([2, 3].includes(val)){
             target.attr('required', 'required')
@@ -1630,18 +1679,20 @@
         var attr_num = parseInt($(e).attr('data-num'))
 
         var target = [$('#form_art_r514_'+attr_num), $('#form_art_r515_'+attr_num), $('#form_art_r516_'+attr_num)]
-        if (val == 5){
-            target.forEach((obj) => {
-                $(obj).attr('required', 'required')
-                $(obj).parent().parent().parent().parent().removeClass('d-none')
-            });
-        }else{
-            target.forEach((obj) => {
-                $(obj).val('')
-                $(obj).removeAttr('required')
-                $(obj).parent().parent().parent().parent().addClass('d-none')
-            });
-        }
+
+        target.forEach((obj) => {
+            obj.removeClass('is-invalid')
+            obj.next().html('')
+
+            if (val == 5){
+                obj.attr('required', 'required')
+                obj.parent().parent().parent().parent().removeClass('d-none')
+            }else{
+                obj.val('')
+                obj.removeAttr('required')
+                obj.parent().parent().parent().parent().addClass('d-none')
+            }
+        });
     }
 
     function showField505(e){
@@ -1668,8 +1719,8 @@
             });
 
             $('.field-art-' + attr_num).each(function(i, obj) {
-                $(this).removeAttr('required', 'required')
                 $(this).val('')
+                $(this).removeAttr('required', 'required')
                 $(this).parent().parent().parent().parent().addClass('d-none')
             });
         }
@@ -1678,11 +1729,14 @@
 
     function clear_form(){
         $('.invalid-feedback').each(function(i, obj) {
-           $(this).html('')
-        });
-        $('.form-control, .form-select').each(function(i, obj) {
-            $(this).removeClass('is_invalid')
-        });
+            $(this).html('')
+         });
+         $('.form-select').each(function(i, obj) {
+             $(this).removeClass('is_invalid')
+         });
+         $('.form-control').each(function(i, obj) {
+             $(this).removeClass('is_invalid')
+         });
     }
 
     function clean_inline_form(list){
@@ -1812,11 +1866,6 @@
         }, 10);
     }
 
-    $(document).on('change', '.form-control, .form-select', function() {
-        if ($(this).hasClass('is-invalid')){
-            $(this).removeClass('is-invalid')
-        }
-    });
 
     $("form").submit(function (e) {
         e.preventDefault();

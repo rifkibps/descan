@@ -833,10 +833,12 @@ class ManajemenFamiliesEditClassView(LoginRequiredMixin, View):
                 regions = helpers.get_region_code(model.r104.reg_code, model.r105.pk)
                 forms_art = []
                 id = []
+                age = []
                 for dt in model.families_members.all():
                     form = forms.PopulationsForm(instance=dt)
                     forms_art.append(form)
                     id.append(dt.id)
+                    age.append(helpers.age(dt.r508))
 
                 pencacah = models.OfficerModels.objects.filter(role = '1').all()
                 pemeriksa = models.OfficerModels.objects.filter(role = '2').all()
@@ -847,7 +849,7 @@ class ManajemenFamiliesEditClassView(LoginRequiredMixin, View):
                     'pemeriksa' : pemeriksa,
                     'pk' : request.GET.get('id'),
                     'form' : forms.FamiliesForm(instance=model),
-                    'forms_art' : zip(id, forms_art),
+                    'forms_art' : zip(id, age, forms_art),
                     'form_penduduk' : forms.PopulationsForm(),
                 }
                 return render(request, 'app/master/master-keluarga-edit.html', context)
@@ -1201,6 +1203,7 @@ class ManajemenPopulationsEditClassView(LoginRequiredMixin, View):
                 context = {
                     'title' : 'Edit Data Penduduk',
                     'pk' : model.pk,
+                    'age' : model.age,
                     'form' : form,
                 }
 
