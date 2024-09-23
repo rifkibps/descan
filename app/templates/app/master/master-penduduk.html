@@ -385,27 +385,43 @@
         get_region_adm('deskel', $('option:selected', this).attr('data-code'), '#id_sls')
     })
 
-    $('.btn-delete').on('click', function(e){
-        var val = $(this).attr('data-id')
+    function delete_penduduk(val){
         $("#message-respons").html('')
-
-        $.ajax({
-            url: '{% url "app:mnj_population_del" %}',
-            type: "POST",
-            dataType: "json",
-            data : {'pk' : val},
-            headers: {
-                "X-Requested-With": "XMLHttpRequest",
-                "X-CSRFToken": '{{csrf_token}}',
-            },
-            success: (response) => {
-                push_notif(response.message, 'alert-success', "#message-respons")
-            },
-            error: (response) => {
-                push_notif(response.message, 'alert-danger', "#message-respons")
+        swalWithBootstrapButtons.fire({
+            title: 'Are you sure?',
+            text: "Apakah anda yakin ingin menghapus data?",
+            icon: 'question',
+            showCancelButton: true,
+            confirmButtonText: 'Yes, delete it!',
+            cancelButtonText: 'No, cancel!',
+            reverseButtons: false
+          }).then((result) => {
+            if (result.isConfirmed) {
+                $.ajax({
+                    url: '{% url "app:mnj_population_del" %}',
+                    type: "POST",
+                    dataType: "json",
+                    data : {'pk' : val},
+                    headers: {
+                        "X-Requested-With": "XMLHttpRequest",
+                        "X-CSRFToken": '{{csrf_token}}',
+                    },
+                    success: (response) => {
+                        push_notif(response.message, 'alert-success', "#message-respons")
+                        swalWithBootstrapButtons.fire({
+                            title: "Berhasil",
+                            text: "Data berhasil dihapus",
+                            icon: "success"
+                          });
+                        return table.draw()
+                    },
+                    error: (response) => {
+                        push_notif(response.responseJSON.message, 'alert-danger', "#message-respons")
+                    }
+                });
             }
-        });
-    })
+        })
+    }
 </script>
 <script src="{% static 'app-design/assets/vendors/choices.js/choices.min.js' %}"></script>
 {% endblock js-extender %}

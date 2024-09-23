@@ -26,10 +26,6 @@
 
 
 <section class="section">
-
-    <div id="message-respons">
-    </div>
-
     <div class="row mb-5">
         <div class="col-md-6">
             <div class="card">
@@ -173,6 +169,9 @@
         </div>
     </div>
     
+    <div id="message-respons">
+    </div>
+    
     <div class="row mb-4">
         <div class="col-md-12">
             <div class="card">
@@ -194,6 +193,7 @@
                                     <th class="text-center">Jumlah ART</th>
                                     <th>Tgl Pendataan</th>
                                     <th>Tgl Entri</th>
+                                    <th>Status</th>
                                     <th class="text-center">Aksi</th>
                                 </tr>
                             </thead>
@@ -253,6 +253,7 @@
             {"data" : 'r109'},
             {"data" : 'r203'},
             {"data" : 'created_at'},
+            {"data" : 'r206'},
             {"data" : 'actions'},
         ],
         order: [[0, 'asc']],
@@ -378,28 +379,43 @@
 
     })
 
-    $('.btn-delete').on('click', function(e){
-        var val = $(this).attr('data-id')
-
-        $.ajax({
-            url: '{% url "app:mnj_families_del" %}',
-            type: "POST", 
-            dataType: "json",
-            data : {'pk' : val},
-            headers: {
-                "X-Requested-With": "XMLHttpRequest",
-                "X-CSRFToken": '{{csrf_token}}',
-            },
-            success: (response) => {
-                $("#message-respons").html('')
-                push_notif(response.message, 'alert-success', "#message-respons")
-            },
-            error: (response) => {
-                $("#message-respons").html('')
-                push_notif(response.message, 'alert-danger', "#message-respons")
+    function delete_keluarga(val){
+        $("#message-respons").html('')
+        swalWithBootstrapButtons.fire({
+            title: 'Are you sure?',
+            text: "Apakah anda yakin ingin menghapus data?",
+            icon: 'question',
+            showCancelButton: true,
+            confirmButtonText: 'Yes, delete it!',
+            cancelButtonText: 'No, cancel!',
+            reverseButtons: false
+          }).then((result) => {
+            if (result.isConfirmed) {
+                $.ajax({
+                    url: '{% url "app:mnj_families_del" %}',
+                    type: "POST", 
+                    dataType: "json",
+                    data : {'pk' : val},
+                    headers: {
+                        "X-Requested-With": "XMLHttpRequest",
+                        "X-CSRFToken": '{{csrf_token}}',
+                    },
+                    success: (response) => {
+                        push_notif(response.message, 'alert-success', "#message-respons")
+                        swalWithBootstrapButtons.fire({
+                            title: "Berhasil",
+                            text: "Data berhasil dihapus",
+                            icon: "success"
+                          });
+                        return table.draw()
+                    },
+                    error: (response) => {
+                        push_notif(response.responseJSON.message, 'alert-danger', "#message-respons")
+                    }
+                });
             }
-        });
-    })
+        })
+    }
 
 </script>
 {% endblock js-extender %}

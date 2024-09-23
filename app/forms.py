@@ -5,13 +5,6 @@ from pprint import pprint
 from datetime import date
 from . import helpers
 
-
-# class PopulationsForm(forms.ModelForm):
-
-#     class Meta:
-#         model = models.PopulationsModels
-#         fields = "__all__"
-
 class FamiliesForm(forms.ModelForm):
 
     class Meta:
@@ -65,8 +58,12 @@ class FamiliesForm(forms.ModelForm):
         if form_data.get('r401a') is not None and form_data.get('r401a') == '1':
             if form_data.get('r401b') is None or form_data.get('r401b') < 1:
                 self._errors['r401b'] = self.error_class(['Jika memiliki tanah/lahan pertanian, maka luas lahan yang dimiliki harus terisi.'])
+
+            if form_data.get('r401c') is None:
+                self._errors['r401c'] = self.error_class(['Jika memiliki tanah/lahan pertanian, maka jenis tanaman terluas harus terisi.'])
         else:
             form_data['r401b'] = None
+            form_data['r401c'] = None
 
         if form_data.get('r402a') is not None and form_data.get('r402a') < 0:
             self._errors['r402a'] = self.error_class(['Jumlah kepemilikan hewan ternak Sapi tidak boleh kurang dari 0.'])
@@ -83,6 +80,25 @@ class FamiliesForm(forms.ModelForm):
         if form_data.get('r402e') is not None and form_data.get('r402e') < 0:
             self._errors['r402e'] = self.error_class(['Jumlah kepemilikan hewan ternak Kambing/Domba tidak boleh kurang dari 0.'])
 
+        if form_data.get('r206') is not None and form_data.get('r206') == '2':
+            if form_data.get('catatan') is None or len(form_data.get('catatan')) == 0:
+                self._errors['catatan'] = self.error_class(['Untuk hasil pencacahan yang tidak terisi lengkap, maka catatan harus terisi.'])
+        
+        if form_data.get('r106') is not None:
+            form_data['r106'] = form_data['r106'].upper()
+        
+        if form_data.get('r107') is not None:
+            form_data['r107'] = form_data['r107'].upper()
+        
+        if form_data.get('r108') is not None:
+            form_data['r108'] = form_data['r108'].upper()
+
+        if form_data.get('r110') is not None:
+            form_data['r110'] = form_data['r110'].upper()
+        
+        if form_data.get('catatan') is not None:
+            form_data['catatan'] = form_data['catatan'].upper()
+
         self.cleaned_data = form_data
         return self.cleaned_data
 
@@ -91,8 +107,8 @@ class PopulationsForm(forms.ModelForm):
         model = models.PopulationsModels
         fields = "__all__"
 
+    
     def clean(self):
-
         form_data = self.cleaned_data
         data_not_cleaned = self.data
         
@@ -111,6 +127,9 @@ class PopulationsForm(forms.ModelForm):
                             self._errors['r502'] = self.error_class(['NIK telah terdaftar pada database'])
                     else:
                         self._errors['r502'] = self.error_class(['NIK telah terdaftar pada database'])
+
+        if form_data.get('r503') is not None:
+            form_data['r503'] = form_data['r503'].upper()
 
         if form_data.get('r504') is not None and form_data.get('r510') is not None:
             if form_data.get('r504') in ['2', '4', '6'] and form_data.get('r510') == '1':
@@ -131,36 +150,47 @@ class PopulationsForm(forms.ModelForm):
                 form_data['r520h'] = None
                 form_data['r520i'] = None
             else:
-                if form_data.get('r513') is None:
-                    self._errors['r513'] = self.error_class(['Jika ART tinggal bersama/keluarga baru, maka kegiatan pekerjaan utama harus terisi'])
-                else:
-                    if form_data.get('r513') == '5':
-                        if form_data.get('r514') is None:
-                            self._errors['r514'] = self.error_class(['Jika ART bekerja, maka pekerjaan utama harus terisi'])
 
-                        if form_data.get('r515') is None:
-                            self._errors['r515'] = self.error_class(['Jika ART bekerja, maka lapangan usaha utama harus terisi'])
+                if form_data.get('r508') is not None:
+                    age = helpers.age(form_data.get('r508'))
+                    if age > 5:
+                        if form_data.get('r513') is None:
+                            self._errors['r513'] = self.error_class(['Jika ART tinggal bersama/keluarga baru, maka kegiatan pekerjaan utama harus terisi'])
+                        else:
+                            if form_data.get('r513') == '5':
+                                if form_data.get('r514') is None:
+                                    self._errors['r514'] = self.error_class(['Jika ART bekerja, maka pekerjaan utama harus terisi'])
 
-                        if form_data.get('r516') is None:
-                            self._errors['r516'] = self.error_class(['Jika ART bekerja, maka komoditas utama harus terisi'])
+                                if form_data.get('r515') is None:
+                                    self._errors['r515'] = self.error_class(['Jika ART bekerja, maka lapangan usaha utama harus terisi'])
+
+                                if form_data.get('r516') is None:
+                                    self._errors['r516'] = self.error_class(['Jika ART bekerja, maka komoditas utama harus terisi'])
+                            else:
+                                form_data['r514'] = None
+                                form_data['r515'] = None
+                                form_data['r516'] = None
+
+                        if form_data.get('r517') is None:
+                            self._errors['r517'] = self.error_class(['Jika ART tinggal bersama/keluarga baru, maka partisipasi sekolah harus terisi'])
+                        else:
+                            if form_data.get('r513') is not None and form_data.get('r513') == '1':
+                                if form_data.get('r517') != '2':
+                                    self._errors['r517'] = self.error_class(['Jika kegiatan utama ART adalah bersekolah, maka partisipasi sekolah harus terisi "Masih Sekolah"'])
+
+                            if form_data.get('r517') in ['2', '3']:
+                                if form_data.get('r518') is None:
+                                    self._errors['r518'] = self.error_class(['Jika ART masih bersekolah/tidak bersekolah lagi, maka jenjang pendidikan tertinggi harus terisi'])
+                            else:
+                                form_data['r518'] = None
                     else:
+                        form_data['r513'] = None
                         form_data['r514'] = None
                         form_data['r515'] = None
                         form_data['r516'] = None
-
-                if form_data.get('r517') is None:
-                    self._errors['r517'] = self.error_class(['Jika ART tinggal bersama/keluarga baru, maka partisipasi sekolah harus terisi'])
-                else:
-                    if form_data.get('r513') is not None and form_data.get('r513') == '1':
-                        if form_data.get('r517') != '2':
-                            self._errors['r517'] = self.error_class(['Jika kegiatan utama ART adalah bersekolah, maka partisipasi sekolah harus terisi "Masih Sekolah"'])
-
-                    if form_data.get('r517') in ['2', '3']:
-                        if form_data.get('r518') is None:
-                            self._errors['r518'] = self.error_class(['Jika ART masih bersekolah/tidak bersekolah lagi, maka jenjang pendidikan tertinggi harus terisi'])
-                    else:
+                        form_data['r517'] = None
                         form_data['r518'] = None
-                
+                        
                 if form_data.get('r519') is None:
                     self._errors['r519'] = self.error_class(['Jika ART tinggal bersama/keluarga baru, maka isian jaminan kesehatan harus terisi'])
 
@@ -180,6 +210,15 @@ class PopulationsForm(forms.ModelForm):
                     self._errors['r520g'] = self.error_class(['Jika ART tinggal bersama/keluarga baru, maka isian disabilitas tunalaras harus terisi'])
                 if form_data.get('r520h') is None:
                     self._errors['r520h'] = self.error_class(['Jika ART tinggal bersama/keluarga baru, maka isian disabilitas cacat ganda harus terisi'])
+
+        if form_data.get('r507') is not None:
+            form_data['r507'] = form_data['r507'].upper()
+        
+        if form_data.get('r514') is not None:
+            form_data['r514'] = form_data['r514'].upper()
+        
+        if form_data.get('r516') is not None:
+            form_data['r516'] = form_data['r516'].upper()
 
         self.cleaned_data = form_data
         return self.cleaned_data

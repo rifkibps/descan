@@ -72,8 +72,6 @@ class FamiliesModels(models.Model):
     r205 = models.DateField(blank=False, null=False, verbose_name="Tanggal Pemeriksaan")
     r206 = models.CharField(max_length=1, blank=False, null=False, choices=r206_choices, verbose_name="Hasil Pencacahan")
 
-
-
     r301_choices = (
         ('1', 'Milik Sendiri'),
         ('2', 'Kontrak/Sewa'),
@@ -139,8 +137,8 @@ class FamiliesModels(models.Model):
     r306 = models.CharField(max_length=2, blank=False, null=False, choices=r306_choices, verbose_name="Jenis atap terluas")
     
     r307_choices = (
-        ('1', 'Listrik PLN dengan Meteran'),
-        ('2', 'Listrik PLN tanpa Meteran'),
+        ('1', 'Listrik PLN'),
+        ('2', 'Listrik Non PLN'),
         ('3', 'Lampu Minyak/Lilin'),
         ('4', 'Sumber Penerangan Lainnya'),
     )
@@ -162,6 +160,14 @@ class FamiliesModels(models.Model):
         ('4', 'Tidak Ada')
     )
     r309 = models.CharField(max_length=1, blank=False, null=False, choices=r309_choices, verbose_name="Fasilitas MCK")
+
+    r309b_choices = (
+        ('1', 'Leher Angsa'),
+        ('2', 'Plengsengan'),
+        ('3', 'Cemplung/Cubluk'),
+        ('4', 'Tidak Ada')
+    )
+    r309b = models.CharField(max_length=1, blank=False, null=False, choices=r309b_choices, verbose_name="Jenis kloset yang digunakan")
 
     r310_choices = (
         ('1', 'Air Kemasan Bermerk'),
@@ -185,6 +191,16 @@ class FamiliesModels(models.Model):
     r401a = models.CharField(max_length=1, blank=False, null=False, choices=state, verbose_name="Kepemilikan Tanah/Lahan Pertanian")
     r401b = models.IntegerField(blank=True, null=True, verbose_name="Luas Lahan")
 
+    r401c_choices = (
+        ('1', 'Jagung'),
+        ('2', 'Ubi'),
+        ('3', 'Sayuran'),
+        ('4', 'Jati'),
+        ('5', 'Jambu Mete'),
+        ('6', 'Lainnya'),
+    )
+    r401c = models.CharField(max_length=1, blank=True, null=True, choices=r401c_choices, verbose_name="Jenis tanaman terluas")
+
     r402a = models.IntegerField(blank=True, null=True, default=0, verbose_name="Jumlah Sapi")
     r402b = models.IntegerField(blank=True, null=True, default=0, verbose_name="Jumlah Kerbau")
     r402c = models.IntegerField(blank=True, null=True, default=0, verbose_name="Jumlah Kuda")
@@ -195,6 +211,7 @@ class FamiliesModels(models.Model):
     r402h = models.IntegerField(blank=True, null=True, default=0, verbose_name="Jumlah Ayam Ras Pedaging")
     r402i = models.IntegerField(blank=True, null=True, default=0, verbose_name="Jumlah Ayam Ras Petelur")
 
+    catatan = models.TextField(blank=True, null=True, verbose_name="Catatan ...")
     created_at = models.DateField(auto_now_add=True, editable=False)
     updated_at = models.DateField(auto_now=True, editable=False)
 
@@ -355,6 +372,6 @@ class PopulationsModels(models.Model):
     @property
     def age(self):
         return int((datetime.now().date() - self.r508).days / 365.25)
-    
+
     def __str__(self):
       return f"{self.pk}. {self.r502} | {self.r503}"

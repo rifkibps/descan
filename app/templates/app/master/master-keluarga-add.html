@@ -36,7 +36,7 @@
 <div id="message-respons">
 </div>
 
-<form action="" method="post" class="needs-validation" novalidate>
+<form action="" method="post" id="form-family" class="needs-validation" novalidate>
     {% csrf_token %}
     <div class="row mb-4">
         <div class="col-12">
@@ -235,7 +235,7 @@
             </div>
             <div class="row">
                 <div class="col-5">
-                    <label for="{{ form.r202.id_for_label }}">{{ form.r202.label }}</label>
+                    <label for="{{ form.r202.id_for_label }}">{{ form.r202.label }} (Bulan/Hari/Tahun)</label>
                 </div>
                 <div class="col-6 col-offset-1">
                     <div class="form-group">
@@ -453,6 +453,21 @@
                     </div>
                 </div>
             </div>
+            
+            <div class="row">
+                <div class="col-4">
+                    <label for="{{ form.r309b.id_for_label }}">{{ form.r309b.label }}</label>
+                </div>
+                <div class="col-6 col-offset-2">
+                    <div class="form-group">
+                        <div class="position-relative">
+                            {% render_field form.r309b class="form-select px-3 form-family" id=form.r309b.id_for_label %}
+                            <div class="invalid-feedback" id="msg-{{ form.r309b.id_for_label }}">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
 
             <div class="row">
                 <div class="col-4">
@@ -505,6 +520,20 @@
                                 <div class="position-relative">
                                     {% render_field form.r401b class="form-control px-3 form-family" id=form.r401b.id_for_label %}
                                     <div class="invalid-feedback" id="msg-{{ form.r401b.id_for_label }}">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row d-none">
+                        <div class="col-5">
+                            <label for="{{ form.r401c.id_for_label }}">{{ form.r401c.label }}</label>
+                        </div>
+                        <div class="col-6 col-offset-1">
+                            <div class="form-group">
+                                <div class="position-relative">
+                                    {% render_field form.r401c class="form-select px-3 form-family" id=form.r401c.id_for_label %}
+                                    <div class="invalid-feedback" id="msg-{{ form.r401c.id_for_label }}">
                                     </div>
                                 </div>
                             </div>
@@ -598,7 +627,25 @@
 
     <div class="row mb-4">
         <div class="col-12">
-            <h4>Bab V. Keterangan Anggota Keluarga</h4>
+            <h4>Blok V. Catatan</h4>
+        </div>
+    </div>
+
+    <div class="row mb-5">
+        <div class="col-12">
+            <div class="form-group">
+                <div class="position-relative">
+                    {% render_field form.catatan class="form-control px-3 form-family" id=form.catatan.id_for_label placeholder="Catatan ..." %}
+                    <div class="invalid-feedback" id="msg-{{ form.catatan.id_for_label }}">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row mb-4">
+        <div class="col-12">
+            <h4>Bab VI. Keterangan Anggota Keluarga</h4>
         </div>
     </div>
 
@@ -608,7 +655,7 @@
 
     <div class="row my-3">
         <div class="col-12">
-            <a href="{% url 'app:mnj_families' %}" class="btn btn-danger btn-sm">Batal</a>
+            <a href="{% url 'app:mnj_families' %}" class="btn btn-danger btn-sm">Batal</a>&ensp;
             <button class="btn btn-primary btn-sm" onclick="checkSubmit()">Tambah Data</button>
         </div>
     </div>
@@ -622,7 +669,6 @@
 
 {% block js-extender %}
 <script src="{% static 'app-design/assets/vendors/choices.js/choices.min.js' %}"></script>
-
 
 <script>
 
@@ -754,7 +800,7 @@
                             <div class="col-6 col-offset-1">
                                 <div class="form-group">
                                     <div class="position-relative">
-                                        {% render_field form_penduduk.r508 class="form-control px-3" id="form_art_r508_`+ num +`" data-num="`+ num +`" type="date" %}
+                                        {% render_field form_penduduk.r508 class="form-control px-3" id="form_art_r508_`+ num +`" data-num="`+ num +`" type="date" onchange="showR513_r518(this)" %}
                                         <div class="invalid-feedback" id="msg-form_art_r508_`+ num +`">
                                         </div>
                                     </div>
@@ -804,7 +850,7 @@
                             </div>
                         </div>
                         <br>
-                        <h5 class="mb-4 field-hide-`+ num +` d-none">Keterangan Ketenagakerjaan</h5>
+                        <h5 class="mb-4 field-hide-`+ num +` d-none">Keterangan Ketenagakerjaan <br>(Usia 5 tahun ke atas)</h5>
                         <div class="row d-none">
                             <div class="col-5">
                                 <label for="form_art_r513_`+ num +`">{{ form_penduduk.r513.label }}</label>
@@ -812,7 +858,7 @@
                             <div class="col-6 col-offset-1">
                                 <div class="form-group">
                                     <div class="position-relative">
-                                        {% render_field form_penduduk.r513 class="form-select px-3 field-art-`+ num +`" id="form_art_r513_`+ num +`" data-num="`+ num +`"  onchange="showField514_516(this)" %}
+                                        {% render_field form_penduduk.r513 class="form-select px-3 field-art-`+ num +`" id="form_art_r513_`+ num +`" data-num="`+ num +`"  onchange="showField514_516(this)" disabled="disabled" %}
                                         <div class="invalid-feedback" id="msg-form_art_r513_`+ num +`">
                                         </div>
                                     </div>
@@ -862,7 +908,7 @@
                             </div>
                         </div>
                         <br>
-                        <h5 class="mb-4 field-hide-`+ num +` d-none">Keterangan Pendidikan</h5>
+                        <h5 class="mb-4 field-hide-`+ num +` d-none">Keterangan Pendidikan <br>(Usia 5 tahun ke atas)</h5>
                         <div class="row  d-none">
                             <div class="col-5">
                                 <label for="form_art_r517_`+ num +`">{{ form_penduduk.r517.label }}</label>
@@ -870,7 +916,7 @@
                             <div class="col-6 col-offset-1">
                                 <div class="form-group">
                                     <div class="position-relative">
-                                        {% render_field form_penduduk.r517 class="form-select px-3 field-art-`+ num +`" id="form_art_r517_`+ num +`" data-num="`+ num +`" onchange="showField518(this)" %}
+                                        {% render_field form_penduduk.r517 class="form-select px-3 field-art-`+ num +`" id="form_art_r517_`+ num +`" data-num="`+ num +`" onchange="showField518(this)" disabled="disabled" %}
                                         <div class="invalid-feedback" id="msg-form_art_r517_`+ num +`">
                                         </div>
                                     </div>
@@ -1054,7 +1100,7 @@
     function removeRow(e){
 
         if ($('.no_art').length == 1){
-            return alert('Minimal keluarga harus memiliki satu anggota keluarga')
+            return alert('Keluarga harus memiliki memiliki satu anggota keluarga')
         }
         var current_row = $(e).parent().parent().parent()
         current_row.remove();
@@ -1075,20 +1121,30 @@
     $('#id_kecamatan').on('change', function(){
         get_region_adm('kec', $(this).val(), '#id_r104')
     })
+    
+    $(document).on('change', '.form-control, .form-select', function() {
+        if ($(this).hasClass('is-invalid')){
+            $(this).removeClass('is-invalid')
+        }
+    });
 
     $('#id_r104').on('change', function(){
         get_region_adm('deskel', $('option:selected', this).attr('data-code'), '#id_r105')
     })
 
     $('#{{form.r401a.id_for_label}}').on('change', function(){
-        var target = $('#{{ form.r401b.id_for_label }}')
-        if ($(this).val() == 1){
-            target.attr('required', 'required')
-            target.parent().parent().parent().parent().removeClass('d-none')
-        }else{
-            target.removeAttr('required')
-            target.parent().parent().parent().parent().addClass('d-none')
-        }
+        var target = [$('#{{ form.r401b.id_for_label }}'), $('#{{ form.r401c.id_for_label }}')]
+
+        target.forEach((obj) => {
+            if ($(this).val() == 1){
+                obj.attr('required', 'required')
+                obj.parent().parent().parent().parent().removeClass('d-none')
+            }else{
+                obj.val('')
+                obj.removeAttr('required')
+                obj.parent().parent().parent().parent().addClass('d-none')
+            }
+        });
     })
 
     $('#{{form.r301.id_for_label}}').on('change', function(){
@@ -1097,21 +1153,57 @@
             target.attr('required', 'required')
             target.parent().parent().parent().parent().removeClass('d-none')
         }else{
+            target.val('')
             target.removeAttr('required')
             target.parent().parent().parent().parent().addClass('d-none')
         }
     })
 
+    function showR513_r518(e){
+        var val = $(e).val()
+        var attr_num = parseInt($(e).attr('data-num'))
+
+        var target = [$('#form_art_r513_'+attr_num), $('#form_art_r517_'+attr_num)]
+        var target_child = [$('#form_art_r514_' + attr_num), $('#form_art_r515_' + attr_num), $('#form_art_r516_' + attr_num), $('#form_art_r518_' + attr_num)]
+        var age_year = age(val)
+
+        if (age_year >= 5){
+            target.forEach((obj) => {
+                obj.removeAttr('disabled')
+                obj.removeClass('is_invalid')
+                obj.next().html('')
+            });
+        }else{
+            target.forEach((obj) => {
+                console.log(obj, obj.hasClass('is_invalid'))
+                obj.val('')
+                obj.attr('disabled', 'disabled')
+                obj.trigger("change");
+                obj.next().html('')
+            });
+            target_child.forEach((obj) => {
+                obj.val('')
+                obj.removeAttr('required')
+                obj.parent().parent().parent().parent().addClass('d-none')
+                obj.trigger("change");
+                obj.next().html('')
+            });
+        }
+    }
+
     function showField518(e){
         var val = parseInt($(e).val())
         var attr_num = parseInt($(e).attr('data-num'))
         var target = $('#form_art_r518_' + attr_num)
-        
+        target.removeClass('is-invalid')
+        target.next().html('')
+
         if ([2, 3].includes(val)){
             target.attr('required', 'required')
             target.parent().parent().parent().parent().removeClass('d-none')
         }else{
             target.removeAttr('required')
+            target.val('')
             target.parent().parent().parent().parent().addClass('d-none')
         }
     }
@@ -1122,17 +1214,20 @@
         var attr_num = parseInt($(e).attr('data-num'))
 
         var target = [$('#form_art_r514_'+attr_num), $('#form_art_r515_'+attr_num), $('#form_art_r516_'+attr_num)]
-        if (val == 5){
-            target.forEach((obj) => {
-                $(obj).attr('required', 'required')
-                $(obj).parent().parent().parent().parent().removeClass('d-none')
-            });
-        }else{
-            target.forEach((obj) => {
-                $(obj).removeAttr('required')
-                $(obj).parent().parent().parent().parent().addClass('d-none')
-            });
-        }
+
+        target.forEach((obj) => {
+            obj.removeClass('is-invalid')
+            obj.next().html('')
+
+            if (val == 5){
+                obj.attr('required', 'required')
+                obj.parent().parent().parent().parent().removeClass('d-none')
+            }else{
+                obj.val('')
+                obj.removeAttr('required')
+                obj.parent().parent().parent().parent().addClass('d-none')
+            }
+        });
     }
 
     function showField505(e){
@@ -1147,6 +1242,7 @@
             });
 
             $('.field-art-' + attr_num).each(function(i, obj) {
+
                 if (!exception_fields.includes($(this).attr('id'))){
                     $(this).attr('required', 'required')
                     $(this).parent().parent().parent().parent().removeClass('d-none')
@@ -1159,20 +1255,23 @@
             });
 
             $('.field-art-' + attr_num).each(function(i, obj) {
-                if (!exception_fields.includes($(this).attr('id'))){
-                    $(this).removeAttr('required', 'required')
-                    $(this).parent().parent().parent().parent().addClass('d-none')
-                }
+                $(this).val('')
+                $(this).removeAttr('required', 'required')
+                $(this).parent().parent().parent().parent().addClass('d-none')
             });
         }
 
     }
 
     function clear_form(){
+        
         $('.invalid-feedback').each(function(i, obj) {
            $(this).html('')
         });
-        $('.form-control, .form-select').each(function(i, obj) {
+        $('.form-select').each(function(i, obj) {
+            $(this).removeClass('is_invalid')
+        });
+        $('.form-control').each(function(i, obj) {
             $(this).removeClass('is_invalid')
         });
     }
@@ -1209,7 +1308,6 @@
     }
     
     function checkSubmit(){
-
         clear_form()
         $('#message-respons').html('')
     
@@ -1267,6 +1365,8 @@
             success: (response) => {
                 $('#message-respons').html('')
                 push_notif(response.status, 'alert-success', "#message-respons") 
+                
+                $('#form-family').trigger("reset");
                 clear_form()
             },
             error: (response) => {
@@ -1297,56 +1397,11 @@
         }, 10);
     }
 
-    $(document).on('change', '.form-control, .form-select', function() {
-        if ($(this).hasClass('is-invalid')){
-            $(this).removeClass('is-invalid')
-        }
-    });
+    
 
     $("form").submit(function (e) {
         e.preventDefault();
-        {% comment %} var art_form_data = clean_inline_form(
-            ['r401','r402','r403','r404','r405','r406','r407','r408','r409','r411','r412','r415','r416a','r416b','r417','r418','r420a','r421','r422_23','r425','r427','r430','r431a','r431f']
-        )
-        
-        var form_data = {}
-        $('.form-family').each(function(i, obj) {
-            form_data[$(this).attr('name')] = $(this).val()
-        });
-
-        var formData = new FormData();
-        formData.append("form_families", JSON.stringify(form_data));
-        formData.append("form_art", JSON.stringify(art_form_data));
-
-        $.ajax({
-            url: '{% url "app:mnj_families_add" %}',
-            type: "POST",
-            dataType: "json",
-            data : formData,
-            headers: {
-                "X-Requested-With": "XMLHttpRequest",
-                "X-CSRFToken": '{{csrf_token}}',
-            },
-            success: (result) => {
-                console.log(error)
-            },
-            error: (error) => {
-                var errors = response["responseJSON"]["error"]
-                for (const [key, value] of Object.entries(errors)) {
-                    var msgs = '<ul>'
-                    value.forEach(function (item, index) {
-                    
-                        msgs += '<li>'+item+'</li>'
-                        });
-                    
-                    msgs += '</ul>'
-                    $('#id_'+ key).addClass('is-invalid');
-                    $('#msg-id_'+key).html(msgs)
-                }    
-            }
-        }); {% endcomment %}
-        
-      });
+    });
 
 </script>
 {% endblock js-extender %}

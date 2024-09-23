@@ -7,7 +7,7 @@ from django.db.models import Avg, Sum
 import numpy as np
 from statistics import mean
 from operator import itemgetter
-
+from django.utils import timezone
 
 def get_dashboard_family():
     families = models.FamiliesModels.objects.all().count()
@@ -287,7 +287,25 @@ def combine_validations(data_families, data_art):
                     if dt['r504'] == '1' and dt['r503'].lower() != nama_kk:
                         form_errors[f'form_art_r503_{idx+1}'] = ['Nama kepala keluarga pada Blok V tidak sesuai dengan Blok I Rincian Nama KK']
 
+    if len(form_errors) > 0 :
+        return form_errors
+
+    if len(data_art) > 1 :
+        kk_gender = next((dt['r506'] for dt in data_art if dt['r504'] == '1'), None)
+        for idx, dt in enumerate(data_art):
+            if dt['r504'] == '2':
+                if kk_gender == dt['r506']:
+                    form_errors[f'form_art_r506_{idx+1}'] = [f'Pasangan istri/suami kepala keluarga tidak boleh berjenis kelamin sama']
+
     return form_errors
+
+
+def age(date):
+
+    today = timezone.now()
+    age = today.year - date.year - ((today.month, today.day) < (date.month, date.day))
+
+    return age
 
 def get_region_code(r104, r105):
 
@@ -422,5 +440,5 @@ def labor_participation(model):
         if dt.r513 in ['4', '5']:
             labors_work.append(dt)
 
-    labor_participation = round(len(labors_work) / len(labors) * 100) if len(labors_work) != 0 else 0
+    labor_participation = round(len(labors_work) / len(labors) * 100) if len(labors) != 0 else 0
     return labor_participation

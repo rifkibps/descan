@@ -17,7 +17,7 @@
                 <p class="text-subtitle text-muted">
                     Manajemen data penduduk untuk memutakhirkan kondisi dan karakteristik keluarga di setiap desa.
                 </p>
-                <a href="{% url 'app:mnj_families_add' %}">Reset Form</a>
+                <a href="{% url 'app:mnj_population_add' %}">Reset Form</a>
             </div>
             <div class="col-12 col-md-6 order-md-2 order-first">
                 <nav aria-label="breadcrumb" class='breadcrumb-header'>
@@ -173,7 +173,7 @@
                             <div class="col-6 col-offset-1">
                                 <div class="form-group">
                                     <div class="position-relative">
-                                        {% render_field form.r508 class="form-control px-3" id=form.r508.id_for_label type="date" %}
+                                        {% render_field form.r508 class="form-control px-3" id=form.r508.id_for_label type="date" onchange="showR513_r518(this)" %}
                                         <div class="invalid-feedback" id="msg-{{form.r508.id_for_label}}">
                                         </div>
                                     </div>
@@ -225,7 +225,7 @@
                         <br>
                         
                         
-                        <h5 class="mb-4 field-hide {% if r505 not in '1,4' %}d-none{% endif %}">Keterangan Ketenagakerjaan</h5>
+                        <h5 class="mb-4 field-hide {% if r505 not in '1,4' %}d-none{% endif %}">Keterangan Ketenagakerjaan <br>(Usia 5 tahun ke atas)</h5>
                         <div class="row {% if r505 not in '1,4' %}d-none{% endif %}">
                             <div class="col-5">
                                 <label for="{{form.r513.id_for_label}}">{{ form.r513.label }}</label>
@@ -233,7 +233,11 @@
                             <div class="col-6 col-offset-1">
                                 <div class="form-group">
                                     <div class="position-relative">
-                                        {% render_field form.r513 class="form-select px-3 field-art" id=form.r513.id_for_label onchange="showField514_516(this)" %}
+                                        {% if age >= 5 %}
+                                            {% render_field form.r513 class="form-select px-3 field-art" id=form.r513.id_for_label onchange="showField514_516(this)" %}
+                                        {% else %}
+                                            {% render_field form.r513 class="form-select px-3 field-art" id=form.r513.id_for_label onchange="showField514_516(this)" disabled="disabled" %}
+                                        {% endif %}
                                         <div class="invalid-feedback" id="msg-{{form.r513.id_for_label}}">
                                         </div>
                                     </div>
@@ -284,7 +288,7 @@
                             </div>
                         </div>
                         <br>
-                        <h5 class="mb-4 field-hide {% if r505 not in '1,4' %}d-none{% endif %}">Keterangan Pendidikan</h5>
+                        <h5 class="mb-4 field-hide {% if r505 not in '1,4' %}d-none{% endif %}">Keterangan Pendidikan <br>(Usia 5 tahun ke atas)</h5>
                         <div class="row {% if r505 not in '1,4' %}d-none{% endif %}">
                             <div class="col-5">
                                 <label for="{{form.r517.id_for_label}}">{{ form.r517.label }}</label>
@@ -292,14 +296,19 @@
                             <div class="col-6 col-offset-1">
                                 <div class="form-group">
                                     <div class="position-relative">
-                                        {% render_field form.r517 class="form-select px-3 field-art" id=form.r517.id_for_label onchange="showField518(this)" %}
+                                        {% if age >= 5 %}
+                                            {% render_field form.r517 class="form-select px-3 field-art" id=form.r517.id_for_label onchange="showField518(this)" %}
+                                        {% else %}
+                                            {% render_field form.r517 class="form-select px-3 field-art" id=form.r517.id_for_label onchange="showField518(this)" disabled="disabled" %}
+                                        {% endif %}
+                                        
                                         <div class="invalid-feedback" id="msg-{{form.r517.id_for_label}}">
                                         </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
-                        <div class="row {% if r505 not in '1,4' or form.r517.value not in '2,3' %}d-none{% endif %}">
+                        <div class="row {% if r505 in '1,4' and form.r517.value in '2,3' %}{% else %}d-none{% endif %}">
                             <div class="col-5">
                                 <label for="{{form.r518.id_for_label}}">{{ form.r518.label }}</label>
                             </div>
@@ -460,11 +469,10 @@
         
         <div class="row my-3">
             <div class="col-12">
-                <a href="{% url 'app:mnj_families' %}" class="btn btn-danger btn-sm">Batal</a>
-                <button class="btn btn-primary btn-sm" onclick="checkSubmit()">Tambah Data</button>
+                <a href="{% url 'app:mnj_families' %}" class="btn btn-danger btn-sm">Batal</a>&ensp;
+                <button class="btn btn-primary btn-sm" onclick="checkSubmit()">Update Data</button>
             </div>
         </div>
-
     </form>
 
 </section>
@@ -477,6 +485,13 @@
 
 
 <script>
+
+    $(document).on('change', '.form-control, .form-select', function() {
+        if ($(this).hasClass('is-invalid')){
+            $(this).removeClass('is-invalid')
+            $('.msg-invalid').html('')
+        }
+    });
 
     $('#id_provinsi').on('change', function(){
         get_region_adm('prov', $(this).val(), '#id_kabkot')
@@ -497,6 +512,8 @@
     function showField518(e){
         var val = parseInt($(e).val())
         var target = $('#id_r518')
+        target.removeClass('is-invalid')
+        target.next().html('')
         
         if ([2, 3].includes(val)){
             target.attr('required', 'required')
@@ -510,19 +527,52 @@
     function showField514_516(e){
         var val = parseInt($(e).val())
         var target = [$('#id_r514'), $('#id_r515'), $('#id_r516')]
-        if (val == 5){
+
+        target.forEach((obj) => {
+            obj.removeClass('is-invalid')
+            obj.next().html('')
+
+            if (val == 5){
+                obj.attr('required', 'required')
+                obj.parent().parent().parent().parent().removeClass('d-none')
+            }else{
+                obj.val('')
+                obj.removeAttr('required')
+                obj.parent().parent().parent().parent().addClass('d-none')
+            }
+        });
+    }
+
+    function showR513_r518(e){
+        var val = $(e).val()
+
+        var target = [$('#id_r513'), $('#id_r517')]
+        var target_child = [$('#id_r514'), $('#id_r515'), $('#id_r516'), $('#id_r518')]
+        var age_year = age(val)
+
+        if (age_year >= 5){
             target.forEach((obj) => {
-                $(obj).attr('required', 'required')
-                $(obj).parent().parent().parent().parent().removeClass('d-none')
+                obj.removeAttr('disabled')
+                obj.removeClass('is_invalid')
+                obj.next().html('')
             });
         }else{
             target.forEach((obj) => {
-                $(obj).removeAttr('required')
-                $(obj).parent().parent().parent().parent().addClass('d-none')
+                obj.val('')
+                obj.attr('disabled', 'disabled')
+                obj.trigger("change");
+                obj.next().html('')
+            });
+            target_child.forEach((obj) => {
+                obj.val('')
+                obj.removeAttr('required')
+                obj.parent().parent().parent().parent().addClass('d-none')
+                obj.trigger("change");
+                obj.next().html('')
             });
         }
     }
-
+    
     function showField505(e){
         var val = parseInt($(e).val())
         var attr_num = parseInt($(e).attr('data-num'))
@@ -547,10 +597,9 @@
             });
 
             $('.field-art').each(function(i, obj) {
-                if (!exception_fields.includes($(this).attr('id'))){
-                    $(this).removeAttr('required', 'required')
-                    $(this).parent().parent().parent().parent().addClass('d-none')
-                }
+                $(this).val('')
+                $(this).removeAttr('required', 'required')
+                $(this).parent().parent().parent().parent().addClass('d-none')
             });
         }
 
@@ -558,10 +607,13 @@
 
     function clear_form(){
         $('.invalid-feedback').each(function(i, obj) {
-           $(this).html('')
+            $(this).html('')
         });
-        $('.form-control, .form-select').each(function(i, obj) {
-            $(this).removeClass('is_invalid')
+        $('.form-select').each(function(i, obj) {
+             $(this).removeClass('is_invalid')
+        });
+        $('.form-control').each(function(i, obj) {
+             $(this).removeClass('is_invalid')
         });
     }
 
@@ -678,13 +730,6 @@
             scrollTop: $("body").offset().top
         }, 10);
     }
-
-    $(document).on('change', '.form-control, .form-select', function() {
-        if ($(this).hasClass('is-invalid')){
-            $(this).removeClass('is-invalid')
-            $('.msg-invalid').html('')
-        }
-    });
 
     $("form").submit(function (e) {
         e.preventDefault();

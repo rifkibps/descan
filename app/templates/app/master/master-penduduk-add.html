@@ -172,7 +172,7 @@
                             <div class="col-6 col-offset-1">
                                 <div class="form-group">
                                     <div class="position-relative">
-                                        {% render_field form.r508 class="form-control px-3" id=form.r508.id_for_label type="date" %}
+                                        {% render_field form.r508 class="form-control px-3" id=form.r508.id_for_label type="date" onchange="showR513_r518(this)" %}
                                         <div class="invalid-feedback" id="msg-{{form.r508.id_for_label}}">
                                         </div>
                                     </div>
@@ -223,7 +223,7 @@
                         </div>
                         <br>
 
-                        <h5 class="mb-4 field-hide d-none">Keterangan Ketenagakerjaan</h5>
+                        <h5 class="mb-4 field-hide d-none">Keterangan Ketenagakerjaan <br>(Usia 5 tahun ke atas)</h5>
                         <div class="row d-none">
                             <div class="col-5">
                                 <label for="{{form.r513.id_for_label}}">{{ form.r513.label }}</label>
@@ -231,7 +231,7 @@
                             <div class="col-6 col-offset-1">
                                 <div class="form-group">
                                     <div class="position-relative">
-                                        {% render_field form.r513 class="form-select px-3 field-art" id=form.r513.id_for_label onchange="showField514_516(this)" %}
+                                        {% render_field form.r513 class="form-select px-3 field-art" id=form.r513.id_for_label onchange="showField514_516(this)" disabled="disabled" %}
                                         <div class="invalid-feedback" id="msg-{{form.r513.id_for_label}}">
                                         </div>
                                     </div>
@@ -282,7 +282,7 @@
                             </div>
                         </div>
                         <br>
-                        <h5 class="mb-4 field-hide d-none">Keterangan Pendidikan</h5>
+                        <h5 class="mb-4 field-hide d-none">Keterangan Pendidikan <br>(Usia 5 tahun ke atas)</h5>
                         <div class="row d-none">
                             <div class="col-5">
                                 <label for="{{form.r517.id_for_label}}">{{ form.r517.label }}</label>
@@ -290,7 +290,7 @@
                             <div class="col-6 col-offset-1">
                                 <div class="form-group">
                                     <div class="position-relative">
-                                        {% render_field form.r517 class="form-select px-3 field-art" id=form.r517.id_for_label onchange="showField518(this)" %}
+                                        {% render_field form.r517 class="form-select px-3 field-art" id=form.r517.id_for_label onchange="showField518(this)" disabled="disabled" %}
                                         <div class="invalid-feedback" id="msg-{{form.r517.id_for_label}}">
                                         </div>
                                     </div>
@@ -457,7 +457,7 @@
 
         <div class="row my-3">
             <div class="col-12">
-                <a href="{% url 'app:mnj_families' %}" class="btn btn-danger btn-sm">Batal</a>
+                <a href="{% url 'app:mnj_families' %}" class="btn btn-danger btn-sm">Batal</a>&ensp;
                 <button class="btn btn-primary btn-sm" onclick="checkSubmit()">Tambah Data</button>
             </div>
         </div>
@@ -471,6 +471,13 @@
 <script src="{% static 'app-design/assets/vendors/choices.js/choices.min.js' %}"></script>
 
 <script>
+
+    $(document).on('change', '.form-control, .form-select', function() {
+        if ($(this).hasClass('is-invalid')){
+            $(this).removeClass('is-invalid')
+            $('.msg-invalid').html('')
+        }
+    });
 
     $('#id_provinsi').on('change', function(){
         get_region_adm('prov', $(this).val(), '#id_kabkot')
@@ -487,6 +494,7 @@
     $('#id_r104').on('change', function(){
         get_region_adm('deskel', $('option:selected', this).attr('data-code'), '#id_r105')
     })
+    
     
     function get_last_num(e){
         var val = parseInt($(e).val())
@@ -518,6 +526,8 @@
     function showField518(e){
         var val = parseInt($(e).val())
         var target = $('#id_r518')
+        target.removeClass('is-invalid')
+        target.next().html('')
         
         if ([2, 3].includes(val)){
             target.attr('required', 'required')
@@ -531,19 +541,52 @@
     function showField514_516(e){
         var val = parseInt($(e).val())
         var target = [$('#id_r514'), $('#id_r515'), $('#id_r516')]
-        if (val == 5){
+
+        target.forEach((obj) => {
+            obj.removeClass('is-invalid')
+            obj.next().html('')
+
+            if (val == 5){
+                obj.attr('required', 'required')
+                obj.parent().parent().parent().parent().removeClass('d-none')
+            }else{
+                obj.val('')
+                obj.removeAttr('required')
+                obj.parent().parent().parent().parent().addClass('d-none')
+            }
+        });
+    }
+
+    function showR513_r518(e){
+        var val = $(e).val()
+
+        var target = [$('#id_r513'), $('#id_r517')]
+        var target_child = [$('#id_r514'), $('#id_r515'), $('#id_r516'), $('#id_r518')]
+        var age_year = age(val)
+
+        if (age_year >= 5){
             target.forEach((obj) => {
-                $(obj).attr('required', 'required')
-                $(obj).parent().parent().parent().parent().removeClass('d-none')
+                obj.removeAttr('disabled')
+                obj.removeClass('is_invalid')
+                obj.next().html('')
             });
         }else{
             target.forEach((obj) => {
-                $(obj).removeAttr('required')
-                $(obj).parent().parent().parent().parent().addClass('d-none')
+                obj.val('')
+                obj.attr('disabled', 'disabled')
+                obj.trigger("change");
+                obj.next().html('')
+            });
+            target_child.forEach((obj) => {
+                obj.val('')
+                obj.removeAttr('required')
+                obj.parent().parent().parent().parent().addClass('d-none')
+                obj.trigger("change");
+                obj.next().html('')
             });
         }
     }
-
+    
     function showField505(e){
         var val = parseInt($(e).val())
         var attr_num = parseInt($(e).attr('data-num'))
@@ -568,10 +611,9 @@
             });
 
             $('.field-art').each(function(i, obj) {
-                if (!exception_fields.includes($(this).attr('id'))){
-                    $(this).removeAttr('required', 'required')
-                    $(this).parent().parent().parent().parent().addClass('d-none')
-                }
+                $(this).val('')
+                $(this).removeAttr('required', 'required')
+                $(this).parent().parent().parent().parent().addClass('d-none')
             });
         }
 
@@ -579,10 +621,13 @@
 
     function clear_form(){
         $('.invalid-feedback').each(function(i, obj) {
-           $(this).html('')
+            $(this).html('')
         });
-        $('.form-control, .form-select').each(function(i, obj) {
-            $(this).removeClass('is_invalid')
+        $('.form-select').each(function(i, obj) {
+             $(this).removeClass('is_invalid')
+        });
+        $('.form-control').each(function(i, obj) {
+             $(this).removeClass('is_invalid')
         });
     }
 
@@ -618,7 +663,6 @@
     }
     
     function checkSubmit(){
-
         clear_form()
         $('#message-respons').html('')
     
@@ -676,8 +720,8 @@
             success: (response) => {
                 $('#message-respons').html('')
                 push_notif(response.status, 'alert-success', "#message-respons") 
+                $('#population_add').trigger("reset");
                 clear_form()
-                $("#population_add")[0].reset();
             },
             error: (response) => {
                 $('#message-respons').html('')
@@ -685,7 +729,6 @@
                 
                 var errors = response["responseJSON"]["error"]
                 
-                console.log(errors)
                 for (const [key, value] of Object.entries(errors)) {
                     var msgs = '<ul>'
                     value.forEach(function (item, index) {
@@ -702,13 +745,6 @@
             scrollTop: $("body").offset().top
         }, 10);
     }
-
-    $(document).on('change', '.form-control, .form-select', function() {
-        if ($(this).hasClass('is-invalid')){
-            $(this).removeClass('is-invalid')
-            $('.msg-invalid').html('')
-        }
-    });
 
     $("form").submit(function (e) {
         e.preventDefault();
