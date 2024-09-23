@@ -60,7 +60,7 @@ class FamiliesModels(models.Model):
 
     r206_choices = (
         ('1', 'Terisi Lengkap'),
-        ('2', 'Tidak Terisi Lengkap'),
+        ('2', 'Tidak Lengkap'),
     )
 
     # r201 = models.CharField(max_length=128, blank=False, null=False, verbose_name="Nama Pencacah")
@@ -71,6 +71,7 @@ class FamiliesModels(models.Model):
     r204 = models.ForeignKey(OfficerModels, on_delete=models.RESTRICT, blank=False, null=False, related_name='petugas_pemeriksa', verbose_name='Nama Pemeriksa')
     r205 = models.DateField(blank=False, null=False, verbose_name="Tanggal Pemeriksaan")
     r206 = models.CharField(max_length=1, blank=False, null=False, choices=r206_choices, verbose_name="Hasil Pencacahan")
+    
 
     r301_choices = (
         ('1', 'Milik Sendiri'),
@@ -159,7 +160,7 @@ class FamiliesModels(models.Model):
         ('3', 'MCK Umum'),
         ('4', 'Tidak Ada')
     )
-    r309 = models.CharField(max_length=1, blank=False, null=False, choices=r309_choices, verbose_name="Fasilitas MCK")
+    r309 = models.CharField(max_length=1, blank=True, null=True, choices=r309_choices, default='4', verbose_name="Fasilitas MCK")
 
     r309b_choices = (
         ('1', 'Leher Angsa'),
@@ -215,6 +216,7 @@ class FamiliesModels(models.Model):
     catatan = models.TextField(blank=True, null=True, verbose_name="Catatan ...")
     created_at = models.DateField(auto_now_add=True, editable=False)
     updated_at = models.DateField(auto_now=True, editable=False)
+    cleaned_state = models.CharField(max_length=1, blank=True, null=True, choices=state, default='2', verbose_name="Status Dokumen")
 
     def __str__(self):
       return f"{self.pk}. KRT {self.r107} | {self.r105.reg_sls_name} | Desa/Kel. {self.r104.reg_name}"

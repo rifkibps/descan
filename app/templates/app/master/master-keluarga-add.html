@@ -438,22 +438,7 @@
                     </div>
                 </div>
             </div>
-            
-            <div class="row">
-                <div class="col-4">
-                    <label for="{{ form.r309.id_for_label }}">{{ form.r309.label }}</label>
-                </div>
-                <div class="col-6 col-offset-2">
-                    <div class="form-group">
-                        <div class="position-relative">
-                            {% render_field form.r309 class="form-select px-3 form-family" id=form.r309.id_for_label %}
-                            <div class="invalid-feedback" id="msg-{{ form.r309.id_for_label }}">
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            
+
             <div class="row">
                 <div class="col-4">
                     <label for="{{ form.r309b.id_for_label }}">{{ form.r309b.label }}</label>
@@ -655,8 +640,8 @@
 
     <div class="row my-3">
         <div class="col-12">
-            <a href="{% url 'app:mnj_families' %}" class="btn btn-danger btn-sm">Batal</a>&ensp;
-            <button class="btn btn-primary btn-sm" onclick="checkSubmit()">Tambah Data</button>
+            <a href="{% url 'app:mnj_families' %}" class="btn btn-danger btn-sm mx-1"><i class="mdi mdi-arrow-left"></i> Batal</a>
+            <button class="btn btn-primary btn-sm" onclick="checkSubmit()">Tambah Data <i class="mdi mdi-account-arrow-right"></i></button>
         </div>
     </div>
 
@@ -677,13 +662,13 @@
     function generate_art(num){
             var form_art = `
             <div class="art-form-fields mb-3">
-                <div class="row">
+                <div class="row num_form">
                     <div class="col-6">
                         <h5 class="no_art">ART `+ num +`</h5>
                     </div>
-                    <div class="col-6 d-flex align-items-center justify-content-end">
-                        <a href="javascript:void(0)" class="btn icon btn-primary mx-1" onclick="addRow(this)" data-num_art="`+ num +`" style="font-size:25px">+</a> 
-                        <a href="javascript:void(0)" class="btn icon btn-danger removeRow" onclick="removeRow(this)" style="font-size:25px">-</a>
+                    <div class="col-6 d-flex justify-content-end action-button">
+                        <a href="javascript:void(0)" class="btn btn-sm btn-primary addRowBtn py-1 px-2 mx-1" onclick="addRow(this)" data-num_art="`+ num +`" style="font-size:20px"><i class="mdi mdi-account-plus"></i></a> 
+                        <a href="javascript:void(0)" class="btn btn-sm btn-danger py-1 px-2" onclick="removeRow(this)" style="font-size:20px"><i class="mdi mdi-minus"></i></a>
                     </div>
                 </div>
 
@@ -1089,6 +1074,10 @@
     function addRow(e){
         var last_row = $(e).data('num_art')
         var current_row = $(e).parent().parent().parent()
+
+        $('.addRowBtn').each(function(i, obj) {
+            $(this).addClass("d-none")
+        });
         current_row.after(generate_art(last_row+1));
         
         $('.no_art').each(function(i, obj) {
@@ -1103,7 +1092,10 @@
             return alert('Keluarga harus memiliki memiliki satu anggota keluarga')
         }
         var current_row = $(e).parent().parent().parent()
+        var before_row = current_row.prev()
         current_row.remove();
+
+        before_row.find('.num_form').find('.action-button').find('.addRowBtn').removeClass('d-none')
         $('.no_art').each(function(i, obj) {
             $(this).html("# ART " + (i+1))
             last_row_num = i+1

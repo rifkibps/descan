@@ -440,21 +440,6 @@
                     </div>
                 </div>
             </div>
-            
-            <div class="row">
-                <div class="col-4">
-                    <label for="{{ form.r309.id_for_label }}">{{ form.r309.label }}</label>
-                </div>
-                <div class="col-6 col-offset-2">
-                    <div class="form-group">
-                        <div class="position-relative">
-                            {% render_field form.r309 class="form-select px-3 form-family" id=form.r309.id_for_label %}
-                            <div class="invalid-feedback" id="msg-{{ form.r309.id_for_label }}">
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
 
             <div class="row">
                 <div class="col-4">
@@ -651,13 +636,13 @@
         {% for id, age, form_art in forms_art %}
             {% with r505=form_art.r505.value %}
             <div class="art-form-fields mb-5">
-                <div class="row">
+                <div class="row num_form">
                     <div class="col-6">
                         <h5 class="no_art">ART {{forloop.counter}}</h5>
                     </div>
-                    <div class="col-6 d-flex align-items-center justify-content-end">
-                        <a href="javascript:void(0)" class="btn icon btn-primary mx-1" onclick="addRow(this)" data-num_art="{{forloop.counter}}" style="font-size:25px">+</a> 
-                        <a href="javascript:void(0)" class="btn icon btn-danger removeRow" onclick="removeRow(this)" style="font-size:25px">-</a>
+                    <div class="col-6 d-flex align-items-center justify-content-end action-button">
+                        <a href="javascript:void(0)" class="btn btn-sm btn-primary addRowBtn py-1 px-2 mx-1 {% if forloop.last is False %}d-none{% endif %}" onclick="addRow(this)" data-num_art="{{forloop.counter}}" style="font-size:20px"><i class="mdi mdi-account-plus"></i></a> 
+                        <a href="javascript:void(0)" class="btn btn-sm btn-danger py-1 px-2" onclick="removeRow(this)" style="font-size:20px"><i class="mdi mdi-minus"></i></a>
                     </div>
                 </div>
 
@@ -1122,10 +1107,21 @@
     </div>
 
     <div class="row my-3">
-        <div class="col-12">
-            <a href="{% url 'app:mnj_families' %}" class="btn btn-danger btn-sm">Batal</a>&ensp;
-            <button class="btn btn-primary btn-sm" onclick="checkSubmit()">Update Data</button>
+        <div class="col-6">
+            <a href="{% url 'app:mnj_families' %}" class="btn btn-danger btn-sm mx-1"><i class="mdi mdi-arrow-left"></i> Batal</a>
+            <button class="btn btn-primary btn-sm" onclick="checkSubmit()">Perbarui Data <i class="mdi mdi-account-arrow-right"></i></button>
         </div>
+        {% for group in request.user.groups.all %}
+            {% if group.name in 'Administrator,Validator' %}
+            <div class="col-6 d-flex justify-content-end">
+                {% if cleaned_state == '2' %}
+                <button class="btn btn-success btn-sm" onclick="validateToClean()">Validate to Clean <i class="mdi mdi-account-check"></i></button>
+                {% else %}
+                <button class="btn btn-warning btn-sm" onclick="validateToClean()">Reject/Revoke <i class="mdi mdi-account-cancel"></i></button>
+                {% endif %}
+            </div>
+            {% endif %}
+        {% endfor %}
     </div>
 
 </form>
@@ -1147,13 +1143,13 @@
             var form_art = `
             <div class="art-form-fields mb-3">
                 <input type="hidden" name="art_id" value="">
-                <div class="row">
+                <div class="row num_form">
                     <div class="col-6">
                         <h5 class="no_art">ART `+ num +`</h5>
                     </div>
-                    <div class="col-6 d-flex align-items-center justify-content-end">
-                        <a href="javascript:void(0)" class="btn icon btn-primary mx-1" onclick="addRow(this)" data-num_art="`+ num +`" style="font-size:25px">+</a> 
-                        <a href="javascript:void(0)" class="btn icon btn-danger removeRow" onclick="removeRow(this)" style="font-size:25px">-</a>
+                    <div class="col-6 d-flex justify-content-end action-button">
+                        <a href="javascript:void(0)" class="btn btn-sm btn-primary addRowBtn py-1 px-2 mx-1" onclick="addRow(this)" data-num_art="`+ num +`" style="font-size:20px"><i class="mdi mdi-account-plus"></i></a> 
+                        <a href="javascript:void(0)" class="btn btn-sm btn-danger py-1 px-2" onclick="removeRow(this)" style="font-size:20px"><i class="mdi mdi-minus"></i></a>
                     </div>
                 </div>
 
@@ -1557,8 +1553,12 @@
     function addRow(e){
         var last_row = $(e).data('num_art')
         var current_row = $(e).parent().parent().parent()
-        current_row.after(generate_art(last_row+1));
         
+        $('.addRowBtn').each(function(i, obj) {
+            $(this).addClass("d-none")
+        });
+        current_row.after(generate_art(last_row+1));
+
         $('.no_art').each(function(i, obj) {
             $(this).html("# ART " + (i+1))
             last_row_num = i+1
@@ -1566,12 +1566,14 @@
     }
 
     function removeRow(e){
-
         if ($('.no_art').length == 1){
             return alert('Keluarga harus memiliki memiliki satu anggota keluarga')
         }
         var current_row = $(e).parent().parent().parent()
+        var before_row = current_row.prev()
         current_row.remove();
+
+        before_row.find('.num_form').find('.action-button').find('.addRowBtn').removeClass('d-none')
         $('.no_art').each(function(i, obj) {
             $(this).html("# ART " + (i+1))
             last_row_num = i+1
@@ -1672,7 +1674,6 @@
             target.parent().parent().parent().parent().addClass('d-none')
         }
     }
-
 
     function showField514_516(e){
         var val = parseInt($(e).val())
@@ -1831,7 +1832,6 @@
                 $('#message-respons').html('')
                 push_notif(response.status, 'alert-success', "#message-respons") 
                 clear_form()
-                $("#family_edit")[0].reset();
             },
             error: (response) => {
                 $('#message-respons').html('')
@@ -1861,12 +1861,44 @@
                 }
             }
         });
+
         $('html, body').animate({
             scrollTop: $("body").offset().top
         }, 10);
     }
 
-
+    function validateToClean(){
+        $.ajax({
+            url: '{% url "app:mnj_families_validate" %}',
+            type: "POST",
+            data : {
+                'pk' : {{pk}}
+            },
+            headers: {
+                "X-Requested-With": "XMLHttpRequest",
+                "X-CSRFToken": '{{csrf_token}}',
+            },
+            success: (response) => {
+                $('#message-respons').html('')
+                push_notif(response.message, 'alert-success', "#message-respons") 
+                swalWithBootstrapButtons.fire({
+                    title: "Berhasil",
+                    text: response.message,
+                    icon: "success",
+                }).then(function(isConfirm) {
+                    if (isConfirm) {
+                        location.reload();
+                    }
+                  })
+            },
+            error: (response) => {
+                var general_msg = 'Terjadi kesalahan saat menyimpan data'
+                var error = response["responseJSON"]["status"]
+                $('#message-respons').html('')
+                push_notif(general_msg + ' (' + error + ')', 'alert-danger', "#message-respons")
+            }
+        });
+    }
     $("form").submit(function (e) {
         e.preventDefault();
     });

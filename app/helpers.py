@@ -277,15 +277,14 @@ def combine_validations(data_families, data_art):
     # Validasi KRT, Harus ada, dan harus 1
     nama_kk = data_families['r107'].lower()
     for idx, dt in enumerate(data_art):
-        if dt['r505'] in ['1', '4']:
-            if '1' not in r504:
-                form_errors[f'form_art_r504_{idx+1}'] = ['Keluarga belum memiliki kepala keluarga']
+        if '1' not in r504:
+            form_errors[f'form_art_r504_{idx+1}'] = ['Keluarga belum memiliki kepala keluarga']
+        else:
+            if r504.count('1') != 1:
+                form_errors[f'form_art_r504_{idx+1}'] = ['Keluarga harus memiliki 1 kepala keluarga (tidak lebih)']
             else:
-                if r504.count('1') != 1:
-                    form_errors[f'form_art_r504_{idx+1}'] = ['Keluarga harus memiliki 1 kepala keluarga (tidak lebih)']
-                else:
-                    if dt['r504'] == '1' and dt['r503'].lower() != nama_kk:
-                        form_errors[f'form_art_r503_{idx+1}'] = ['Nama kepala keluarga pada Blok V tidak sesuai dengan Blok I Rincian Nama KK']
+                if dt['r504'] == '1' and dt['r503'].lower() != nama_kk:
+                    form_errors[f'form_art_r503_{idx+1}'] = ['Nama kepala keluarga pada Blok V tidak sesuai dengan Blok I Rincian Nama KK']
 
     if len(form_errors) > 0 :
         return form_errors

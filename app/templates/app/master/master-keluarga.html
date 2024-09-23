@@ -193,7 +193,8 @@
                                     <th class="text-center">Jumlah ART</th>
                                     <th>Tgl Pendataan</th>
                                     <th>Tgl Entri</th>
-                                    <th>Status</th>
+                                    <th>Status Isian</th>
+                                    <th>Status Validasi</th>
                                     <th class="text-center">Aksi</th>
                                 </tr>
                             </thead>
@@ -218,7 +219,7 @@
     var region_sls = ''
 
     var table = $("#table").DataTable({
-        pageLength: 5,
+        pageLength: 6,
         processing: true,
         serverSide: true,
         bInfo : false,
@@ -254,16 +255,17 @@
             {"data" : 'r203'},
             {"data" : 'created_at'},
             {"data" : 'r206'},
+            {"data" : 'cleaned_state'},
             {"data" : 'actions'},
         ],
         order: [[0, 'asc']],
         columnDefs: [
             {
-                'targets': [6],
+                'targets': [8],
                 'orderable': false,          
             },
             {
-                "targets": [0, 3, 6],
+                "targets": [0, 3],
                 "className": "text-center",
            },
         ],

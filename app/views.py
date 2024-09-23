@@ -12,7 +12,7 @@ from django.db.models import Q, Count, Sum, Avg
 from django.db.models.functions import Length
 import json
 from django.shortcuts import get_object_or_404, redirect
-
+from authentication.helpers import validate_users_access
 
 
 # Create your views here.
@@ -800,8 +800,8 @@ class ManajemenFamiliesFetchTableClassView(LoginRequiredMixin, View):
         data = []
 
         for obj in object_list:
-            class_state = f'bg-success' if obj.r206 == '1' else 'bg-danger'
-
+            class_state = f'bg-success' if obj.r206 == '1' else 'bg-warning'
+            class_state_validation = f'<span class="badge bg-primary" style="font-size:9px">Cleaned</span>' if obj.cleaned_state == '1' else f'<span class="badge bg-info" style="font-size:9px">Belum Divalidasi</span>'
             data.append(
             {
                 'no': [x for x in id_def_data if obj.id == x[1]][0][0],
@@ -810,7 +810,8 @@ class ManajemenFamiliesFetchTableClassView(LoginRequiredMixin, View):
                 'r109': obj.r109,
                 'r203' : obj.r203.strftime('%d-%m-%Y'),
                 'created_at' : obj.created_at.strftime('%d-%m-%Y'),
-                'r206' : f'<span class="badge {class_state}">{obj.get_r206_display()}</span>',
+                'r206' : f'<span class="badge {class_state}" style="font-size:9px">{obj.get_r206_display()}</span>',
+                'cleaned_state' : class_state_validation,
                 'actions': f'<a href="{reverse_lazy("app:mnj_families_edit")}?id={obj.id}" target="_blank" class="btn btn-sm icon btn-edit p-0" data-id="{obj.id}"><i class="mdi mdi-account-edit"></i></a>\
                 <button class="btn btn-sm icon btn-delete p-0" onclick="delete_keluarga({obj.id})" data-id="{obj.id}"><i class="mdi mdi-trash-can-outline"></i></button>'
             })
@@ -822,31 +823,52 @@ class ManajemenFamiliesFetchTableClassView(LoginRequiredMixin, View):
             'data': data,
         }
 
+class ManajemenFamiliesValidateClassView(LoginRequiredMixin, View):
+
+    def post(self, request):
+        is_ajax = request.headers.get('X-Requested-With') == 'XMLHttpRequest'
+        is_permitted = validate_users_access(request, ['Administrator', 'Validator'])
+
+        if is_ajax and is_permitted:
+            if request.method == 'POST':
+                pk = request.POST.get('pk')
+                model = models.FamiliesModels.objects.filter(pk =pk)
+                if model.exists():
+                    model = model.first()
+                    msg = 'Data berhasil divalidasi' if model.cleaned_state == '2' else 'Data berhasil direject'
+                    model.cleaned_state = '1' if model.cleaned_state == '2' else '2'
+                    model.save()
+                    return JsonResponse({'status' : 'success', 'message': msg})
+
+        return JsonResponse({'status': 'Invalid request'}, status=400)
+    
 class ManajemenFamiliesEditClassView(LoginRequiredMixin, View):
     
     def get(self, request):
 
         if request.GET.get('id') is not None:
             model = models.FamiliesModels.objects.prefetch_related('families_members').filter(pk = int(request.GET.get('id')))
+
             if model.exists():
-                model = model.first()
-                regions = helpers.get_region_code(model.r104.reg_code, model.r105.pk)
                 forms_art = []
                 id = []
                 age = []
+                model = model.first()
                 for dt in model.families_members.all():
                     form = forms.PopulationsForm(instance=dt)
                     forms_art.append(form)
                     id.append(dt.id)
                     age.append(helpers.age(dt.r508))
 
+                regions = helpers.get_region_code(model.r104.reg_code, model.r105.pk)
                 pencacah = models.OfficerModels.objects.filter(role = '1').all()
                 pemeriksa = models.OfficerModels.objects.filter(role = '2').all()
                 context = {
-                    'title' : 'Edit Data Keluarga',
+                    'title' : f'Keluarga {model.r107}',
                     'regions' : regions,
                     'pencacah' : pencacah,
                     'pemeriksa' : pemeriksa,
+                    'cleaned_state' : model.cleaned_state,
                     'pk' : request.GET.get('id'),
                     'form' : forms.FamiliesForm(instance=model),
                     'forms_art' : zip(id, age, forms_art),
