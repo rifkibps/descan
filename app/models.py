@@ -372,6 +372,6 @@ class PopulationsModels(models.Model):
     @property
     def age(self):
         return int((datetime.now().date() - self.r508).days / 365.25)
-    
+
     def __str__(self):
       return f"{self.pk}. {self.r502} | {self.r503}"

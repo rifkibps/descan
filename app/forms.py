@@ -5,13 +5,6 @@ from pprint import pprint
 from datetime import date
 from . import helpers
 
-
-# class PopulationsForm(forms.ModelForm):
-
-#     class Meta:
-#         model = models.PopulationsModels
-#         fields = "__all__"
-
 class FamiliesForm(forms.ModelForm):
 
     class Meta:
@@ -90,7 +83,22 @@ class FamiliesForm(forms.ModelForm):
         if form_data.get('r206') is not None and form_data.get('r206') == '2':
             if form_data.get('catatan') is None or len(form_data.get('catatan')) == 0:
                 self._errors['catatan'] = self.error_class(['Untuk hasil pencacahan yang tidak terisi lengkap, maka catatan harus terisi.'])
-                
+        
+        if form_data.get('r106') is not None:
+            form_data['r106'] = form_data['r106'].upper()
+        
+        if form_data.get('r107') is not None:
+            form_data['r107'] = form_data['r107'].upper()
+        
+        if form_data.get('r108') is not None:
+            form_data['r108'] = form_data['r108'].upper()
+
+        if form_data.get('r110') is not None:
+            form_data['r110'] = form_data['r110'].upper()
+        
+        if form_data.get('catatan') is not None:
+            form_data['catatan'] = form_data['catatan'].upper()
+
         self.cleaned_data = form_data
         return self.cleaned_data
 
@@ -99,8 +107,8 @@ class PopulationsForm(forms.ModelForm):
         model = models.PopulationsModels
         fields = "__all__"
 
+    
     def clean(self):
-
         form_data = self.cleaned_data
         data_not_cleaned = self.data
         
@@ -119,6 +127,9 @@ class PopulationsForm(forms.ModelForm):
                             self._errors['r502'] = self.error_class(['NIK telah terdaftar pada database'])
                     else:
                         self._errors['r502'] = self.error_class(['NIK telah terdaftar pada database'])
+
+        if form_data.get('r503') is not None:
+            form_data['r503'] = form_data['r503'].upper()
 
         if form_data.get('r504') is not None and form_data.get('r510') is not None:
             if form_data.get('r504') in ['2', '4', '6'] and form_data.get('r510') == '1':
@@ -180,7 +191,6 @@ class PopulationsForm(forms.ModelForm):
                         form_data['r517'] = None
                         form_data['r518'] = None
                         
-                
                 if form_data.get('r519') is None:
                     self._errors['r519'] = self.error_class(['Jika ART tinggal bersama/keluarga baru, maka isian jaminan kesehatan harus terisi'])
 
@@ -200,6 +210,15 @@ class PopulationsForm(forms.ModelForm):
                     self._errors['r520g'] = self.error_class(['Jika ART tinggal bersama/keluarga baru, maka isian disabilitas tunalaras harus terisi'])
                 if form_data.get('r520h') is None:
                     self._errors['r520h'] = self.error_class(['Jika ART tinggal bersama/keluarga baru, maka isian disabilitas cacat ganda harus terisi'])
+
+        if form_data.get('r507') is not None:
+            form_data['r507'] = form_data['r507'].upper()
+        
+        if form_data.get('r514') is not None:
+            form_data['r514'] = form_data['r514'].upper()
+        
+        if form_data.get('r516') is not None:
+            form_data['r516'] = form_data['r516'].upper()
 
         self.cleaned_data = form_data
         return self.cleaned_data
