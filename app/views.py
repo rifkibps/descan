@@ -927,7 +927,6 @@ class ManajemenFamiliesEditClassView(LoginRequiredMixin, View):
                     else:
                         forms_validated.append(form_art)
 
-                
                 if len(forms_errors) > 0:
                     return JsonResponse({"status": 'failed', "error": forms_errors}, status=400)
 
@@ -996,8 +995,6 @@ class ManajemenFamiliesAddClassView(LoginRequiredMixin, View):
                             if key != 'family_id':
                                 forms_errors[f'form_art_{key}_{idx+1}'] = val
 
-                pprint(forms_errors)
-                
                 if len(forms_errors) > 0:
                     return JsonResponse({"status": 'failed', "error": forms_errors}, status=400)
 

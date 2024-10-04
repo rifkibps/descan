@@ -268,8 +268,14 @@ def combine_validations(data_families, data_art):
         form_errors['r109'] = ['Jumlah ART adalah minimal 1']
 
     r501 = [int(dt['r501']) for dt in data_art]
+    r502 = [dt['r502'] for dt in data_art]
+    r502 = [x for x in r502 if x != '9999999999999999']
     r504 = [dt['r504'] for dt in data_art]
     
+    # Check Unique NIK
+    if len(set(r502)) != len(r502):
+        form_errors['form_art_r502_1'] = ['NIK ART duplikat']
+
     # Pastikan urutan anggota keluarga
     if check_sorted(r501) is False:
         form_errors['form_art_r501_1'] = ['Nomor urut ART harus berurut']
