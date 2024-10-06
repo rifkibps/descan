@@ -49,7 +49,7 @@ class FamiliesModels(models.Model):
     class Meta:
         verbose_name = 'Master Data Keluarga'
         verbose_name_plural = 'Master Data Keluarga'
-    
+
     r104 = models.ForeignKey(RegionAdministrativeModels, on_delete=models.RESTRICT, null=False, related_name='families_location_by_region', verbose_name='Kode Desa/Kelurahan')
     r105 = models.ForeignKey(RegionSLSModels, on_delete=models.RESTRICT, null=False, related_name='families_location_by_sls', verbose_name='Nama Dusun')
     r106 = models.TextField(max_length=256, blank=False, null=False, verbose_name="Alamat Lengkap")
@@ -213,13 +213,13 @@ class FamiliesModels(models.Model):
     r402h = models.IntegerField(blank=True, null=True, default=0, verbose_name="Jumlah Ayam Ras Pedaging")
     r402i = models.IntegerField(blank=True, null=True, default=0, verbose_name="Jumlah Ayam Ras Petelur")
 
-    catatan = models.TextField(blank=True, null=True, verbose_name="Catatan ...")
+    catatan = models.TextField(blank=True, null=True, verbose_name="Catatan")
     created_at = models.DateField(auto_now_add=True, editable=False)
     updated_at = models.DateField(auto_now=True, editable=False)
     cleaned_state = models.CharField(max_length=1, blank=True, null=True, choices=state, default='2', verbose_name="Status Dokumen")
 
     def __str__(self):
-      return f"{self.pk}. KRT {self.r107} | {self.r105.reg_sls_name} | Desa/Kel. {self.r104.reg_name}"
+      return f"KRT {self.r107} | {self.r105.reg_sls_name} | Desa/Kel. {self.r104.reg_name}"
     
 
 class PopulationsModels(models.Model):
@@ -297,6 +297,7 @@ class PopulationsModels(models.Model):
     )
     r513 = models.CharField(max_length=1, blank=True, null=True, choices=r513_choices, verbose_name="Kegiatan utama")
     r514 = models.CharField(max_length=256, blank=True, null=True, verbose_name="Pekerjaan utama")
+    
     r515_choices = (
         ('01', 'Pertanian tanaman padi & palawija'),
         ('02', 'Hortikultura'),

@@ -13,6 +13,12 @@ from django.db.models.functions import Length
 import json
 from django.shortcuts import get_object_or_404, redirect
 from authentication.helpers import validate_users_access
+import pandas as pd
+import numpy as np
+
+from openpyxl import Workbook
+from openpyxl.styles import Alignment
+from openpyxl.styles import Font, PatternFill
 
 
 # Create your views here.
@@ -690,6 +696,156 @@ class ManajemenFamiliesClassView(LoginRequiredMixin, View):
 
         return render(request, 'app/master/master-keluarga.html', context)
 
+class ManajemenFamiliesExportClassView(LoginRequiredMixin, View):
+
+    def get(self, request):
+
+        wb = Workbook()
+        ws = wb.active
+        ws.title = 'Data Keluarga'
+        
+        headers = [
+            'No', 'Provinsi', 'Kabupaten', 'Kecamatan', 'Desa/Kelurahan', 'SLS', 'ID Keluarga', 'Nama Kepala Keluarga', 'Nomor Kartu Keluarga', 'Jumlah ART', 'Alamat Lengkap', 'Nama Pemberi Informasi', 'Nama Pencacah', 'Tgl Kunjungan Pertama', 'Tgl Kunjungan Terakhir', 'Nama Pemeriksa', 'Tanggal Pemeriksaan', 'Hasil Pencacahan', 'Penguasaan Bangunan Tempat Tinggal', 'Penguasaan Lahan Tempat Tinggal', 'Jenis Lantai Terluas', 'Jenis Dinding Terluas', 'Keberadaan Jendela', 'Jenis Atap Terluas', 'Sumber Penerangan Utama', 'Ketersediaan Tempat Pembuangan Sampah', 'Jenis Kloset', 'Sumber Air Minum Utama', 'Kepemilikan Lahan/Tanah Pertanian', 'Luas Lahan (M2)', 'Jenis Tanaman Terluas', 'Kepemilikan Sapi', 'Kepemilikan Kerbau', 'Kepemilikan Kuda', 'Kepemilikan Babi', 'Kepemilikan Kambing/Domba', 'Catatan', 'Tanggal Entry', 'Status Clean' 
+        ]
+        
+        head_row = 2
+        header_cols = np.array(ws[f'A{head_row}':f'AM{head_row}'])
+        for v,c in zip(headers, header_cols.T.flatten()):
+            c.alignment = Alignment(horizontal='center', vertical='center')
+            c.value = v
+
+        master = models.FamiliesModels.objects.all()
+
+        for idx, dt in enumerate(master):
+            region_model = models.RegionAdministrativeModels.objects
+            region_code = dt.r104.reg_code
+            prov = region_model.filter(reg_code = region_code[:2]).first()
+            kabkot = region_model.filter(reg_code = region_code[:4]).first()
+            kec = region_model.filter(reg_code = region_code[:7]).first()
+
+            ws[f'A{idx+3}'].value = idx+1
+            ws[f'B{idx+3}'].value = f'[{prov.reg_code}] {prov.reg_name}'
+            ws[f'C{idx+3}'].value = f'[{kabkot.reg_code}] {kabkot.reg_name}'
+            ws[f'D{idx+3}'].value = f'[{kec.reg_code}] {kec.reg_name}'
+            ws[f'E{idx+3}'].value = f'[{dt.r104.reg_code}] {dt.r104.reg_name}'
+            ws[f'F{idx+3}'].value = f'[{dt.r105.reg_sls_code}] {dt.r105.reg_sls_name}'
+            ws[f'G{idx+3}'].value = helpers.create_hash(str(dt.pk))
+            ws[f'H{idx+3}'].value = dt.r107
+            ws[f'I{idx+3}'].value = f'{dt.r108[:6]}XXXXXXXXXX' if dt.r108 != '9999999999999999' else dt.r108
+            ws[f'J{idx+3}'].value = dt.r109
+            ws[f'K{idx+3}'].value = dt.r106
+            ws[f'L{idx+3}'].value = dt.r110
+            ws[f'M{idx+3}'].value = dt.r201.name
+            ws[f'N{idx+3}'].value = dt.r202.strftime('%d-%m-%Y')
+            ws[f'O{idx+3}'].value = dt.r203.strftime('%d-%m-%Y')
+            ws[f'P{idx+3}'].value = dt.r204.name
+            ws[f'Q{idx+3}'].value = dt.r205.strftime('%d-%m-%Y')
+            ws[f'R{idx+3}'].value = f'[{dt.r206}] {dt.get_r206_display()}'
+            ws[f'S{idx+3}'].value = f'[{dt.r301}] {dt.get_r301_display()}'
+            ws[f'T{idx+3}'].value = f'[{dt.r302}] {dt.get_r302_display()}'
+            ws[f'U{idx+3}'].value = f'[{dt.r303}] {dt.get_r303_display()}'
+            ws[f'V{idx+3}'].value = f'[{dt.r304}] {dt.get_r304_display()}'
+            ws[f'W{idx+3}'].value = f'[{dt.r305}] {dt.get_r305_display()}'
+            ws[f'X{idx+3}'].value = f'[{dt.r306}] {dt.get_r306_display()}'
+            ws[f'Y{idx+3}'].value = f'[{dt.r307}] {dt.get_r307_display()}'
+            ws[f'Z{idx+3}'].value = f'[{dt.r308}] {dt.get_r308_display()}'
+            ws[f'AA{idx+3}'].value = f'[{dt.r309b}] {dt.get_r309b_display()}'
+            ws[f'AB{idx+3}'].value = f'[{dt.r310}] {dt.get_r310_display()}'
+            ws[f'AC{idx+3}'].value = f'[{dt.r401a}] {dt.get_r401a_display()}'
+            ws[f'AD{idx+3}'].value = dt.r401b
+            ws[f'AE{idx+3}'].value = f'[{dt.r401c}] {dt.get_r401c_display()}'
+            ws[f'AF{idx+3}'].value = dt.r402a
+            ws[f'AG{idx+3}'].value = dt.r402b
+            ws[f'AH{idx+3}'].value = dt.r402c
+            ws[f'AI{idx+3}'].value = dt.r402d
+            ws[f'AJ{idx+3}'].value = dt.r402e
+            ws[f'AK{idx+3}'].value = dt.catatan
+            ws[f'AL{idx+3}'].value = dt.created_at.strftime('%d-%m-%Y')
+            ws[f'AM{idx+3}'].value =  f'[{dt.cleaned_state}] {dt.get_cleaned_state_display()}'
+
+        helpers.columns_adjustment_excel(ws)
+            
+        ws['A1'] = 'Tabel 1. Master Data Keluarga'
+
+        ws2 = wb.create_sheet("Data Penduduk")
+        headers2 = [
+            'No', 'Keluarga ID', 'Nomor Urut', 'NIK', 'Nama Lengkap', 'Hubungan dengan KK', 'Keberadaan ART', 'Jenis Kelamin', 'Tempat Lahir', 'Tanggal Lahir', 'Umur', 'Status Pernikahan', 'Agama', 'Suku', 'Kegiatan Utama', 'Pekerjaan Utama', 'Lapangan Usaha', 'Komoditas Usaha', 'Partisipasi Sekolah', 'Pendidikan Tertinggi (Ditamatkan)', 'Jaminan Kesehatan', 'Disabilitas Tunanetra/buta', 'Disabilitas Tunarungu/tuli', 'Disabilitas Tunawicara/bisu', 'Disabilitas Tunarungu–wicara/tuli–bisu', 'Disabilitas Tunadaksa/cacat tubuh', 'Disabilitas Tunagrahita', 'Disabilitas Tunalaras', 'Disabilitas Cacat Ganda', 'Tanggal Entry'
+        ]
+
+        header_cols2 = np.array(ws2[f'A{head_row}':f'AD{head_row}'])
+        for v,c in zip(headers2, header_cols2.T.flatten()):
+            c.alignment = Alignment(horizontal='center', vertical='center')
+            c.value = v
+
+        master_penduduk = models.PopulationsModels.objects.all()
+        for idx, dt in enumerate(master_penduduk):
+            ws2[f'A{idx+3}'].value = idx+1
+            ws2[f'B{idx+3}'].value = helpers.create_hash(str(dt.family_id.pk)) 
+            ws2[f'C{idx+3}'].value = dt.r501
+            ws2[f'D{idx+3}'].value = f'{dt.r502[:6]}XXXXXXXXXX' if dt.r502 != '9999999999999999' else dt.r502
+            ws2[f'E{idx+3}'].value = dt.r503
+            ws2[f'F{idx+3}'].value = f'[{dt.r504}] {dt.get_r504_display()}'
+            ws2[f'G{idx+3}'].value = f'[{dt.r505}] {dt.get_r505_display()}'
+            ws2[f'H{idx+3}'].value = f'[{dt.r506}] {dt.get_r506_display()}'
+            ws2[f'I{idx+3}'].value = dt.r507
+            ws2[f'J{idx+3}'].value = dt.r508.strftime('%d-%m-%Y')
+            ws2[f'K{idx+3}'].value = dt.age
+            ws2[f'L{idx+3}'].value = f'[{dt.r510}] {dt.get_r510_display()}'
+            ws2[f'M{idx+3}'].value = f'[{dt.r511}] {dt.get_r511_display()}'
+            ws2[f'N{idx+3}'].value = f'[{dt.r512}] {dt.get_r512_display()}'
+            ws2[f'O{idx+3}'].value = f'[{dt.r513}] {dt.get_r513_display()}'
+            ws2[f'P{idx+3}'].value = dt.r514
+            ws2[f'Q{idx+3}'].value = f'[{dt.r515}] {dt.get_r515_display()}'
+            ws2[f'R{idx+3}'].value = dt.r516
+            ws2[f'S{idx+3}'].value = f'[{dt.r517}] {dt.get_r517_display()}'
+            ws2[f'T{idx+3}'].value = f'[{dt.r518}] {dt.get_r518_display()}'
+            ws2[f'U{idx+3}'].value = f'[{dt.r519}] {dt.get_r519_display()}'
+            ws2[f'V{idx+3}'].value = f'[{dt.r520a}] {dt.get_r520a_display()}'
+            ws2[f'W{idx+3}'].value = f'[{dt.r520b}] {dt.get_r520b_display()}'
+            ws2[f'X{idx+3}'].value = f'[{dt.r520c}] {dt.get_r520c_display()}'
+            ws2[f'Y{idx+3}'].value = f'[{dt.r520d}] {dt.get_r520d_display()}'
+            ws2[f'Z{idx+3}'].value = f'[{dt.r520e}] {dt.get_r520e_display()}'
+            ws2[f'AA{idx+3}'].value = f'[{dt.r520f}] {dt.get_r520f_display()}'
+            ws2[f'AB{idx+3}'].value = f'[{dt.r520g}] {dt.get_r520g_display()}'
+            ws2[f'AC{idx+3}'].value = f'[{dt.r520h}] {dt.get_r520h_display()}'
+            ws2[f'AD{idx+3}'].value = dt.created_at.strftime('%d-%m-%Y')
+        
+        helpers.columns_adjustment_excel(ws2)
+
+        ws2['A1'] = 'Tabel 2. Master Data Penduduk'
+
+        ws3 = wb.create_sheet("Metadata")
+        headers3 = [
+            'No', 'Pertanyaan', 'Pilihan'
+        ]
+
+        header_cols3 = np.array(ws3[f'A{head_row}':f'C{head_row}'])
+        for v,c in zip(headers3, header_cols3.T.flatten()):
+            c.alignment = Alignment(horizontal='center', vertical='center')
+            c.value = v
+        
+        idx = 0
+        for field in models.FamiliesModels._meta.fields:
+            if field.name not in ['id', 'updated_at']:
+                ws3[f'A{idx+3}'].value = idx+1
+                ws3[f'B{idx+3}'].value = field.verbose_name
+                if field.choices is not None:
+                    for idx2, choice in enumerate(field.choices):
+                        ws3[f'C{idx+idx2+3}'].value = f'[{choice[0]}] {choice[1]}'
+                    idx += 1
+                else:
+                    ws3[f'C{idx+3}'].value = '-'
+                idx+=1
+
+        helpers.columns_adjustment_excel(ws3)
+        ws3['A1'] = 'Tabel 3. Metadata'
+
+        response = HttpResponse(content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
+        response['Content-Disposition'] = 'attachment; filename=Master Data Keluarga.xlsx'
+        wb.save(response)
+        return response
+    
+
 class ManajemenFamiliesFetchTableClassView(LoginRequiredMixin, View):
 
     def post(self, request):
@@ -802,6 +958,7 @@ class ManajemenFamiliesFetchTableClassView(LoginRequiredMixin, View):
         for obj in object_list:
             class_state = f'bg-success' if obj.r206 == '1' else 'bg-warning'
             class_state_validation = f'<span class="badge bg-primary" style="font-size:9px">Cleaned</span>' if obj.cleaned_state == '1' else f'<span class="badge bg-info" style="font-size:9px">Belum Divalidasi</span>'
+            id_encrypted = helpers.encrypt_message(str(obj.id))
             data.append(
             {
                 'no': [x for x in id_def_data if obj.id == x[1]][0][0],
@@ -812,8 +969,10 @@ class ManajemenFamiliesFetchTableClassView(LoginRequiredMixin, View):
                 'created_at' : obj.created_at.strftime('%d-%m-%Y'),
                 'r206' : f'<span class="badge {class_state}" style="font-size:9px">{obj.get_r206_display()}</span>',
                 'cleaned_state' : class_state_validation,
-                'actions': f'<a href="{reverse_lazy("app:mnj_families_edit")}?id={obj.id}" target="_blank" class="btn btn-sm icon btn-edit p-0" data-id="{obj.id}"><i class="mdi mdi-account-edit"></i></a>\
-                <button class="btn btn-sm icon btn-delete p-0" onclick="delete_keluarga({obj.id})" data-id="{obj.id}"><i class="mdi mdi-trash-can-outline"></i></button>'
+                'actions': f'<a href="{reverse_lazy("app:mnj_families_edit")}?id={id_encrypted}" target="_blank" class="btn btn-sm icon btn-edit p-0" data-id="{id_encrypted}"><i class="mdi mdi-account-edit"></i></a>\
+                <button class="btn btn-sm icon btn-delete p-0" onclick="delete_keluarga(\'{id_encrypted}\')" data-id="{id_encrypted}"><i class="mdi mdi-trash-can-outline"></i></button>'
+                # 'actions': f'<a href="{reverse_lazy("app:mnj_families_edit")}?id={obj.id}" target="_blank" class="btn btn-sm icon btn-edit p-0" data-id="{obj.id}"><i class="mdi mdi-account-edit"></i></a>\
+                # <button class="btn btn-sm icon btn-delete p-0" onclick="delete_keluarga({obj.id})" data-id="{obj.id}"><i class="mdi mdi-trash-can-outline"></i></button>'
             })
 
         return {    
@@ -830,16 +989,19 @@ class ManajemenFamiliesValidateClassView(LoginRequiredMixin, View):
         is_permitted = validate_users_access(request, ['Administrator', 'Validator'])
 
         if is_ajax and is_permitted:
-            if request.method == 'POST':
-                pk = request.POST.get('pk')
-                model = models.FamiliesModels.objects.filter(pk =pk)
-                if model.exists():
-                    model = model.first()
-                    msg = 'Data berhasil divalidasi' if model.cleaned_state == '2' else 'Data berhasil direject'
-                    model.cleaned_state = '1' if model.cleaned_state == '2' else '2'
-                    model.save()
-                    return JsonResponse({'status' : 'success', 'message': msg})
-
+            if request.method == 'POST' and request.POST.get('pk') is not None:
+                try :
+                    pk = helpers.decrypt_message(request.POST.get('pk'))
+                    model = models.FamiliesModels.objects.filter(pk = int(pk))
+                    if model.exists():
+                        model = model.first()
+                        msg = 'Data berhasil divalidasi' if model.cleaned_state == '2' else 'Data berhasil direject'
+                        model.cleaned_state = '1' if model.cleaned_state == '2' else '2'
+                        model.save()
+                        return JsonResponse({'status' : 'success', 'message': msg})
+                except:
+                    return JsonResponse({'status': 'Data doesnt exist'}, status=400)
+                
         return JsonResponse({'status': 'Invalid request'}, status=400)
     
 class ManajemenFamiliesEditClassView(LoginRequiredMixin, View):
@@ -847,34 +1009,38 @@ class ManajemenFamiliesEditClassView(LoginRequiredMixin, View):
     def get(self, request):
 
         if request.GET.get('id') is not None:
-            model = models.FamiliesModels.objects.prefetch_related('families_members').filter(pk = int(request.GET.get('id')))
+            try:
+                pk = helpers.decrypt_message(request.GET.get('id'))
+                model = models.FamiliesModels.objects.prefetch_related('families_members').filter(pk = int(pk))
+                if model.exists():
+                    forms_art = []
+                    id = []
+                    age = []
+                    model = model.first()
+                    for dt in model.families_members.all():
+                        form = forms.PopulationsForm(instance=dt)
+                        forms_art.append(form)
+                        id.append(helpers.encrypt_message(str(dt.id)))
+                        age.append(helpers.age(dt.r508))
 
-            if model.exists():
-                forms_art = []
-                id = []
-                age = []
-                model = model.first()
-                for dt in model.families_members.all():
-                    form = forms.PopulationsForm(instance=dt)
-                    forms_art.append(form)
-                    id.append(dt.id)
-                    age.append(helpers.age(dt.r508))
+                    regions = helpers.get_region_code(model.r104.reg_code, model.r105.pk)
+                    pencacah = models.OfficerModels.objects.filter(role = '1').all()
+                    pemeriksa = models.OfficerModels.objects.filter(role = '2').all()
+                    context = {
+                        'title' : f'Keluarga {model.r107}',
+                        'regions' : regions,
+                        'pencacah' : pencacah,
+                        'pemeriksa' : pemeriksa,
+                        'cleaned_state' : model.cleaned_state,
+                        'pk' : request.GET.get('id'),
+                        'form' : forms.FamiliesForm(instance=model),
+                        'forms_art' : zip(id, age, forms_art),
+                        'form_penduduk' : forms.PopulationsForm(),
+                    }
+                    return render(request, 'app/master/master-keluarga-edit.html', context)
+            except:
+                return redirect('app:mnj_families')
 
-                regions = helpers.get_region_code(model.r104.reg_code, model.r105.pk)
-                pencacah = models.OfficerModels.objects.filter(role = '1').all()
-                pemeriksa = models.OfficerModels.objects.filter(role = '2').all()
-                context = {
-                    'title' : f'Keluarga {model.r107}',
-                    'regions' : regions,
-                    'pencacah' : pencacah,
-                    'pemeriksa' : pemeriksa,
-                    'cleaned_state' : model.cleaned_state,
-                    'pk' : request.GET.get('id'),
-                    'form' : forms.FamiliesForm(instance=model),
-                    'forms_art' : zip(id, age, forms_art),
-                    'form_penduduk' : forms.PopulationsForm(),
-                }
-                return render(request, 'app/master/master-keluarga-edit.html', context)
         return redirect('app:mnj_families')
     
     def post(self, request):
@@ -882,73 +1048,80 @@ class ManajemenFamiliesEditClassView(LoginRequiredMixin, View):
         is_ajax = request.headers.get('X-Requested-With') == 'XMLHttpRequest'
         if is_ajax:
             if request.method == 'POST':
-                data_families = json.loads(request.POST.get('form_families'))
-                instance = get_object_or_404(models.FamiliesModels, pk=data_families.get('id'))
-                art_colls = list(instance.families_members.values_list('id', flat=True))
 
-                data_art = json.loads(request.POST.get('form_art'))
-                art_form_colls = [int(dt) for dt in data_art[0]['art_id'] if len(dt) > 0]
+                try :
+                    data_families = json.loads(request.POST.get('form_families'))
+                    pk = helpers.decrypt_message(data_families.get('id'))
+                    instance = get_object_or_404(models.FamiliesModels, pk=int(pk))
+                    art_colls = list(instance.families_members.values_list('id', flat=True))
 
-                data_art = helpers.transform_data(data_art)
-                forms_errors = dict()
+                    data_art = json.loads(request.POST.get('form_art'))
+                    art_form_colls = [int(helpers.decrypt_message(dt)) for dt in data_art[0]['art_id'] if len(dt) > 0]
 
-                art_remove = list(set(art_colls) - set(art_form_colls))
-                data_remove = []
-                for id in art_remove:
-                    data = get_object_or_404(models.PopulationsModels, pk=id)
-                    if data.r504 == '1':
-                        forms_errors['general_errors'] = [f'ART dengan nama {data.r503} tidak dapat dihapus karena berstatus sebagai kepala keluarga.']
-                    else:
-                        data_remove.append(data)
+                    data_art = helpers.transform_data(data_art)
+                    forms_errors = dict()
 
-                for fl in ['provinsi', 'kabkot', 'kecamatan']:
-                    if fl in data_families.keys():
-                        if len(data_families[fl]) == 0:
-                            forms_errors[fl] = ['This field is required.']
-                        del data_families[fl]
+                    art_remove = list(set(art_colls) - set(art_form_colls))
+                    data_remove = []
+                    for id in art_remove:
+                        id = helpers.decrypt_message(id)
+                        data = get_object_or_404(models.PopulationsModels, pk=int(id))
+                        if data.r504 == '1':
+                            forms_errors['general_errors'] = [f'ART dengan nama {data.r503} tidak dapat dihapus karena berstatus sebagai kepala keluarga.']
+                        else:
+                            data_remove.append(data)
 
-                form_family = forms.FamiliesForm(data_families, instance=instance)
-                if form_family.is_valid() is False:
-                    for key, val in form_family.errors.items():
-                        forms_errors[key] = val
+                    for fl in ['provinsi', 'kabkot', 'kecamatan']:
+                        if fl in data_families.keys():
+                            if len(data_families[fl]) == 0:
+                                forms_errors[fl] = ['This field is required.']
+                            del data_families[fl]
+
+                    form_family = forms.FamiliesForm(data_families, instance=instance)
+                    if form_family.is_valid() is False:
+                        for key, val in form_family.errors.items():
+                            forms_errors[key] = val
+                    
+                    forms_validated = []
+                    for idx, dt in enumerate(data_art):
+                        data_art[idx]['family_id'] = instance.id
+                        if len(dt['art_id']) != 0:
+                            pk = helpers.decrypt_message(dt.get('art_id'))
+                            instance_art = get_object_or_404(models.PopulationsModels, pk=int(pk))
+                            form_art = forms.PopulationsForm(dt, instance=instance_art)
+                        else:
+                            form_art = forms.PopulationsForm(dt)
+
+                        if form_art.is_valid() is False:
+                            for key, val in form_art.errors.items():
+                                forms_errors[f'form_art_{key}_{idx+1}'] = val
+                        else:
+                            forms_validated.append(form_art)
+
+                    if len(forms_errors) > 0:
+                        return JsonResponse({"status": 'failed', "error": forms_errors}, status=400)
+
+                    last_validations = helpers.combine_validations(data_families, data_art)
+                    if len(last_validations) > 0:
+                        for key, val in last_validations.items():
+                            forms_errors[key] = val
+                        return JsonResponse({"status": 'failed', "error": forms_errors}, status=400)
+
+                    form_family.save() 
+                    for form in forms_validated:
+                        form.save()
+
+                    for id in art_remove:
+                        data = get_object_or_404(models.PopulationsModels, pk=id)
+                        data.delete()
+
+                    msg = f'<ul class="px-0" style="list-style:none">\
+                                Data Keluarga <b>{data_families["r107"]}</b> telah berhasil diupdate.<br>\
+                            </ul>'
+                    return JsonResponse({"status": msg}, status=200)
+                except:
+                    return JsonResponse({'status': 'Invalid request'}, status=400)
                 
-                forms_validated = []
-                for idx, dt in enumerate(data_art):
-                    data_art[idx]['family_id'] = instance.id
-                    if len(dt['art_id']) != 0:
-                        instance_art = get_object_or_404(models.PopulationsModels, pk=dt.get('art_id'))
-                        form_art = forms.PopulationsForm(dt, instance=instance_art)
-                    else:
-                        form_art = forms.PopulationsForm(dt)
-
-                    if form_art.is_valid() is False:
-                        for key, val in form_art.errors.items():
-                            forms_errors[f'form_art_{key}_{idx+1}'] = val
-                    else:
-                        forms_validated.append(form_art)
-
-                if len(forms_errors) > 0:
-                    return JsonResponse({"status": 'failed', "error": forms_errors}, status=400)
-
-                last_validations = helpers.combine_validations(data_families, data_art)
-                if len(last_validations) > 0:
-                    for key, val in last_validations.items():
-                        forms_errors[key] = val
-                    return JsonResponse({"status": 'failed', "error": forms_errors}, status=400)
-
-                form_family.save() 
-                for form in forms_validated:
-                    form.save()
-
-                for id in art_remove:
-                    data = get_object_or_404(models.PopulationsModels, pk=id)
-                    data.delete()
-
-                msg = f'<ul class="px-0" style="list-style:none">\
-                            Data Keluarga <b>{data_families["r107"]}</b> telah berhasil diupdate.<br>\
-                        </ul>'
-                return JsonResponse({"status": msg}, status=200)
-
         return JsonResponse({'status': 'Invalid request'}, status=400)
     
 class ManajemenFamiliesAddClassView(LoginRequiredMixin, View):
@@ -1024,15 +1197,17 @@ class ManajemenFamiliesDeleteClassView(LoginRequiredMixin, View):
         is_ajax = request.headers.get('X-Requested-With') == 'XMLHttpRequest'
 
         if is_ajax:
-            if request.method == 'POST':
+            if request.method == 'POST' and request.POST.get('pk') is not None:
                 try:
-                    data = get_object_or_404(models.FamiliesModels, pk=request.POST.get('pk'))
+                    
+                    pk = helpers.decrypt_message(request.POST.get('pk'))
+                    data = get_object_or_404(models.FamiliesModels, pk = int(pk))
                     old_dt = data.r107
                     data.delete()
                     
                     return JsonResponse({'status' : 'success', 'message': f'Keluarga atas nama "{old_dt}" berhasil dihapus.'})
                 except:
-                    return JsonResponse({'status': 'failed', 'message': 'Data tidak tersedia'})
+                    return JsonResponse({'status': 'failed', 'message': 'Data tidak tersedia'}, status=400)
 
         return JsonResponse({'status': 'Invalid request'}, status=400)
 
@@ -1214,19 +1389,23 @@ class ManajemenPopulationsEditClassView(LoginRequiredMixin, View):
     def get(self, request):
 
         if request.GET.get('id') is not None:
-            model = models.PopulationsModels.objects.filter(pk = int(request.GET.get('id')))
-            if model.exists():
-                model = model.first()
-                form = forms.PopulationsForm(instance=model)
 
-                context = {
-                    'title' : 'Edit Data Penduduk',
-                    'pk' : model.pk,
-                    'age' : model.age,
-                    'form' : form,
-                }
+            try:
+                pk = helpers.decrypt_message(request.GET.get('id'))
+                model = models.PopulationsModels.objects.filter(pk = int(pk))
+                if model.exists():
+                    model = model.first()
+                    form = forms.PopulationsForm(instance=model)
+                    context = {
+                        'title' : 'Edit Data Penduduk',
+                        'pk' : request.GET.get('id'),
+                        'age' : model.age,
+                        'form' : form,
+                    }
 
-                return render(request, 'app/master/master-penduduk-edit.html', context)
+                    return render(request, 'app/master/master-penduduk-edit.html', context)
+            except:
+                return redirect('app:mnj_population')
             
         return redirect('app:mnj_population')
     
@@ -1241,31 +1420,35 @@ class ManajemenPopulationsEditClassView(LoginRequiredMixin, View):
                 data_art = helpers.transform_data(data)[0]
 
                 if data[0].get('id') is not None:
-                    instance = models.PopulationsModels.objects.filter(pk = int(data_art['id']))
+                    try :
+                        pk = helpers.decrypt_message(data_art['id'])
+                        instance = models.PopulationsModels.objects.filter(pk = int(pk))
 
-                    data_art['family_id'] = instance.first().family_id
-                    data_art['art_id'] = instance.first().pk
+                        data_art['art_id'] = data_art['id']
+                        data_art['family_id'] = instance.first().family_id
 
-                    forms_errors = dict()
+                        forms_errors = dict()
 
-                    if instance.exists():
-                        form = forms.PopulationsForm(data_art, instance=instance.first())
-                        if form.is_valid() is False:
-                            for key, val in form.errors.items():
-                                forms_errors[key] = val
+                        if instance.exists():
+                            form = forms.PopulationsForm(data_art, instance=instance.first())
+                            if form.is_valid() is False:
+                                for key, val in form.errors.items():
+                                    forms_errors[key] = val
 
-                        if len(forms_errors) > 0:
-                            return JsonResponse({"status": 'failed', "error": forms_errors}, status=400)
-
-                        family = list(models.PopulationsModels.objects.filter(family_id=instance.first().family_id).exclude(Q(pk=instance.first().id)).values_list('r504', flat=True))
-
-                        if data_art['r504']  == '1' and data_art['r504'] != instance.first().r504:
-                            if '1' in family:
-                                forms_errors['r504'] = ['Keluarga hanya bisa memiliki 1 kepala keluarga (terdapat ART lain berstatus kepala keluarga)']
+                            if len(forms_errors) > 0:
                                 return JsonResponse({"status": 'failed', "error": forms_errors}, status=400)
 
-                        form.save()
-                        return JsonResponse({"status": f'Data ART {data_art["r503"]} berhasil diupdate'}, status=200)
+                            family = list(models.PopulationsModels.objects.filter(family_id=instance.first().family_id).exclude(Q(pk=instance.first().id)).values_list('r504', flat=True))
+
+                            if data_art['r504']  == '1' and data_art['r504'] != instance.first().r504:
+                                if '1' in family:
+                                    forms_errors['r504'] = ['Keluarga hanya bisa memiliki 1 kepala keluarga (terdapat ART lain berstatus kepala keluarga)']
+                                    return JsonResponse({"status": 'failed', "error": forms_errors}, status=400)
+
+                            form.save()
+                            return JsonResponse({"status": f'Data ART {data_art["r503"]} berhasil diupdate'}, status=200)
+                    except:
+                        return JsonResponse({'status': 'Invalid request'}, status=400)
 
         return JsonResponse({'status': 'Invalid request'}, status=400)
     
@@ -1286,14 +1469,14 @@ class ManajemenPopulationsDeleteClassView(LoginRequiredMixin, View):
     def post(self, request):
         is_ajax = request.headers.get('X-Requested-With') == 'XMLHttpRequest'
         if is_ajax:
-            if request.method == 'POST':
+            if request.method == 'POST' and request.POST.get('pk') is not None:
                 try:
                     # Jika kepala keluarga, maka tidak boleh dihapus
                     # Update jumlah ART pada families jika data terhapus
                     # KK tidak boleh terhapus
                     # ART = 1 tidak boleh terhapus
-
-                    model = get_object_or_404(models.PopulationsModels, pk = int(request.POST.get('pk')))
+                    pk_req = helpers.decrypt_message(request.POST.get('pk'))
+                    model = get_object_or_404(models.PopulationsModels, pk = int(pk_req))
                     name = model.r503
 
                     if model.r504 != '1' and model.family_id.r109 > 1:
@@ -1429,7 +1612,7 @@ class ManajemenPopulationFetchTableClassView(LoginRequiredMixin, View):
         data = []
 
         for obj in object_list:
-             
+            id_encrypted = helpers.encrypt_message(str(obj.id))
             data.append(
             {
                 'no': [x for x in id_def_data if obj.id == x[1]][0][0],
@@ -1439,8 +1622,8 @@ class ManajemenPopulationFetchTableClassView(LoginRequiredMixin, View):
                 'r518' : obj.get_r518_display(),
                 'r504' : obj.get_r504_display(),
                 'r505' : obj.get_r505_display(),
-                'actions': f'<a href="{reverse_lazy("app:mnj_population_edit")}?id={obj.id}" target="_blank" class="btn btn-sm icon btn-edit p-0" data-id="{obj.id}"><i class="mdi mdi-account-edit"></i></a>\
-                <button class="btn btn-sm icon btn-delete p-0" onclick="delete_penduduk({obj.id})" data-id="{obj.id}"><i class="mdi mdi-trash-can-outline"></i></button>'
+                'actions': f'<a href="{reverse_lazy("app:mnj_population_edit")}?id={id_encrypted}" target="_blank" class="btn btn-sm icon btn-edit p-0" data-id="{id_encrypted}"><i class="mdi mdi-account-edit"></i></a>\
+                <button class="btn btn-sm icon btn-delete p-0" onclick="delete_penduduk(\'{id_encrypted}\')" data-id="{id_encrypted}"><i class="mdi mdi-trash-can-outline"></i></button>'
             })
 
         return {    
