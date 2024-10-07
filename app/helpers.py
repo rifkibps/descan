@@ -8,6 +8,48 @@ import numpy as np
 from statistics import mean
 from operator import itemgetter
 from django.utils import timezone
+import hashlib
+import base64
+from cryptography.fernet import Fernet
+
+from django.conf import settings
+
+def encrypt_message(message, utf8 = True):
+
+    key = settings.FERNET_KEY_ENCRYPT
+    f = Fernet(key)
+    encrypted_message = f.encrypt(message.encode())
+
+    if utf8:
+        encrypted_message = base64.urlsafe_b64encode(encrypted_message).decode('utf-8')
+    return encrypted_message
+
+def decrypt_message(encrypted_message, utf8 = True):
+    key = settings.FERNET_KEY_ENCRYPT
+    f = Fernet(key)
+    if utf8:
+        encrypted_message = base64.urlsafe_b64decode(encrypted_message.encode('utf-8'))
+
+    decrypted_message = f.decrypt(encrypted_message).decode()
+    return decrypted_message
+
+def columns_adjustment_excel(ws):
+    # Adjustment cols
+    for col in ws.columns:
+        max_length = 0
+        column = col[0].column_letter # Get the column name
+        for cell in col:
+            try:
+                if len(str(cell.value)) > max_length:
+                    max_length = len(str(cell.value))
+            except:
+                pass
+        adjusted_width = (max_length + 2) * 1.2
+        ws.column_dimensions[column].width = adjusted_width
+
+def create_hash(data):
+    hash = hashlib.sha256(data.encode('utf-8')).hexdigest()
+    return hash
 
 def get_dashboard_family():
     families = models.FamiliesModels.objects.all().count()

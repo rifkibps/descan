@@ -136,3 +136,8 @@ MEDIA_ROOT = BASE_DIR / 'media'
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+
+# key = Fernet.generate_key()
+# encoded_key = base64.urlsafe_b64encode(key).decode('utf-8')
+FERNET_KEY_ENCRYPT = b'ZgX4uzK4eKz6LF6tO9bKOfFILCisiICXdMuhr9PT644='

@@ -15,11 +15,12 @@ urlpatterns = [
     path('tabulasi/penduduk/fetch-data', views.TabulationsPopulationsFetchClassView.as_view(), name="tab_populations_fetch"),
 
     path('manajemen-keluarga/', views.ManajemenFamiliesClassView.as_view(), name="mnj_families"),
+    path('manajemen-keluarga/export', views.ManajemenFamiliesExportClassView.as_view(), name="mnj_export_families"),
     path('manajemen-keluarga/keluarga-baru', views.ManajemenFamiliesAddClassView.as_view(), name="mnj_families_add"),
+    path('manajemen-keluarga/validate', views.ManajemenFamiliesValidateClassView.as_view(), name="mnj_families_validate"),
     path('manajemen-keluarga/edit', views.ManajemenFamiliesEditClassView.as_view(), name="mnj_families_edit"),
     path('manajemen-keluarga/delete', views.ManajemenFamiliesDeleteClassView.as_view(), name="mnj_families_del"),
     path('manajemen-keluarga/fetch-table', views.ManajemenFamiliesFetchTableClassView.as_view(), name="mnj_families_fetch_data"),
-    path('manajemen-keluarga/validate', views.ManajemenFamiliesValidateClassView.as_view(), name="mnj_families_validate"),
     
     path('manajemen-penduduk/', views.ManajemenPopulationsClassView.as_view(), name="mnj_population"),
     path('manajemen-penduduk/add', views.ManajemenPopulationsAddClassView.as_view(), name="mnj_population_add"),

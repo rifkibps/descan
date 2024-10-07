@@ -24,7 +24,8 @@ class FamiliesForm(forms.ModelForm):
                 if check_kk.exists():
                     if check_kk.first().r108 != '9999999999999999':
                         if data_not_cleaned.get('id') is not None:
-                            if check_kk.first().pk != int(data_not_cleaned.get('id')):
+                            pk = helpers.decrypt_message(data_not_cleaned.get('id'))
+                            if check_kk.first().pk != int(pk):
                                 self._errors['r108'] = self.error_class(['No KK telah terdaftar pada database'])
                         else:
                             self._errors['r108'] = self.error_class(['No KK telah terdaftar pada database'])
@@ -125,7 +126,8 @@ class PopulationsForm(forms.ModelForm):
                 if check_nik.exists():
                     if check_nik.first().r502 != '9999999999999999':
                         if data_not_cleaned.get('art_id') is not None:
-                            if check_nik.first().pk != int(data_not_cleaned.get('art_id')):
+                            pk = helpers.decrypt_message(data_not_cleaned.get('art_id'))
+                            if check_nik.first().pk != int(pk):
                                 self._errors['r502'] = self.error_class(['NIK telah terdaftar pada database'])
                         else:
                             self._errors['r502'] = self.error_class(['NIK telah terdaftar pada database'])
