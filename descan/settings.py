@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/5.1/ref/settings/
 """
 
 from pathlib import Path
+from datetime import timedelta
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -40,17 +41,42 @@ INSTALLED_APPS = [
     'app',
     'authentication',
     'widget_tweaks',
+    'rest_framework',
+    'rest_framework_simplejwt',
+    'rest_framework_simplejwt.token_blacklist',
+    'corsheaders',
+    'restapi',        
 ]
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
+
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
+    ),
+    'DEFAULT_RENDERER_CLASSES': (
+        'rest_framework.renderers.JSONRenderer',
+    )
+}
+
+SIMPLE_JWT = {
+    "ACCESS_TOKEN_LIFETIME": timedelta(minutes=5), # 5 menit
+    "REFRESH_TOKEN_LIFETIME": timedelta(days=90), # 90
+    'ROTATE_REFRESH_TOKENS': True,
+    'BLACKLIST_AFTER_ROTATION': True,
+    'UPDATE_LAST_LOGIN' : False,
+    "AUTH_HEADER_TYPES": ("Bearer",),
+    "TOKEN_OBTAIN_SERIALIZER": "restapi.views.CustomObtainPairView",
+}
 
 ROOT_URLCONF = 'descan.urls'
 
@@ -141,3 +167,9 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 # key = Fernet.generate_key()
 # encoded_key = base64.urlsafe_b64encode(key).decode('utf-8')
 FERNET_KEY_ENCRYPT = b'ZgX4uzK4eKz6LF6tO9bKOfFILCisiICXdMuhr9PT644='
+
+CORS_ALLOWED_ORIGINS = [
+    "http://127.0.0.1:8000",
+]
+
+CORS_ALLOW_ALL_ORIGINS = False

@@ -41,7 +41,6 @@ class DashboardClassView(LoginRequiredMixin, View):
         labor_percentage = helpers.labor_participation(models.PopulationsModels.objects.filter(r505__in = ['1', '4']))
         dashboard_population = helpers.get_dashboard_population()
         dashboard_family = helpers.get_dashboard_family()
-        
         context = {
             'title' : 'Halaman Dashboard',
             'dashboard_population' : dashboard_population,
