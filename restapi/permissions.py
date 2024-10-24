@@ -1,26 +1,18 @@
 from rest_framework import permissions
+from rest_framework import exceptions
 
-class DeveloperPermission(permissions.BasePermission):
+class DeveloperPermission():
+    def __init__(self, user):
+        self.user = user
 
-    methods_ = ("GET", "POST")
-
-    def has_permission(self, request, view):
-        print('Hello World')
-        if request.user.is_authenticated:
+    def has_permission(self):
+        if self.user.is_superuser or self.user.is_staff or self.user.groups.filter(name='Developer').exists():
             return True
-
-    def has_object_permission(self, request, view, obj):
+        else:
+            raise exceptions.AuthenticationFailed(
+                "Authentication credentials are not valid for the given user. Make sure the user is a developer."
+            )
         
-        if request.user.is_superuser:
-            return True
-
-        if request.method in permissions.SAFE_METHODS:
-            return True
-
-        if 'Developer' in list(request.user.groups.values_list('name', flat=True)):
-            return True
-
-        if request.user.is_staff and request.method not in self.methods_:
-            return True
-
-        return False
+class DeveloperBasePermission(permissions.BasePermission):
+    def has_permission(self, request, view):
+        return DeveloperPermission(request.user).has_permission()
